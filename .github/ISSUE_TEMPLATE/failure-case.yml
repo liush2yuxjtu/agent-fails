@@ -1,0 +1,59 @@
+name: "Submit a failure case / 投稿翻车案例"
+description: "An AI coding agent went wrong. Tell us what happened so it can become a pattern. / 智能体翻车了？告诉我们经过。"
+title: "[Failure] "
+labels: ["submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for submitting! Please **anonymize code and remove secrets**. English or Chinese is fine.
+        感谢投稿！请对代码**脱敏并删除密钥**。中英文均可。
+  - type: dropdown
+    id: agent
+    attributes:
+      label: "Agent / 智能体"
+      options:
+        - Claude Code
+        - Cursor
+        - Codex
+        - Copilot agent
+        - Other / 其他
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: "Type / 类型"
+      description: "Wrong feature = built the wrong thing. Bug = right feature, buggy. Overreach = works, but not how you wanted (e.g. touched code it shouldn't). / 做错功能、有 bug、越界。"
+      options:
+        - Wrong feature
+        - Bug
+        - Overreach
+        - Not sure / 不确定
+    validations:
+      required: true
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: "What happened? / 发生了什么？"
+      description: "What you asked, what the agent did, why it was wrong. / 你让它做什么、它做了什么、哪里不对。"
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: "Prompt, diff or transcript excerpt / 提示词、diff 或对话片段"
+      render: text
+  - type: textarea
+    id: fix
+    attributes:
+      label: "Fix you tried (rule, hook, skill) and whether it worked / 你试过的修复以及是否有效"
+  - type: input
+    id: source
+    attributes:
+      label: "Public link, if any / 公开链接（如有）"
+  - type: input
+    id: credit
+    attributes:
+      label: "How should we credit you? / 希望如何署名？"
+      description: "GitHub handle, X handle, or 'anonymous'. / GitHub 或 X 账号，或“匿名”。"

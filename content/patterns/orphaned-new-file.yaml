@@ -1,0 +1,36 @@
+slug: orphaned-new-file
+category: wrong-feature
+agents: [claude-code, cursor, codex, copilot]
+tags: [unwired, unused file, not registered, route not added]
+title:
+  en: New module written, never wired in
+  zh: 新模块写好了，却没接上
+summary:
+  en: The agent creates the file that implements the feature but never imports, registers or routes it, so the feature doesn't exist for users.
+  zh: 智能体写了实现功能的文件，却没导入、没注册、没加路由，所以对用户来说这个功能并不存在。
+symptom:
+  en: A new file appears in the diff and looks complete. Nothing references it; the route, menu item, handler or job never runs.
+  zh: diff 里多了一个看起来完整的新文件，但没有任何地方引用它；路由、菜单、处理函数或定时任务从没被执行。
+why:
+  en: Wiring lives in other files (a router, an index, a DI container, a cron table) that the agent didn't open, especially in larger refactors. agent-review lists it as AR016 "Orphaned new file".
+  zh: “接线”的代码在别的文件里（路由表、index、依赖注入容器、cron 表），智能体没打开它们，大型重构里尤其常见。agent-review 把它列为 AR016“孤立的新文件”。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: text
+  code: |
+    + src/routes/export.ts        (new: GET /export handler, 80 lines)
+      src/routes/index.ts         (unchanged: export route never registered)
+    $ curl -i localhost:3000/export   ->  404
+rule: |
+  ## New files must be reachable
+  - For every new file, name the place that imports or registers it, and show that reference in the diff.
+  - Prove the feature is reachable end to end: hit the route, run the command, or render the page,
+    and paste the output.
+  - Remove any new file that nothing uses.
+extras:
+  - ref: verify-skill
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR016 Orphaned new file"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar016-orphaned-new-file

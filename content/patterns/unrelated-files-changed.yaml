@@ -1,0 +1,51 @@
+slug: unrelated-files-changed
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [scope creep, unrelated files, orthogonal damage, scope vandalism, diff]
+title:
+  en: Asked for one fix, it changed unrelated files
+  zh: 只让修一处，它改了一堆无关文件
+summary:
+  en: You asked for one change; the diff also "cleaned up" other functions, files and configs nobody mentioned.
+  zh: 你只要求改一处；diff 里却顺手“清理”了没人提过的其他函数、文件和配置。
+symptom:
+  en: A five-line fix arrives as a twelve-file diff. The real change is buried; review takes ten times longer; rollback drags unrelated edits with it. After a few rounds you no longer know what it changed.
+  zh: 一个五行的修复变成了改了十二个文件的 diff。真正的改动被埋在里面；审查时间翻了十倍；回滚时还得连带撤掉无关改动。几轮下来，你已经不知道它到底改了什么。
+why:
+  en: From inside the task, tidying a neighbor feels like doing a good job, and a sentence like "only change what's necessary" is advisory context, not enforcement. Kaplira, Night Forge and the dev.to diff-budget post all reach the same split. Rules state intent; permissions and hooks block the tool; a scope-vs-diff check catches what slipped. agent-failure-modes calls it AFM-2 Scope Vandalism.
+  zh: 在任务内部看，顺手整理邻居代码像是在“把活干好”；而“只改必要的部分”这种话只是建议性的上下文，不是强制。Kaplira、Night Forge 和 dev.to 的 diff budget 文章得出了同样的分层：规则表达意图；权限和钩子拦截工具；范围与 diff 的比对兜底。agent-failure-modes 称之为 AFM-2 范围破坏。
+example:
+  caption:
+    en: From the dev.to diff-budget post.
+    zh: 摘自 dev.to 的 diff budget 文章。
+  lang: text
+  code: |
+    Task: "fix the off-by-one in the pagination helper"
+    Agent also: renamed two variables "for clarity", converted a callback to async/await,
+                "aligned" a similar pattern in a neighboring module, edited a linter config.
+rule: |
+  ## Scope rules
+  - Only modify files the request needs. Reading other files is fine; editing them is not.
+  - Before the first edit, list the files you expect to change. If you then need another file,
+    stop and explain why before editing it.
+  - No opportunistic refactors, renames, reformatting, comment rewrites or config changes.
+  - Put anything you noticed but didn't fix into FOLLOWUPS.md (file, issue, suggested task).
+  - Finish with `git diff --stat` and justify every changed file against the request.
+extras:
+  - ref: scope-guard-hook
+  - ref: scope-guard-settings
+  - ref: diff-budget-check
+  - ref: verify-skill
+sources:
+  - title: "Kaplira: When an AI agent changes unrelated files"
+    url: https://kaplira.com/guides/ai-agent-changes-unrelated-files/
+  - title: "Night Forge: Stop your AI agent editing the wrong files"
+    url: https://night-forge.com/blog/stop-ai-agent-editing-wrong-files
+  - title: "dev.to (yureki_lab): How I stopped my AI coding agent's scope creep with a diff budget"
+    url: https://dev.to/yureki_lab/how-i-stopped-my-ai-coding-agents-scope-creep-with-a-diff-budget-47lj
+  - title: "claudecodeguides.com: Stop Claude Code from modifying unrelated files"
+    url: https://claudecodeguides.com/claude-code-stop-modifying-unrelated-files/
+  - title: "agent-failure-modes: AFM-2 Scope Vandalism"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-002-scope-vandalism.md
+  - title: "@JC_bitcoin on X (Chinese): after a few rounds of Codex edits I no longer know what it changed"
+    url: https://x.com/JC_bitcoin/status/2110560732257386896

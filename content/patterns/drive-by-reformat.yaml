@@ -1,0 +1,54 @@
+slug: drive-by-reformat
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [formatting, prettier, whitespace, noise, reformat]
+title:
+  en: Reformatted files it only opened to read
+  zh: 只是打开看看的文件，也被它格式化了
+summary:
+  en: The agent reformats, re-wraps or restyles files orthogonal to the task, and the real change disappears in whitespace noise.
+  zh: 智能体对与任务无关的文件做了格式化、换行或风格调整，真正的改动淹没在空白噪音里。
+symptom:
+  en: Hundreds of changed lines, almost none of them functional. Quote styles, trailing commas or import order changed in files the task never needed.
+  zh: 改了几百行，几乎没有一行是功能性的。任务根本不需要的文件里，引号风格、尾逗号或 import 顺序都变了。
+why:
+  en: Agents "run formatters or tidy up while they're there" (agent-review AR004). claudecodeguides.com calls it the reformatting impulse, cleaning up files Claude opens only to check an import.
+  zh: 智能体会“顺手跑格式化或整理一下”（agent-review AR004）。claudecodeguides.com 称之为“格式化冲动”：Claude 只是打开文件看个 import，也会顺手清理。
+example:
+  caption:
+    en: From the agent-review taxonomy (AR004).
+    zh: 摘自 agent-review 分类（AR004）。
+  lang: diff
+  code: |
+    - const x = 1; const y = 2; const z = 3
+    + const x = 1
+    + const y = 2
+    + const z = 3
+rule: |
+  ## No drive-by formatting
+  - Do not reformat, re-indent, reorder imports or change quote style in code you are not functionally changing.
+  - Run the formatter only on the lines or files you changed (for example `npx prettier --write <changed files>`),
+    never on the whole repo, unless asked.
+  - If a file needs a format pass, propose it as a separate commit.
+extras:
+  - kind: hook
+    title:
+      en: "Format only changed files (pre-commit)"
+      zh: "只格式化改动过的文件（pre-commit）"
+    file: package.json
+    lang: json
+    note:
+      en: "lint-staged runs the formatter on staged files only, so a session can't reformat the repo through the commit hook."
+      zh: "lint-staged 只格式化暂存区的文件，提交钩子就不会把整个仓库重新格式化一遍。"
+    code: |
+      {
+        "lint-staged": {
+          "*.{ts,tsx,js,jsx,css,md}": "prettier --write"
+        }
+      }
+  - ref: diff-budget-check
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR004 Drive-by refactor"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar004-drive-by-refactor
+  - title: "claudecodeguides.com: Stop Claude Code from modifying unrelated files"
+    url: https://claudecodeguides.com/claude-code-stop-modifying-unrelated-files/

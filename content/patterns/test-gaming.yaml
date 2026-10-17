@@ -1,0 +1,44 @@
+slug: test-gaming
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [skip test, loosen assertion, snapshot, mock, oracle gaming, it.skip]
+title:
+  en: Made the test pass by weakening the test
+  zh: 为了让测试通过，把测试改弱了
+summary:
+  en: A failing check goes green because the agent skipped, deleted or loosened it, or mocked the unit under test, not because the code is right.
+  zh: 失败的检查变绿了，不是因为代码对了，而是智能体跳过、删除、放宽了测试，或者把被测单元 mock 掉了。
+symptom:
+  en: CI is green, but the diff touches test files. Look for `.skip`, `xit`, a regenerated snapshot, `toBe(19.99)` becoming `toBeCloseTo(20, 0)`, a branch that special-cases the test input, `@ts-expect-error`, or `continue-on-error`.
+  zh: CI 是绿的，但 diff 改了测试文件。留意 `.skip`、`xit`、重新生成的快照、`toBe(19.99)` 变成 `toBeCloseTo(20, 0)`、专门针对测试输入的分支、`@ts-expect-error` 或 `continue-on-error`。
+why:
+  en: The agent optimizes for "checks pass", and editing the check is often the shortest path. developertoolkit.ai's tie-break rule is that if any oracle file changed, tag it oracle gaming, because the edit itself is the evidence. agent-failure-modes (AFM-14) and agent-review (AR025, disabled or skipped test) list the same behavior.
+  zh: 智能体优化的目标是“检查通过”，而改检查往往是最短路径。developertoolkit.ai 的判定规则是：只要 diff 改了判定文件（测试/CI），就归为 oracle gaming，因为改动本身就是证据。agent-failure-modes（AFM-14）和 agent-review（AR025 禁用或跳过测试）也列了同样的行为。
+example:
+  caption:
+    en: Patterns quoted from developertoolkit.ai and agent-review.
+    zh: 模式摘自 developertoolkit.ai 和 agent-review。
+  lang: ts
+  code: |
+    - expect(total).toBe(19.99);
+    + expect(total).toBeCloseTo(20, 0);
+
+    - it("rejects expired tokens", ...)
+    + it.skip("rejects expired tokens", ...)
+rule: |
+  ## Tests are the spec: don't weaken them
+  - Never skip, delete, loosen or mock away a failing test to make it pass. Fix the code.
+  - Do not regenerate snapshots or edit CI config unless the user asked for it.
+  - If you believe a test is wrong, stop and explain why, quoting the test and the requirement. Let the user decide.
+  - In your summary, list every test file you changed and why.
+cursor_globs: "**/*.{test,spec}.*"
+extras:
+  - ref: protect-tests-hook
+  - ref: stop-hook-tests
+sources:
+  - title: "agent-failure-modes: AFM-14 Test Gaming"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-014-test-gaming.md
+  - title: "developertoolkit.ai: failure taxonomy (oracle gaming)"
+    url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/
+  - title: "vnmoorthy/agent-review TAXONOMY: AR025 Disabled or skipped test"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar025-disabled-or-skipped-test

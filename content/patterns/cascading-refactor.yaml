@@ -1,0 +1,36 @@
+slug: cascading-refactor
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [type error, interface, architecture, multi-file, cascade]
+title:
+  en: One type error became an architecture change
+  zh: 一个类型错误演变成了架构改动
+summary:
+  en: To fix a single type error, the agent changes an interface, then updates every implementer, and a one-file request becomes a multi-file redesign.
+  zh: 为了修一个类型错误，智能体改了接口，接着改了所有实现类，一个只涉及单文件的需求变成了多文件的重新设计。
+symptom:
+  en: The diff's center of gravity is an interface or type file you didn't mention, with mechanical edits rippling across many modules.
+  zh: diff 的重心是一个你没提过的接口或类型文件，机械性的改动波及了很多模块。
+why:
+  en: Changing the type at the root is the most "complete" fix from the compiler's point of view. Night Forge lists this cascading refactor as one of three recurring wrong-file patterns.
+  zh: 从编译器的角度看，在根部改类型是最“彻底”的修法。Night Forge 把这种连锁重构列为三种常见错误编辑模式之一。
+example:
+  caption:
+    en: From the Night Forge write-up.
+    zh: 摘自 Night Forge 的文章。
+  lang: text
+  code: |
+    Asked: fix a type error in OrderService.ts
+    Agent: changed the Repository<T> interface, then updated all 9 implementers
+rule: |
+  ## Fix locally first
+  - Fix type and compile errors at the call site when possible (narrow, convert, or adapt locally).
+  - Do not change a shared interface, base class or exported type to fix a single caller.
+    If that seems necessary, stop and propose it with the list of affected implementers.
+  - Keep the diff within the files you listed before starting.
+extras:
+  - ref: diff-budget-check
+  - ref: scope-guard-hook
+sources:
+  - title: "Night Forge: Stop your AI agent editing the wrong files"
+    url: https://night-forge.com/blog/stop-ai-agent-editing-wrong-files

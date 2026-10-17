@@ -1,0 +1,59 @@
+slug: frontend-tweak-changed-backend
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [frontend, backend, ui tweak, api change, layer, overreach]
+title:
+  en: Asked for a UI tweak, it changed backend logic
+  zh: 只让改个前端样式，它动了后端逻辑
+summary:
+  en: A small frontend request ("make the button say Save", "hide this field") comes back with changes to API handlers, validation or database queries.
+  zh: 一个小小的前端需求（“按钮改成‘保存’”“隐藏这个字段”）回来时，API 处理、校验逻辑或数据库查询也被改了。
+symptom:
+  en: The UI change works and nothing is buggy, but the diff touches `api/`, `server/` or `db/`. A field got removed from the API response instead of hidden in the view, or validation was "aligned" with the new label.
+  zh: 前端改动生效了，也没 bug，但 diff 碰了 `api/`、`server/` 或 `db/`。本该在视图里隐藏的字段被直接从 API 返回里删了，或者校验逻辑被“对齐”成新文案。
+why:
+  en: The agent picks the change that most directly makes the visible result true, wherever it lives. Without a declared layer boundary, "hide the field" can be satisfied in the API as easily as in the component. It is the example @liushiyumath gives for part 3 of the three-part view (works, bug-free, not how you wanted it). Lawrence Jones described the same kind of thing as agents that "sometimes do things that aren't ideal".
+  zh: 智能体会选能最直接让可见结果成立的改法，不管它在哪一层。没有声明分层边界时，“隐藏字段”在 API 里做和在组件里做一样容易。这正是 @liushiyumath 三分法里第 3 类的例子：能用、没 bug，但不是你想要的做法。Lawrence Jones 也说过，智能体“有时会做一些不太理想的事”。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: text
+  code: |
+    Request: "Don't show the phone number on the profile card."
+
+    M src/components/ProfileCard.tsx   - <p>{user.phone}</p>
+    M server/api/users.ts              - phone: user.phone,   // removed from the API for every client
+rule: |
+  ## Respect layer boundaries
+  - Frontend requests change frontend code only (components, styles, copy, client state).
+    Do not edit `server/`, `api/`, `db/`, migrations or shared validation for a UI request.
+  - If the UI change seems to need a backend change, stop and propose it separately: what, why,
+    and which other clients would be affected.
+  - The reverse holds too: backend tasks don't restyle the UI.
+extras:
+  - kind: hook
+    title:
+      en: "Per-task scope file for a frontend-only task"
+      zh: "仅限前端任务的范围文件"
+    file: .agent-scope
+    lang: text
+    note:
+      en: "Used by the scope-guard hook below. Write it at the start of the task; delete it when done."
+      zh: "供下面的范围守卫钩子使用。任务开始时写好，结束后删除。"
+    code: |
+      # Frontend-only task: UI tweak on the profile card
+      src/components/**
+      src/styles/**
+      src/app/**/page.tsx
+      tests/components/**
+  - ref: scope-guard-hook
+  - ref: scope-guard-settings
+  - ref: verify-skill
+sources:
+  - title: "@liushiyumath on X: part 3, is it ideal / no overreach?"
+    url: https://x.com/liushiyumath/status/2111201130277662883
+  - title: "@lawrjones on X: agents \"sometimes do things that aren't ideal\""
+    url: https://x.com/lawrjones/status/2111204507891687781
+  - title: "Kaplira: When an AI agent changes unrelated files (edit boundary example)"
+    url: https://kaplira.com/guides/ai-agent-changes-unrelated-files/

@@ -1,0 +1,327 @@
+# Shared, reusable fix snippets. Patterns reference these with `- ref: <id>`.
+# Each snippet: title (en/zh), file (where it goes), lang, code, optional note (en/zh).
+
+scope-guard-hook:
+  kind: hook
+  title:
+    en: "Claude Code PreToolUse hook: block edits outside the declared scope"
+    zh: "Claude Code PreToolUse 钩子：拦截声明范围之外的编辑"
+  file: .claude/hooks/scope_guard.py
+  lang: python
+  note:
+    en: "Adapted from the diff-budget design on dev.to (yureki_lab). Put allowed globs, one per line, in .agent-scope at the repo root. Exit code 2 blocks the tool call and feeds stderr back to the agent. It only covers file-edit tools; shell writes still need the diff check."
+    zh: "改编自 dev.to（yureki_lab）的 diff budget 设计。在仓库根目录的 .agent-scope 中每行写一个允许的 glob。退出码 2 会阻止该工具调用，并把 stderr 反馈给智能体。它只覆盖文件编辑工具，shell 写入仍需靠 diff 检查兜底。"
+  code: |
+    #!/usr/bin/env python3
+    """PreToolUse hook: block Edit/Write/MultiEdit outside the globs in .agent-scope."""
+    import fnmatch, json, os, sys
+
+    call = json.load(sys.stdin)
+    if call.get("tool_name") not in ("Edit", "Write", "MultiEdit"):
+        sys.exit(0)
+
+    root = os.environ.get("CLAUDE_PROJECT_DIR") or call.get("cwd") or os.getcwd()
+    scope_file = os.path.join(root, ".agent-scope")
+    if not os.path.exists(scope_file):
+        sys.exit(0)  # no scope declared for this task -> allow
+
+    allowed = [l.strip() for l in open(scope_file) if l.strip() and not l.startswith("#")]
+    target = os.path.relpath(call["tool_input"]["file_path"], root)
+
+    if any(fnmatch.fnmatch(target, pat) for pat in allowed):
+        sys.exit(0)
+
+    print(
+        f"BLOCKED: {target} is outside this task's scope ({', '.join(allowed)}).\n"
+        "If this edit is required, stop and ask the user to widen .agent-scope, with a one-line reason.\n"
+        "If it is just an improvement you noticed, add it to FOLLOWUPS.md and keep going.",
+        file=sys.stderr,
+    )
+    sys.exit(2)
+
+scope-guard-settings:
+  kind: settings
+  title:
+    en: "Register the scope guard in .claude/settings.json"
+    zh: "在 .claude/settings.json 中注册范围守卫"
+  file: .claude/settings.json
+  lang: json
+  code: |
+    {
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "Edit|Write|MultiEdit",
+            "hooks": [
+              { "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scope_guard.py" }
+            ]
+          }
+        ]
+      }
+    }
+
+diff-budget-check:
+  kind: ci
+  title:
+    en: "Diff budget check (run before commit or in CI)"
+    zh: "Diff 预算检查（提交前或在 CI 中运行）"
+  file: scripts/diff_budget.py
+  lang: python
+  note:
+    en: "Adapted from the diff-budget post on dev.to (yureki_lab). Reads the real git diff, so it also catches edits made through the shell. Usage: python3 scripts/diff_budget.py origin/main 6 150"
+    zh: "改编自 dev.to（yureki_lab）的 diff budget 文章。读取真实的 git diff，所以通过 shell 做的修改也逃不掉。用法：python3 scripts/diff_budget.py origin/main 6 150"
+  code: |
+    #!/usr/bin/env python3
+    """Fail if the diff vs BASE touches files outside .agent-scope or exceeds the budget."""
+    import fnmatch, os, subprocess, sys
+
+    base = sys.argv[1] if len(sys.argv) > 1 else "HEAD"
+    max_files = int(sys.argv[2]) if len(sys.argv) > 2 else 6
+    max_lines = int(sys.argv[3]) if len(sys.argv) > 3 else 150
+
+    allowed = []
+    if os.path.exists(".agent-scope"):
+        allowed = [l.strip() for l in open(".agent-scope") if l.strip() and not l.startswith("#")]
+
+    out = subprocess.run(["git", "diff", "--numstat", base], capture_output=True, text=True, check=True).stdout
+    untracked = subprocess.run(["git", "ls-files", "--others", "--exclude-standard"],
+                               capture_output=True, text=True, check=True).stdout.split()
+
+    files, lines, outside = 0, 0, []
+    rows = [r.split("\t") for r in out.strip().splitlines()] + [["0", "0", p] for p in untracked]
+    for added, deleted, path in rows:
+        files += 1
+        if added != "-":
+            lines += int(added) + int(deleted)
+        if allowed and not any(fnmatch.fnmatch(path, p) for p in allowed):
+            outside.append(path)
+
+    problems = []
+    if outside:
+        problems.append("out-of-scope files: " + ", ".join(outside))
+    if files > max_files:
+        problems.append(f"{files} files changed (budget {max_files})")
+    if lines > max_lines:
+        problems.append(f"{lines} lines changed (budget {max_lines})")
+
+    if problems:
+        print("OVER BUDGET: " + "; ".join(problems))
+        sys.exit(1)
+    print(f"within budget: {files} files, {lines} lines")
+
+verify-skill:
+  kind: skill
+  title:
+    en: "Shared /verify skill for Claude Code"
+    zh: "团队共享的 /verify 技能（Claude Code）"
+  file: .claude/skills/verify/SKILL.md
+  lang: markdown
+  note:
+    en: "Commit it to the repo so the whole team (and every agent session) runs the same checks. Replace the commands with your project's real ones."
+    zh: "把它提交进仓库，让整个团队（以及每个智能体会话）跑同一套检查。把命令换成你项目里真实的命令。"
+  code: |
+    ---
+    name: verify
+    description: Verify the current change before calling it done. Use before every commit, PR, or "done" message.
+    ---
+
+    # Verify
+
+    Run every step and paste the real output. Never summarize a step you did not run.
+
+    1. **Scope**: run `git diff --stat` and `git status --short`. For every changed file, say which part
+       of the request needs it. Any file you cannot justify gets reverted, or listed under
+       "Unrequested changes" for the user to decide.
+    2. **Build and types**: `npm run build` (or the project's build command).
+    3. **Tests**: `npm test`. Report pass/fail counts. If a test was edited, skipped or deleted,
+       say so explicitly with the reason.
+    4. **Behavior**: exercise the changed behavior once for real (a curl, a CLI run, a screenshot)
+       and show what happened.
+    5. **Report** in this format:
+       - Requested: <one line>
+       - Changed files: <list, each with its reason>
+       - Checks run: <command -> result>
+       - Not done / unsure: <list, or "none">
+
+stop-hook-tests:
+  kind: hook
+  title:
+    en: "Claude Code Stop hook: don't let the agent finish while tests fail"
+    zh: "Claude Code Stop 钩子：测试不过就不让智能体收工"
+  file: .claude/settings.json
+  lang: json
+  note:
+    en: "A Stop hook that exits with code 2 keeps Claude working and shows it stderr. The stop_hook_active check stops it from looping forever. Swap `npm test` for your test command."
+    zh: "Stop 钩子以退出码 2 结束时，Claude 会继续工作并看到 stderr。检查 stop_hook_active 可避免无限循环。把 `npm test` 换成你的测试命令。"
+  code: |
+    {
+      "hooks": {
+        "Stop": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 -c \"import json,sys,subprocess; d=json.load(sys.stdin); sys.exit(0) if d.get('stop_hook_active') else None; r=subprocess.run('npm test --silent', shell=True, capture_output=True, text=True); sys.stderr.write('Tests are failing. Fix them (without weakening them) before stopping:\\n'+r.stdout[-3000:]+r.stderr[-2000:]) if r.returncode else None; sys.exit(2 if r.returncode else 0)\""
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+protect-tests-hook:
+  kind: hook
+  title:
+    en: "Claude Code PreToolUse hook: tests are read-only unless you say so"
+    zh: "Claude Code PreToolUse 钩子：除非你明确允许，测试文件只读"
+  file: .claude/hooks/protect_tests.py
+  lang: python
+  note:
+    en: "Register it like the scope guard (matcher Edit|Write|MultiEdit). Run `ALLOW_TEST_EDITS=1 claude` for sessions where changing tests is the task."
+    zh: "像范围守卫一样注册（matcher 为 Edit|Write|MultiEdit）。如果这次任务本身就是改测试，用 `ALLOW_TEST_EDITS=1 claude` 启动。"
+  code: |
+    #!/usr/bin/env python3
+    """Block edits to test files and CI config unless ALLOW_TEST_EDITS=1."""
+    import json, os, re, sys
+
+    call = json.load(sys.stdin)
+    if call.get("tool_name") not in ("Edit", "Write", "MultiEdit") or os.environ.get("ALLOW_TEST_EDITS") == "1":
+        sys.exit(0)
+
+    path = call["tool_input"].get("file_path", "")
+    protected = re.compile(r"(^|/)(tests?|__tests__|spec)/|\.(test|spec)\.[jt]sx?$|_test\.(go|py)$|(^|/)test_[^/]+\.py$|\.github/workflows/")
+    if protected.search(path):
+        print(f"BLOCKED: {path} is a test/CI file. Make the code pass the existing test. "
+              "If you believe the test itself is wrong, stop and explain why to the user.", file=sys.stderr)
+        sys.exit(2)
+    sys.exit(0)
+
+destructive-bash-hook:
+  kind: hook
+  title:
+    en: "Claude Code PreToolUse hook: stop destructive shell commands"
+    zh: "Claude Code PreToolUse 钩子：拦截破坏性 shell 命令"
+  file: .claude/hooks/block_destructive.py
+  lang: python
+  note:
+    en: "Register with matcher \"Bash\". A pattern list is a seatbelt, not a sandbox; keep real backups and least-privilege credentials too."
+    zh: "用 matcher \"Bash\" 注册。正则清单是安全带，不是沙箱；备份和最小权限凭据同样要有。"
+  code: |
+    #!/usr/bin/env python3
+    """Block high-blast-radius shell commands; the agent must ask the user instead."""
+    import json, re, sys
+
+    call = json.load(sys.stdin)
+    if call.get("tool_name") != "Bash":
+        sys.exit(0)
+    cmd = call["tool_input"].get("command", "")
+
+    dangerous = [
+        r"\brm\s+-[a-zA-Z]*r[a-zA-Z]*f|\brm\s+-[a-zA-Z]*f[a-zA-Z]*r",   # rm -rf / rm -fr
+        r"\bgit\s+push\b.*(--force\b|-f\b|--force-with-lease)",
+        r"\bgit\s+reset\s+--hard\b",
+        r"\bgit\s+clean\s+-[a-zA-Z]*f",
+        r"\bgit\s+checkout\s+--\s+\.",
+        r"\b(drop|truncate)\s+(table|database|schema)\b",
+        r"\bdelete\s+from\s+\w+\s*;?\s*$",                              # DELETE without WHERE
+        r"\b(terraform|tofu)\s+destroy\b",
+        r"\bkubectl\s+delete\b",
+    ]
+    for pat in dangerous:
+        if re.search(pat, cmd, re.IGNORECASE):
+            print(f"BLOCKED destructive command: {cmd!r}\n"
+                  "Explain what you want to run and why, and let the user run it or approve it.", file=sys.stderr)
+            sys.exit(2)
+    sys.exit(0)
+
+deny-permissions:
+  kind: settings
+  title:
+    en: "Claude Code permissions: hard-deny sensitive paths, ask before installs"
+    zh: "Claude Code 权限：硬性禁止敏感路径，安装依赖前先询问"
+  file: .claude/settings.json
+  lang: json
+  note:
+    en: "Rules in CLAUDE.md are context; permission rules are enforced by the tool. Adjust the paths to your repo."
+    zh: "CLAUDE.md 里的规则只是上下文；权限规则由工具强制执行。按你的仓库调整路径。"
+  code: |
+    {
+      "permissions": {
+        "deny": [
+          "Edit(./migrations/**)",
+          "Edit(./.env*)",
+          "Edit(./package-lock.json)",
+          "Edit(./pnpm-lock.yaml)",
+          "Edit(./src/generated/**)"
+        ],
+        "ask": [
+          "Bash(npm install:*)",
+          "Bash(pnpm add:*)",
+          "Bash(yarn add:*)",
+          "Bash(pip install:*)",
+          "Bash(git push:*)"
+        ]
+      }
+    }
+
+review-skill:
+  kind: skill
+  title:
+    en: "Fresh-context review skill (subagent reviews the diff, not the chat)"
+    zh: "全新上下文的审查技能（子智能体只看 diff，不看聊天记录）"
+  file: .claude/skills/review-diff/SKILL.md
+  lang: markdown
+  note:
+    en: "Follows the habit Anthropic describes in its code-review post: verify first, then have a subagent review the diff with fresh context. Named review-diff to avoid clashing with built-in or popular /code-review skills."
+    zh: "沿用 Anthropic 代码审查文章里的做法：先验证，再让一个上下文干净的子智能体审 diff。命名为 review-diff，避免和内置或流行的 /code-review 技能重名。"
+  code: |
+    ---
+    name: review-diff
+    description: Review the current diff with fresh context before a PR. Use after /verify passes.
+    ---
+
+    # Review the diff
+
+    Start a subagent that has NOT seen this conversation. Give it only:
+    - the original request (one paragraph, verbatim),
+    - the output of `git diff origin/main...HEAD`,
+    - the names of the test/build commands.
+
+    Ask it to report, with file:line for each finding:
+    1. **Wrong feature**: does the diff do what the request asked? Quote the request line each change serves.
+    2. **Bugs**: logic errors, missing edge cases (empty, null, boundary), unhandled errors,
+       unawaited promises, invented APIs or packages, swallowed exceptions.
+    3. **Overreach**: changes no request line needs (refactors, renames, formatting, dependency or
+       config edits, public API changes, weakened tests).
+    4. **Evidence gaps**: claims in the PR description that no command output supports.
+
+    Then fix real findings, or list them under "Known issues" in the PR. Do not argue with the reviewer
+    in the PR text; either fix or explain in one line.
+
+acceptance-spec:
+  kind: spec
+  title:
+    en: "SPEC.md acceptance checks (written and approved before code)"
+    zh: "SPEC.md 验收标准（先写、先确认，再写代码）"
+  file: SPEC.md
+  lang: markdown
+  note:
+    en: "Teammates annotate this file (or the mockup/artifact) instead of reviewing a big PR. Each check should separate the reading you mean from the reading you don't."
+    zh: "队友直接在这个文件（或设计稿/产物）上批注，而不是事后审一个大 PR。每条验收标准都要能区分“你要的理解”和“你不要的理解”。"
+  code: |
+    # Spec: <feature name>
+
+    ## Goal (one sentence, in the user's words)
+
+    ## Out of scope
+    - <things a reasonable agent might also do, but must not>
+
+    ## Acceptance checks (each one runnable)
+    - [ ] Given <input>, when <action>, then <exact observable result>
+    - [ ] Example that rules out the wrong reading: <input> -> <expected>, NOT <plausible wrong output>
+    - [ ] Command that proves it: `<test or curl command>`
+
+    ## Open questions (agent must ask, not assume)
+    - <question>
+
+    ## Approved by: <name> on <date>

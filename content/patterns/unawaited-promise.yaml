@@ -1,0 +1,48 @@
+slug: unawaited-promise
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [async, await, promise, race condition, javascript, typescript]
+title:
+  en: Dropped an await
+  zh: 漏了一个 await
+summary:
+  en: After a refactor, an async call's promise is discarded, so writes happen out of order or errors vanish as unhandled rejections.
+  zh: 重构之后，一个异步调用返回的 promise 被丢弃了，导致写入顺序错乱，或者错误变成了无人处理的 rejection。
+symptom:
+  en: Intermittent "it saved but didn't show up" bugs, flaky tests, unhandled rejection warnings in logs.
+  zh: 偶发的“保存了但没显示”问题、不稳定的测试、日志里的 unhandled rejection 警告。
+why:
+  en: Agents drop awaits when a function looks synchronous, especially right after making it async. agent-review lists it as AR022 (High severity).
+  zh: 函数看起来像同步的时候，智能体就容易漏掉 await，特别是刚把它改成 async 之后。agent-review 列为 AR022（高严重度）。
+example:
+  caption:
+    en: From the agent-review taxonomy (AR022).
+    zh: 摘自 agent-review 分类（AR022）。
+  lang: ts
+  code: |
+    async function persist() {
+      save(record); // returns Promise<void>; not awaited
+    }
+rule: |
+  ## Async discipline
+  - When you make a function async (or call one), update every call site to `await` it or handle the
+    promise explicitly. List the call sites you changed.
+  - Never leave a floating promise. If fire-and-forget is intended, write `void task().catch(report)` with a comment.
+  - Keep `@typescript-eslint/no-floating-promises` on; don't disable it to get green.
+cursor_globs: "**/*.{ts,tsx,js,jsx}"
+extras:
+  - kind: ci
+    title:
+      en: "ESLint: make floating promises an error"
+      zh: "ESLint：把悬空 promise 设为错误"
+    file: eslint.config.mjs
+    lang: js
+    code: |
+      // requires typed linting (typescript-eslint with parserOptions.projectService: true)
+      rules: {
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-misused-promises": "error",
+      }
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR022 Unawaited promise"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar022-unawaited-promise

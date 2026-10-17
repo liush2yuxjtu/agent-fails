@@ -1,0 +1,46 @@
+slug: shared-helper-cleanup
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [shared utils, helpers, blast radius, refactor, watering hole]
+title:
+  en: '"Small cleanup" of a helper twenty features use'
+  zh: 对二十个功能共用的工具函数做了“小清理”
+summary:
+  en: While working in one feature, the agent follows an import into a shared utility and refactors it, changing behavior for every caller.
+  zh: 智能体在改某个功能时，顺着 import 进了共享工具文件并重构了它，所有调用方的行为都跟着变了。
+symptom:
+  en: The task touched `login.ts`; the diff also rewrote `utils/helpers.ts`. Unrelated features start misbehaving after merge.
+  zh: 任务只涉及 `login.ts`，diff 却重写了 `utils/helpers.ts`。合并后，不相关的功能开始出问题。
+why:
+  en: Night Forge describes "helpful clean-up on shared utilities" as a recurring pattern from Cursor forum reports. The agent sees old style in a "watering-hole" file and has no sense of its blast radius.
+  zh: Night Forge 根据 Cursor 论坛的反馈，把“对共享工具的热心清理”列为反复出现的模式。智能体看到“水源地”文件里的旧写法就想改，却意识不到它的影响范围。
+example:
+  caption:
+    en: From the Night Forge write-up.
+    zh: 摘自 Night Forge 的文章。
+  lang: text
+  code: |
+    Asked: change src/features/auth/login.ts
+    Agent: also refactored src/utils/helpers.ts (imported by ~20 features)
+rule: |
+  ## Shared code is off-limits by default
+  - Do not modify shared modules (`utils/`, `lib/`, `shared/`, `common/`, design-system components)
+    unless the task is about them.
+  - If the fix truly requires a shared change, stop, list the callers (`rg -l "from .*helpers"`), and ask.
+  - Prefer a local change in the feature over editing a shared helper.
+extras:
+  - kind: settings
+    title:
+      en: "Require review on shared code (CODEOWNERS)"
+      zh: "共享代码需审批（CODEOWNERS）"
+    file: .github/CODEOWNERS
+    lang: text
+    code: |
+      # Any PR (human or agent) touching shared code needs a maintainer's review
+      /src/utils/   @your-org/maintainers
+      /src/lib/     @your-org/maintainers
+      /src/shared/  @your-org/maintainers
+  - ref: scope-guard-hook
+sources:
+  - title: "Night Forge: Stop your AI agent editing the wrong files"
+    url: https://night-forge.com/blog/stop-ai-agent-editing-wrong-files

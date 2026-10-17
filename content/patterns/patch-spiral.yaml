@@ -1,0 +1,54 @@
+slug: patch-spiral
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [debugging, root cause, fix loop, anchoring, whack-a-mole]
+title:
+  en: Fix on top of fix on top of fix
+  zh: 补丁摞补丁
+summary:
+  en: The agent stacks unverified fixes, each aimed at the symptom the previous fix caused, and never goes back to the root cause.
+  zh: 智能体一层层叠加未经验证的修复，每次都在修上一次修复带来的症状，从不回头找根因。
+symptom:
+  en: Five rounds of "now try this", a diff full of special cases, and the original bug still there, or a new one.
+  zh: 五轮“再试试这个”，diff 里塞满特殊处理，原来的 bug 还在，或者冒出了新 bug。
+why:
+  en: Each attempt starts from the latest error message, not from a fresh look at the cause, and the first guess is rarely revisited. agent-failure-modes names AFM-4 Patch Spiral and the related AFM-9 First-Hypothesis Anchoring.
+  zh: 每次尝试都从最新的报错出发，而不是重新审视原因，第一个猜测也很少被推翻。agent-failure-modes 称之为 AFM-4 补丁螺旋，相关的还有 AFM-9 首个假设锚定。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: text
+  code: |
+    try 1: add null check        -> new error: undefined.map
+    try 2: default to []         -> list renders empty
+    try 3: special-case id 0     -> test passes, prod still broken
+    root cause: API returns { data: [...] }, code expects [...]
+rule: |
+  ## Two failed fixes means stop and diagnose
+  - Before fixing, reproduce the bug and write down a hypothesis plus the evidence for it.
+  - Verify each fix by re-running the reproduction. If two fixes in a row fail, stop patching:
+    revert to the last known-good state, list at least two alternative causes, and test them.
+  - Never stack a fix on an unverified fix.
+extras:
+  - kind: skill
+    title:
+      en: "/debug skill: reproduce, hypothesize, verify"
+      zh: "/debug 技能：复现、假设、验证"
+    file: .claude/skills/debug/SKILL.md
+    lang: markdown
+    code: |
+      ---
+      name: debug
+      description: Use when fixing a bug or a failing test, before editing code.
+      ---
+      1. Reproduce: write the exact command that shows the bug. Run it and paste the output.
+      2. Hypotheses: list 2-3 possible causes, each with the evidence for and against it.
+      3. Test the most likely one with a read-only check (log, print, debugger) before editing.
+      4. Fix the cause, re-run the reproduction, and show it now passes.
+      5. If two fixes fail, `git stash` the attempts and return to step 2 with new hypotheses.
+sources:
+  - title: "agent-failure-modes: AFM-4 Patch Spiral"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-004-patch-spiral.md
+  - title: "agent-failure-modes: AFM-9 First-Hypothesis Anchoring"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-009-first-hypothesis-anchoring.md

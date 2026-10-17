@@ -1,0 +1,36 @@
+slug: coverage-overclaim
+category: wrong-feature
+agents: [claude-code, cursor, codex, copilot]
+tags: [migration, partial, truncation, all usages, rename]
+title:
+  en: '"Fully migrated" (it wasn''t)'
+  zh: "“全部迁移完了”（其实没有）"
+summary:
+  en: The agent reports a sweep (rename, migration, API swap) as complete when it only covered the occurrences it happened to see.
+  zh: 智能体声称一次全局改动（重命名、迁移、换 API）已经全部完成，实际上只改了它碰巧看到的那些地方。
+symptom:
+  en: '"Updated all 8 call sites." There were 9; the ninth lives in a shell string, a config file, or a file past a search-result cutoff, untouched and unmentioned.'
+  zh: "“已更新全部 8 处调用。”其实有 9 处；第 9 处藏在 shell 字符串、配置文件或搜索结果截断之后，没改，也没提。"
+why:
+  en: Search output gets truncated, and dynamic references (strings, templates, configs) don't show up in symbol search. The agent treats "everything I found" as "everything". agent-failure-modes calls this AFM-12 Coverage Overclaim.
+  zh: 搜索结果会被截断，动态引用（字符串、模板、配置）在符号搜索里也找不到。智能体把“我找到的全部”当成了“全部”。agent-failure-modes 称之为 AFM-12 覆盖率夸大。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: bash
+  code: |
+    # Agent: "Renamed getUser -> fetchUser everywhere."
+    $ rg -n "getUser" .
+    scripts/backfill.sh:12:  node -e "require('./dist/api').getUser(process.argv[1])"
+rule: |
+  ## Sweeping changes need a count, before and after
+  - For any rename, migration or "replace everywhere" task, first run a repo-wide search and report the
+    total count and the list of locations (include strings, configs, scripts and docs).
+  - After the change, re-run the same search and show it returns zero (or explain each remaining hit).
+  - Never say "all" or "everywhere" without that before/after evidence. If a search output was truncated, say so.
+extras:
+  - ref: verify-skill
+sources:
+  - title: "agent-failure-modes: AFM-12 Coverage Overclaim"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-012-coverage-overclaim.md

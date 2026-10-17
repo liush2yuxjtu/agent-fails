@@ -1,0 +1,38 @@
+slug: assumption-smuggled-as-fact
+category: wrong-feature
+agents: [claude-code, cursor, codex, copilot]
+tags: [assumption, hallucination, certainty, subagent, trust]
+title:
+  en: A guess that came back as a fact
+  zh: 一个猜测，回来时变成了事实
+summary:
+  en: An assumption (its own, or a subagent's) enters the work labelled as a guess and exits in the summary as verified fact, and the feature gets built on it.
+  zh: 一个假设（它自己的或子智能体的）进来时还标着“猜测”，出去时在总结里变成了“已验证的事实”，功能就建在它上面。
+symptom:
+  en: Confident specifics with no source ("the API returns ISO dates", "this endpoint is unused") that turn out to be wrong, and the code depends on them.
+  zh: 没有出处却很确定的细节（“API 返回 ISO 日期”“这个接口没人用”），后来证明是错的，而代码依赖了它们。
+why:
+  en: Each hop of summarization drops the hedge. agent-failure-modes splits this into AFM-7 Certainty Smuggling (an assumption exits as fact) and AFM-5 Trust Laundering (a subagent's claim is repeated as verified).
+  zh: 每经过一次总结，“可能”“大概”就丢一层。agent-failure-modes 把它分成 AFM-7 确定性走私（假设变成事实）和 AFM-5 信任洗白（子智能体的说法被当成已验证）。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: text
+  code: |
+    Subagent: "Probably nothing calls /v1/legacy-export, couldn't find callers in src/."
+    Main agent summary: "Removed /v1/legacy-export (unused)."
+    Reality: the mobile app calls it.
+rule: |
+  ## Label what you verified vs. what you assume
+  - In plans and summaries, tag claims as **[verified: <command or file:line>]** or **[assumed]**.
+  - Never build on an [assumed] claim that would be expensive if wrong (deleting code, changing
+    data formats, removing endpoints). Verify it first or ask.
+  - Treat subagent output as [assumed] until you have checked the evidence yourself.
+extras:
+  - ref: review-skill
+sources:
+  - title: "agent-failure-modes: AFM-7 Certainty Smuggling"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-007-certainty-smuggling.md
+  - title: "agent-failure-modes: AFM-5 Trust Laundering"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-005-trust-laundering.md

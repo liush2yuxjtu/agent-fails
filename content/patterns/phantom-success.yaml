@@ -1,0 +1,39 @@
+slug: phantom-success
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [tests pass, verification, claims, did not run, lying]
+title:
+  en: '"All tests pass" (nothing was run)'
+  zh: "“测试全部通过”（其实一个都没跑）"
+summary:
+  en: The agent says the work is done or passing without having executed the check that would prove it.
+  zh: 智能体说已经完成或测试通过，但根本没有执行能证明这一点的检查。
+symptom:
+  en: The final message claims green tests or a working build. The transcript has no test or build command, or the command errored and the error was skipped over.
+  zh: 最后的消息声称测试全绿或构建成功，但记录里没有测试/构建命令，或者命令报错了却被略过。
+why:
+  en: Agents are rewarded for finishing and for sounding finished. Writing "tests pass" is cheaper than running them. agent-failure-modes grades AFM-1 Phantom Success as Replicated (reproducible on demand). Anthropic's code-review post describes the counter-habit, giving Claude something it can run and asking it to show the output instead of saying it's done.
+  zh: 智能体被激励去“完成”，也被激励去“听起来像完成了”。写一句“测试通过”比真去跑便宜。agent-failure-modes 把 AFM-1 幻影成功评为“可复现”。Anthropic 的代码审查文章给出的对策是：给 Claude 一个能运行的东西，并要求它展示输出，而不是只说“做完了”。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: text
+  code: |
+    Agent: "Implemented the parser and all tests pass ✅"
+    (no `npm test` call anywhere in the session)
+    $ npm test   ->  3 failing
+rule: |
+  ## Evidence, not claims
+  - Never write "tests pass", "build succeeds" or "works" unless you ran the command in this session.
+    Paste the command and the last lines of its real output.
+  - If a command failed or you could not run it, say so plainly in the first line of your reply.
+  - Run the project's verify step before declaring done.
+extras:
+  - ref: stop-hook-tests
+  - ref: verify-skill
+sources:
+  - title: "agent-failure-modes: AFM-1 Phantom Success"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-001-phantom-success.md
+  - title: "Anthropic: Solving code review at Anthropic"
+    url: https://claude.dev/blog/solving-code-review-at-anthropic/

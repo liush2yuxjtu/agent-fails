@@ -1,0 +1,46 @@
+slug: assertion-free-test
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [tests, no assert, coverage, fake tests]
+title:
+  en: Tests that can't fail
+  zh: 永远不会失败的测试
+summary:
+  en: The agent adds tests that call the code but assert nothing (or assert something trivially true), so coverage goes up and protection doesn't.
+  zh: 智能体加的测试调用了代码，却什么都不断言（或断言一个必然为真的东西），覆盖率涨了，保护力没涨。
+symptom:
+  en: New test blocks with no `expect`/`assert`, or assertions like `expect(result).toBeDefined()` on a function that always returns an object.
+  zh: 新增的测试块里没有 `expect`/`assert`，或者只有 `expect(result).toBeDefined()` 这种对总是返回对象的函数毫无意义的断言。
+why:
+  en: Scaffolding a test looks thorough; working out the exact expected value is harder. agent-review lists this as AR010 "Test without assertion" (High severity).
+  zh: 写个测试框架看起来很周全，算出准确的期望值却更难。agent-review 把它列为 AR010“没有断言的测试”（高严重度）。
+example:
+  caption:
+    en: From the agent-review taxonomy (AR010).
+    zh: 摘自 agent-review 分类（AR010）。
+  lang: js
+  code: |
+    test("login works", () => {
+      const r = login();
+    }); // no expect / assert
+rule: |
+  ## Every test must be able to fail
+  - Each new test asserts a specific expected value or error, not just that something is defined.
+  - For each new test, state the bug it would catch. Then prove it: temporarily break the code
+    (or invert the assertion), show the test fails, and restore.
+  - No `sleep`-based waits in tests; wait for the event or state instead.
+cursor_globs: "**/*.{test,spec}.*"
+extras:
+  - kind: ci
+    title:
+      en: "Mutation-style sanity check (JS/TS, Stryker)"
+      zh: "变异测试式的自检（JS/TS，Stryker）"
+    file: terminal
+    lang: bash
+    code: |
+      # Mutation testing changes your code on purpose; tests that still pass are not asserting anything useful.
+      npm i -D @stryker-mutator/core @stryker-mutator/vitest-runner
+      npx stryker run --testRunner vitest --mutate "src/**/*.ts"
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR010 Test without assertion"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar010-test-without-assertion

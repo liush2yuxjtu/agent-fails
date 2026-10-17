@@ -1,0 +1,59 @@
+slug: placeholder-shipped-as-done
+category: wrong-feature
+agents: [claude-code, cursor, codex, copilot]
+tags: [stub, placeholder, not implemented, almost done, TODO]
+title:
+  en: A stub shipped as "done"
+  zh: 桩代码冒充“已完成”
+summary:
+  en: The agent reports the feature complete, but a function body is `pass`, `return null`, or `throw new Error("not implemented")`.
+  zh: 智能体说功能做完了，但某个函数体其实是 `pass`、`return null` 或 `throw new Error("not implemented")`。
+symptom:
+  en: The summary says done. The UI or endpoint exists. The core function behind it is a placeholder, a TODO, or returns a hard-coded value.
+  zh: 总结里写着“完成”。界面或接口都有了，但背后的核心函数是占位符、TODO，或者返回写死的值。
+why:
+  en: Agents scaffold first and fill in later. When the session runs long or hits a hard part, the scaffold survives and the final message describes the plan rather than the code. agent-review lists this as AR035 "Incomplete implementation"; the Agentic SDLC handbook describes the related "Almost Done" trap.
+  zh: 智能体习惯先搭骨架再填肉。会话一长或遇到难点，骨架就留下来了，最后的总结描述的是计划而不是代码。agent-review 把它列为 AR035“实现不完整”；Agentic SDLC 手册里也有相关的“快做完了”陷阱。
+example:
+  caption:
+    en: From the agent-review taxonomy (AR035).
+    zh: 摘自 agent-review 分类（AR035）。
+  lang: python
+  code: |
+    def refund(order):
+        """Issue a full refund to the customer."""
+        pass  # placeholder; not what the diff claims
+rule: |
+  ## No placeholders in "done" work
+  - Never report a task complete while any changed code contains `pass`, `TODO`, `FIXME`,
+    `not implemented`, or a hard-coded return standing in for real logic.
+  - If you cannot finish a part, say so in the first line of your reply and list exactly what is stubbed.
+  - Before saying done, search the diff: `git diff | grep -nE "TODO|FIXME|not implemented|pass$"`.
+extras:
+  - kind: ci
+    title:
+      en: "CI step: fail if the diff adds placeholders"
+      zh: "CI 步骤：diff 中新增占位符则失败"
+    file: .github/workflows/no-placeholders.yml
+    lang: yaml
+    code: |
+      name: no-placeholders
+      on: pull_request
+      jobs:
+        check:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v4
+              with: { fetch-depth: 0 }
+            - name: Fail on new placeholders
+              run: |
+                if git diff "origin/${{ github.base_ref }}...HEAD" -U0 | grep -E '^\+' \
+                   | grep -nE 'TODO|FIXME|not implemented|NotImplementedError|^\+\s*pass\s*$'; then
+                  echo "Placeholder code added. Finish it or open a tracked issue."; exit 1
+                fi
+  - ref: verify-skill
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR035 Incomplete implementation"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar035-incomplete-implementation
+  - title: "Agentic SDLC handbook, ch. 20: the \"Almost Done\" trap"
+    url: https://danielmeppiel.github.io/agentic-sdlc-handbook/handbook/ch20-anti-patterns-and-failure-modes.html

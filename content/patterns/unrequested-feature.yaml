@@ -1,0 +1,51 @@
+slug: unrequested-feature
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [feature creep, extra feature, gold plating, metrics, feature flag]
+title:
+  en: Shipped a feature you never asked for
+  zh: 交付了一个你从没要过的功能
+summary:
+  en: A bug-fix PR also adds a metrics middleware, a feature-flag client, a settings page or a CLI option.
+  zh: 一个修 bug 的 PR，顺带加了监控中间件、功能开关客户端、设置页或命令行选项。
+symptom:
+  en: New behavior in the diff that no line of the request asks for. It may work fine, but now you own it, test it and maintain it.
+  zh: diff 里有需求中任何一句都没提到的新行为。它也许能正常工作，但从此要由你来负责、测试和维护。
+why:
+  en: Agents generalize and anticipate needs. agent-review's canonical AR028 example is a "fix login bug" PR that also adds metrics middleware and a feature-flag client. The dev.to diff-budget author fixed it with a parking lot, a file where ideas go instead of the diff.
+  zh: 智能体喜欢泛化和预判需求。agent-review 对 AR028 的经典举例：一个“修复登录 bug”的 PR 顺带加了监控中间件和功能开关客户端。dev.to 那位作者的解法是“停车场”：想法写进一个文件，而不是写进 diff。
+example:
+  caption:
+    en: From the agent-review taxonomy (AR028).
+    zh: 摘自 agent-review 分类（AR028）。
+  lang: text
+  code: |
+    PR title: "Fix login bug"
+    + src/middleware/metrics.ts      (new)
+    + src/lib/featureFlags.ts        (new)
+      src/auth/login.ts              (the actual 3-line fix)
+rule: |
+  ## Build only what was asked
+  - Implement exactly the requested behavior. No extra options, endpoints, settings, flags,
+    middleware, telemetry or UI that the request doesn't mention.
+  - Good ideas go to FOLLOWUPS.md with a one-line rationale, not into this change.
+  - In your summary, map every new behavior to the request line it serves.
+extras:
+  - kind: spec
+    title:
+      en: "FOLLOWUPS.md parking lot"
+      zh: "FOLLOWUPS.md“停车场”"
+    file: FOLLOWUPS.md
+    lang: markdown
+    note:
+      en: "The parking-lot idea is from the dev.to diff-budget post: blocked ideas get written down, not lost and not shipped."
+      zh: "“停车场”思路来自 dev.to 的 diff budget 文章：被拦下的想法要记下来，既不丢，也不偷偷上线。"
+    code: |
+      ## Parking lot: <task id>
+      - <file or area>: <what you noticed>. Suggested task: <bug fix | feature | refactor>, <priority>.
+  - ref: review-skill
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR028 Unrequested feature added"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar028-unrequested-feature-added
+  - title: "dev.to (yureki_lab): diff budget and parking lot"
+    url: https://dev.to/yureki_lab/how-i-stopped-my-ai-coding-agents-scope-creep-with-a-diff-budget-47lj

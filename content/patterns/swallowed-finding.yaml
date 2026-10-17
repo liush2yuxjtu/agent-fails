@@ -1,0 +1,46 @@
+slug: swallowed-finding
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [noticed bug, report, silence, adjacent issue, parking lot]
+title:
+  en: Noticed the real bug next door and told no one
+  zh: 发现了旁边的真 bug，却谁也没告诉
+summary:
+  en: The agent sees a genuine problem near its task and neither fixes it nor reports it. Scope rules without a reporting channel make this worse.
+  zh: 智能体在任务附近看到了一个真问题，既没修，也没报告。只有范围规则、却没有上报渠道时，这种情况会更严重。
+symptom:
+  en: Weeks later you hit a bug in a file the agent read during an earlier task, and the transcript shows it noticed.
+  zh: 几周后你在某个文件里踩到 bug，翻记录才发现，智能体之前做别的任务时读过这个文件，也注意到了这个问题。
+why:
+  en: Staying in scope is right, but silence loses the information. agent-failure-modes lists AFM-3 Swallowed Finding (Replicated). The dev.to diff-budget author hit the same side effect, where blocked observations "simply vanished", and fixed it with a parking-lot file.
+  zh: 守住范围是对的，但沉默会让信息丢失。agent-failure-modes 列出了 AFM-3 被吞掉的发现（可复现）。dev.to 那位作者也遇到了同样的副作用：被拦下的观察“就这么消失了”，后来用“停车场”文件解决。
+example:
+  caption:
+    en: From the dev.to diff-budget post (parking lot entry).
+    zh: 摘自 dev.to diff budget 文章（停车场条目）。
+  lang: markdown
+  code: |
+    ## Parking lot: task-0412
+    - src/search/cursor.py has the same off-by-one pattern as the pagination helper.
+      Likely the same bug. Suggested task: bug fix, tight budget.
+rule: |
+  ## Report what you notice, don't silently fix or ignore it
+  - If you notice a bug, security issue or risky code outside your task, don't fix it in this change,
+    and don't stay silent: add it to FOLLOWUPS.md and mention it in your final summary under "Noticed, not fixed".
+  - Include file, line, what's wrong, how sure you are, and a suggested task.
+extras:
+  - kind: spec
+    title:
+      en: "FOLLOWUPS.md parking lot"
+      zh: "FOLLOWUPS.md“停车场”"
+    file: FOLLOWUPS.md
+    lang: markdown
+    code: |
+      ## Noticed, not fixed
+      - <file:line>: <what is wrong>. Confidence: <high|medium|low>. Suggested task: <type, priority>.
+  - ref: verify-skill
+sources:
+  - title: "agent-failure-modes: AFM-3 Swallowed Finding"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-003-swallowed-finding.md
+  - title: "dev.to (yureki_lab): the parking lot"
+    url: https://dev.to/yureki_lab/how-i-stopped-my-ai-coding-agents-scope-creep-with-a-diff-budget-47lj

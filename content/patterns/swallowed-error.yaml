@@ -1,0 +1,49 @@
+slug: swallowed-error
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [try catch, exception, silent failure, error handling, except pass]
+title:
+  en: Errors swallowed to make it "work"
+  zh: 把错误吞掉，让它“能跑”
+summary:
+  en: The agent wraps failing code in a catch that does nothing (or only logs) so the error disappears, and so does the signal that something is broken.
+  zh: 智能体用一个什么都不做（或只打日志）的 catch 包住出错的代码，错误消失了，“出问题了”的信号也跟着消失了。
+symptom:
+  en: '`catch (e) {}`, `except: pass`, `except Exception:` replacing a narrow handler, or a catch that returns `null` and lets bad data flow downstream.'
+  zh: '出现 `catch (e) {}`、`except: pass`、用 `except Exception:` 替换原本精确的异常处理，或者 catch 里返回 `null`，让坏数据流向下游。'
+why:
+  en: A crash is a visible failure; a swallowed error makes the task look done and the test pass. agent-review lists AR017 (silent or swallowed catch) and AR019 (broad exception catch), noting agents widen catches to make tests pass when the real failure is upstream.
+  zh: 崩溃是看得见的失败；吞掉错误则让任务看起来完成、测试看起来通过。agent-review 列了 AR017（静默/吞掉的 catch）和 AR019（过宽的异常捕获），并指出当真正的问题在上游时，智能体会放宽 catch 来让测试通过。
+example:
+  caption:
+    en: From the agent-review taxonomy (AR017).
+    zh: 摘自 agent-review 分类（AR017）。
+  lang: js
+  code: |
+    try { fn() } catch (e) { /* swallow */ }
+rule: |
+  ## Don't hide errors
+  - Never add an empty catch, `except: pass`, or a catch that only logs and continues, unless the user asked
+    for it and you comment why the error is safe to ignore.
+  - Catch the narrowest error type you can handle, and handle it (retry, fallback with a visible signal,
+    or rethrow with context).
+  - If an error appears while you work, find its cause. Do not wrap it to make it go away.
+extras:
+  - kind: ci
+    title:
+      en: "Lint rules that catch it (ESLint / Ruff)"
+      zh: "能抓住它的 lint 规则（ESLint / Ruff）"
+    file: eslint.config.mjs  /  pyproject.toml
+    lang: text
+    code: |
+      // eslint.config.mjs
+      rules: { "no-empty": ["error", { allowEmptyCatch: false }] }
+
+      # pyproject.toml (ruff)
+      [tool.ruff.lint]
+      extend-select = ["E722", "BLE001", "S110"]  # bare except, blind except, try-except-pass
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR017 Silent or swallowed catch"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar017-silent-or-swallowed-catch
+  - title: "vnmoorthy/agent-review TAXONOMY: AR019 Broad exception catch"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar019-broad-exception-catch

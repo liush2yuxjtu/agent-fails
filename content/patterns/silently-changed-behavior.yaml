@@ -1,0 +1,36 @@
+slug: silently-changed-behavior
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [refactor, behavior change, status code, default value, regression]
+title:
+  en: A "refactor" that changed behavior
+  zh: 名为“重构”，实则改了行为
+summary:
+  en: Code that looks like a cleanup changes something observable (a default value, an error message, a status code, a log level), and tests don't notice.
+  zh: 看起来只是清理的代码，改变了可观察的行为（默认值、错误信息、状态码、日志级别），测试却没发现。
+symptom:
+  en: Clean diff, passing tests, broken production. A client that matched on an error string or relied on a default starts failing.
+  zh: diff 很干净、测试全通过，生产环境却坏了。依赖某个错误字符串或默认值的调用方开始出错。
+why:
+  en: Agents treat wording, defaults and messages as cosmetic. agent-review calls AR033 "the most insidious agent failure mode".
+  zh: 智能体把措辞、默认值和提示信息当成无关紧要的表面细节。agent-review 称 AR033 是“最阴险的智能体失败模式”。
+example:
+  caption:
+    en: From the agent-review taxonomy (AR033).
+    zh: 摘自 agent-review 分类（AR033）。
+  lang: diff
+  code: |
+    - throw new Error("not found"); // mapped to 404 by middleware
+    + throw new Error("missing");    // now mapped to 500
+rule: |
+  ## Refactors must not change behavior
+  - A refactor keeps every observable behavior identical: return values, error types and messages,
+    status codes, defaults, log levels, ordering, and side effects.
+  - If a behavior change is needed, do it in a separate, clearly labelled step and list it under
+    "Behavior changes" in your summary.
+  - Before refactoring code without tests, add a characterization test that pins the current behavior.
+extras:
+  - ref: review-skill
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR033 Silently changed behavior"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar033-silently-changed-behavior

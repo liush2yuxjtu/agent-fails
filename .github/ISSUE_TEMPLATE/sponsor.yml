@@ -1,0 +1,25 @@
+name: "Sponsor inquiry / 赞助咨询"
+description: "Interested in a sponsor slot on AgentFails. / 有意赞助智能体翻车库。"
+title: "[Sponsor] "
+labels: ["sponsor"]
+body:
+  - type: input
+    id: company
+    attributes:
+      label: "Company / product / 公司或产品"
+    validations:
+      required: true
+  - type: dropdown
+    id: slot
+    attributes:
+      label: "Slot / 赞助位"
+      multiple: true
+      options:
+        - Pattern-page slot / 条目页赞助位
+        - Newsletter sponsor / 周报赞助
+        - Featured fix / 精选修复
+  - type: textarea
+    id: details
+    attributes:
+      label: "Details: which patterns, timing, how to reach you / 详情：哪些条目、时间、联系方式"
+      description: "This issue is public. Share only contact details you're happy to make public, or ask us to reach out via your GitHub profile. / 此 Issue 公开可见。"

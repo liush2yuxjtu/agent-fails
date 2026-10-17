@@ -1,0 +1,55 @@
+slug: public-contract-changed
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [api, breaking change, signature, exported type, semver]
+title:
+  en: Changed a public API you didn't ask to change
+  zh: 改了你没要求改的公共 API
+summary:
+  en: The agent modifies an exported function signature, a public type or an API response shape, breaking consumers outside the diff.
+  zh: 智能体改了导出函数的签名、公共类型或 API 返回结构，破坏了 diff 之外的调用方。
+symptom:
+  en: Everything in the repo compiles and passes, then a downstream service, SDK user or mobile client breaks.
+  zh: 仓库里一切都能编译、测试也通过，然后下游服务、SDK 用户或移动端坏了。
+why:
+  en: The agent only sees in-repo callers and treats the signature as free to change. agent-review lists AR032 "Changed public contract" (High severity).
+  zh: 智能体只看得到仓库内的调用方，就以为签名可以随意改。agent-review 列为 AR032“修改了公共契约”（高严重度）。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: diff
+  code: |
+    - export function getUser(id: string): Promise<User>
+    + export function getUser(opts: { id: string; includeDeleted?: boolean }): Promise<User | null>
+rule: |
+  ## Public contracts are frozen unless the task says otherwise
+  - Do not change exported signatures, public types, API routes, response shapes, CLI flags,
+    env var names or DB schemas unless the request explicitly asks.
+  - If a change is needed, keep backward compatibility (add an optional parameter or a new function)
+    and list it under "Contract changes" in your summary.
+extras:
+  - kind: ci
+    title:
+      en: "Catch API surface changes in CI (TypeScript, api-extractor)"
+      zh: "在 CI 中发现 API 表面变化（TypeScript，api-extractor）"
+    file: .github/workflows/api-surface.yml
+    lang: yaml
+    note:
+      en: "Commit the generated API report; any PR that changes the public surface shows up as a diff to that file."
+      zh: "把生成的 API 报告提交进仓库；任何改了公共接口的 PR 都会体现为这个文件的 diff。"
+    code: |
+      name: api-surface
+      on: pull_request
+      jobs:
+        api:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with: { node-version: 22 }
+            - run: npm ci && npm run build
+            - run: npx api-extractor run   # fails if etc/*.api.md changed and isn't committed
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR032 Changed public contract"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar032-changed-public-contract

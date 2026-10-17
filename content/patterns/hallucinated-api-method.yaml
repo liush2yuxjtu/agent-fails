@@ -1,0 +1,58 @@
+slug: hallucinated-api-method
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [invented api, method does not exist, wrong language, config key, flag]
+title:
+  en: Called a method that doesn't exist
+  zh: 调用了不存在的方法
+summary:
+  en: The agent uses a method, option, config key or CLI flag that exists in some other language or library version, but not in yours.
+  zh: 智能体用了某个方法、选项、配置项或命令行参数，它存在于别的语言或别的版本里，但不在你的项目里。
+symptom:
+  en: '`haystack.contains(needle)` in JavaScript, a config key the framework silently ignores, or a CLI flag that errors at runtime.'
+  zh: JavaScript 里写 `haystack.contains(needle)`、框架会悄悄忽略的配置项，或运行时才报错的命令行参数。
+why:
+  en: Agents conflate APIs across languages and versions; the signature looks plausible because some language has it. Config keys are worse, because unknown keys are often ignored without an error. agent-review lists this as AR006; developertoolkit.ai puts its earliest control in the session (type check and tests in the agent's own loop).
+  zh: 智能体会把不同语言、不同版本的 API 混为一谈；签名看起来合理，是因为确实有某种语言这么写。配置项更糟，未知的键常常被静默忽略。agent-review 列为 AR006；developertoolkit.ai 认为最早的控制点在会话内（让智能体自己跑类型检查和测试）。
+example:
+  caption:
+    en: From the agent-review taxonomy (AR006).
+    zh: 摘自 agent-review 分类（AR006）。
+  lang: js
+  code: |
+    if (haystack.contains(needle)) { ... } // should be .includes
+rule: |
+  ## Check the API against the installed version
+  - Before using an unfamiliar method, option, config key or flag, confirm it in the installed
+    version: read the type definitions in node_modules / site-packages, run `<cli> --help`, or open the
+    docs for the exact version in the lockfile.
+  - Run the type checker and tests after every edit, not only at the end.
+  - When you change config, show evidence the setting took effect (log line, output, behavior).
+extras:
+  - kind: hook
+    title:
+      en: "Claude Code PostToolUse hook: type-check after every edit"
+      zh: "Claude Code PostToolUse 钩子：每次编辑后做类型检查"
+    file: .claude/settings.json
+    lang: json
+    note:
+      en: "Exit code 2 from a PostToolUse hook shows stderr to Claude so it can fix the error right away. Replace tsc with mypy, cargo check, go vet, etc."
+      zh: "PostToolUse 钩子返回退出码 2 时，stderr 会展示给 Claude，让它立刻修。可把 tsc 换成 mypy、cargo check、go vet 等。"
+    code: |
+      {
+        "hooks": {
+          "PostToolUse": [
+            {
+              "matcher": "Edit|Write|MultiEdit",
+              "hooks": [
+                { "type": "command", "command": "npx tsc --noEmit -p . 1>&2 || exit 2" }
+              ]
+            }
+          ]
+        }
+      }
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR006 Hallucinated method or property"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar006-hallucinated-method-or-property
+  - title: "developertoolkit.ai: failure taxonomy (invented API)"
+    url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/

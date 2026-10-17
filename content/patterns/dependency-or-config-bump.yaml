@@ -1,0 +1,62 @@
+slug: dependency-or-config-bump
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [package.json, lockfile, config, tsconfig, eslint, version bump]
+title:
+  en: Bumped a dependency or config "along the way"
+  zh: “顺手”升级了依赖或改了配置
+summary:
+  en: To get past an unrelated warning or error, the agent upgrades a package, edits the lockfile, or changes a config default.
+  zh: 为了绕过一个无关的警告或错误，智能体升级了某个包、改了 lockfile，或改了配置默认值。
+symptom:
+  en: '`package.json`, the lockfile, `tsconfig.json`, `.eslintrc` or CI config appear in a diff that was about feature code. Strictness quietly drops.'
+  zh: 一个关于功能代码的 diff 里出现了 `package.json`、lockfile、`tsconfig.json`、`.eslintrc` 或 CI 配置。严格程度被悄悄降低了。
+why:
+  en: Config is the shortest path to green. developertoolkit.ai's scope-creep class names "a dependency bumped along the way, a config default changed to make a test pass" and says the earliest reliable catch is mechanical, CI comparing changed paths to the declared scope. The dev.to post's agent also "updates a config file because the linter complained about something unrelated".
+  zh: 改配置是变绿的最短路径。developertoolkit.ai 的 scope creep 类别点名了“顺手升级的依赖、为让测试通过而改的配置默认值”，并指出最可靠的最早拦截是机械式的：CI 比对改动路径与声明范围。dev.to 那篇文章里的智能体也会“因为 linter 抱怨了无关的东西而改配置文件”。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: diff
+  code: |
+    + src/cart/total.ts           (the requested fix)
+    + tsconfig.json               - "strict": true,  + "strict": false,
+    + package.json                - "zod": "^3.23.8" + "zod": "^4.0.0"
+rule: |
+  ## Don't touch dependencies or config unless asked
+  - Do not add, remove or upgrade dependencies, or edit lockfiles, for a task that is not about dependencies.
+  - Do not change tsconfig, linter, formatter, build, CI or env config to make an error go away.
+    Fix the code, or stop and explain.
+  - If a config change is really required, make it a separate step and explain the trade-off.
+extras:
+  - ref: deny-permissions
+  - kind: ci
+    title:
+      en: "CI guard: flag config/dependency edits in feature PRs"
+      zh: "CI 守卫：功能类 PR 中出现配置/依赖改动时报警"
+    file: .github/workflows/config-guard.yml
+    lang: yaml
+    code: |
+      name: config-guard
+      on: pull_request
+      jobs:
+        guard:
+          if: ${{ !contains(github.event.pull_request.labels.*.name, 'deps-or-config') }}
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v4
+              with: { fetch-depth: 0 }
+            - run: |
+                changed=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+                hits=$(echo "$changed" | grep -E '(^|/)(package(-lock)?\.json|pnpm-lock\.yaml|yarn\.lock|tsconfig.*\.json|\.eslintrc.*|eslint\.config\..*|\.github/workflows/.*)$' || true)
+                if [ -n "$hits" ]; then
+                  echo "Config/dependency files changed without the 'deps-or-config' label:"; echo "$hits"; exit 1
+                fi
+sources:
+  - title: "developertoolkit.ai: failure taxonomy (scope creep)"
+    url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/
+  - title: "dev.to (yureki_lab): diff budget"
+    url: https://dev.to/yureki_lab/how-i-stopped-my-ai-coding-agents-scope-creep-with-a-diff-budget-47lj
+  - title: "claudecodeguides.com: permissions deny for config, lock files and migrations"
+    url: https://claudecodeguides.com/claude-code-stop-modifying-unrelated-files/

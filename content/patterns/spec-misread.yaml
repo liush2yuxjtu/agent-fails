@@ -1,0 +1,42 @@
+slug: spec-misread
+category: wrong-feature
+agents: [claude-code, cursor, codex, copilot]
+tags: [spec, requirements, ambiguity, acceptance criteria]
+title:
+  en: Built what it understood, not what you meant
+  zh: 按自己的理解做了，不是你要的那个
+summary:
+  en: The agent ships a coherent feature that answers a different reading of the request. Every check passes, because the checks test the agent's reading too.
+  zh: 智能体交付了一个自洽的功能，但回答的是需求的另一种读法。所有检查都通过了，因为检查测的也是它自己的理解。
+symptom:
+  en: You open the result and it is reasonable, tested, and wrong. You can point at the sentence in the ticket that allowed both readings.
+  zh: 打开结果一看：合理、有测试，但就是不对。你能在需求里找到那句允许两种理解的话。
+why:
+  en: Requests are underspecified, and the agent resolves ambiguity silently instead of asking. Tests are usually written by the same agent from the same reading, so they confirm the misread instead of catching it. developertoolkit.ai calls this class "spec misread" and puts its earliest control at the spec stage, before any code.
+  zh: 需求本身信息不足，智能体会默默消化歧义而不是提问。测试通常也是同一个智能体按同一种理解写的，所以只会证实误读，而不是发现误读。developertoolkit.ai 把这类问题称为 "spec misread"，最早的控制点在写代码之前的需求阶段。
+example:
+  caption:
+    en: "Illustrative, based on the developertoolkit.ai example: the ticket says round totals to the cent."
+    zh: "示意，基于 developertoolkit.ai 的例子：需求写的是“总价四舍五入到分”。"
+  lang: ts
+  code: |
+    // Intended: round the order total once
+    const total = round2(items.reduce((s, i) => s + i.price * i.qty, 0));
+
+    // Agent's reading: round every line item, then sum (totals now drift by cents)
+    const total = items.reduce((s, i) => s + round2(i.price * i.qty), 0);
+rule: |
+  ## Before writing code: confirm the spec
+  - Restate the request in one sentence and list every assumption you are making.
+  - If any sentence in the request allows two readings, ask which one before coding. Do not pick silently.
+  - Write the acceptance checks first (in SPEC.md or as failing tests), including one example that
+    distinguishes the intended reading from the most plausible wrong one. Wait for approval on non-trivial work.
+  - When done, map each acceptance check to the command output that proves it.
+extras:
+  - ref: acceptance-spec
+  - ref: verify-skill
+sources:
+  - title: "developertoolkit.ai: A failure taxonomy for agent-written changes (spec misread)"
+    url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/
+  - title: "@liushiyumath on X: part 1, did it build the right thing?"
+    url: https://x.com/liushiyumath/status/2111233400346710364

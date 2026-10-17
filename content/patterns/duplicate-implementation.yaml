@@ -1,0 +1,48 @@
+slug: duplicate-implementation
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [duplicate, reinvent, existing helper, second implementation, erosion]
+title:
+  en: Rebuilt something that already existed
+  zh: 重新造了一个早已存在的轮子
+summary:
+  en: Instead of finding the existing function, component or service, the agent writes a second one, and now there are two to keep in sync.
+  zh: 智能体没去找已有的函数、组件或服务，而是又写了一个，从此要同步维护两份。
+symptom:
+  en: A new `formatCurrency`, `useDebounce` or `apiClient` next to the one the codebase already uses, with slightly different behavior.
+  zh: 新出现一个 `formatCurrency`、`useDebounce` 或 `apiClient`，和代码库里已在用的那个并存，行为还略有不同。
+why:
+  en: Writing new code is faster than searching for old code, and the agent's context rarely includes the whole repo. Kaplira's first step is to "check whether the agent found the existing implementation", noting that a second implementation can widen the task without fixing its cause. Over time, this is what developertoolkit.ai calls erosion.
+  zh: 写新代码比找旧代码快，而智能体的上下文很少包含整个仓库。Kaplira 的第一步就是“检查智能体是否找到了现有实现”，并指出再写一份实现会扩大任务范围却没解决根因。久而久之，这就是 developertoolkit.ai 说的“侵蚀”。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: text
+  code: |
+    existing: src/lib/money.ts       export function formatCurrency(cents, locale)
+    new:      src/cart/utils.ts      export const fmtPrice = (n) => "$" + n.toFixed(2)
+rule: |
+  ## Reuse before you write
+  - Before writing a helper, hook, component or client, search the repo for an existing one
+    (`rg -n "format.*currency|useDebounce|apiClient" src`) and report what you found.
+  - Use the existing implementation. If it doesn't fit, say why, and extend it rather than writing a parallel one.
+  - Keep a short "Where things live" section in this file for common utilities.
+extras:
+  - kind: spec
+    title:
+      en: '"Where things live" section for CLAUDE.md / AGENTS.md'
+      zh: "CLAUDE.md / AGENTS.md 中的“东西放在哪”段落"
+    file: CLAUDE.md
+    lang: markdown
+    code: |
+      ## Where things live (use these, don't recreate them)
+      - Money/currency formatting: src/lib/money.ts
+      - HTTP client (auth, retries): src/lib/api.ts
+      - Date helpers: src/lib/dates.ts
+      - Shared UI components: src/components/ui/
+sources:
+  - title: "Kaplira: When an AI agent changes unrelated files (investigate the cause first)"
+    url: https://kaplira.com/guides/ai-agent-changes-unrelated-files/
+  - title: "developertoolkit.ai: failure taxonomy (erosion)"
+    url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/

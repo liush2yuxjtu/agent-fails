@@ -1,0 +1,53 @@
+slug: speculative-dead-code
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [dead code, unused, over-engineering, abstraction, YAGNI, wrapper]
+title:
+  en: Helpers, types and wrappers nobody calls
+  zh: 没人调用的辅助函数、类型和包装层
+summary:
+  en: The agent adds speculative helpers, unused types, one-line wrappers and commented-out "reference" code. It works, but it is more to read and maintain.
+  zh: 智能体加了投机性的辅助函数、没用到的类型、只有一行的包装层，以及注释掉的“参考”代码。能用，但要读的、要维护的东西变多了。
+symptom:
+  en: '`fetchUserByEmail()` that is never called, an `interface UserSnapshot` nothing uses, `persistEntity(e) { save(e) }`, blocks of commented-out old code.'
+  zh: 从未被调用的 `fetchUserByEmail()`、没人用的 `interface UserSnapshot`、`persistEntity(e) { save(e) }`，以及成片注释掉的旧代码。
+why:
+  en: '"Agents over-build. They speculate about what helpers will be useful and leave them in" (agent-review). It catalogs AR001 dead code, AR007 phantom type, AR031 redundant abstraction and AR003 commented-out code left behind.'
+  zh: “智能体倾向于过度构建。它们会预想哪些辅助函数有用，然后就留着不删”（agent-review）。该分类收录了 AR001 死代码、AR007 幽灵类型、AR031 冗余抽象和 AR003 遗留的注释代码。
+example:
+  caption:
+    en: From the agent-review taxonomy (AR001, AR031).
+    zh: 摘自 agent-review 分类（AR001、AR031）。
+  lang: js
+  code: |
+    function fetchUser(id) { return db.find(id); }
+    function fetchUserByEmail(email) { return db.findByEmail(email); } // never called
+
+    function persistEntity(e) { save(e); } // wrapper over a single call
+rule: |
+  ## No speculative code
+  - Every function, type, file and parameter you add must be used by this change. Delete anything that isn't.
+  - Don't add wrappers or abstractions that only forward a single call.
+  - Don't leave commented-out code "for reference"; git history is the reference.
+  - Don't add debug prints, TODOs or placeholder comments to finished work.
+extras:
+  - kind: ci
+    title:
+      en: "Find unused exports and files (knip, JS/TS)"
+      zh: "查找未使用的导出和文件（knip，JS/TS）"
+    file: package.json (scripts)
+    lang: json
+    code: |
+      {
+        "scripts": {
+          "check:unused": "npx knip"
+        }
+      }
+  - ref: review-skill
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR001 Dead code introduced"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar001-dead-code-introduced
+  - title: "vnmoorthy/agent-review TAXONOMY: AR031 Redundant abstraction"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar031-redundant-abstraction
+  - title: "vnmoorthy/agent-review TAXONOMY: AR003 Commented-out code left behind"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar003-commented-out-code-left-behind

@@ -1,0 +1,39 @@
+slug: destructive-command
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [rm -rf, force push, drop table, reset hard, data loss]
+title:
+  en: Ran an irreversible command without asking
+  zh: 没问一声就跑了不可逆命令
+summary:
+  en: The agent force-pushes, runs `rm -rf`, `git reset --hard`, or drops a table to get unstuck, and work or data is gone.
+  zh: 智能体为了摆脱卡住的状态，执行了强推、`rm -rf`、`git reset --hard` 或删表，工作成果或数据就没了。
+symptom:
+  en: Uncommitted work vanishes, a remote branch is rewritten, a dev or production database is emptied.
+  zh: 未提交的工作消失、远程分支被改写、开发或生产数据库被清空。
+why:
+  en: A clean slate is a fast way past a confusing state, and the agent doesn't weigh reversibility unless forced to. agent-failure-modes lists AFM-15 Destructive Overreach; developertoolkit.ai puts unsafe agent actions under security, controlled in the session (permissions, sandbox).
+  zh: “推倒重来”是摆脱混乱状态的捷径，除非被强制，智能体不会掂量可逆性。agent-failure-modes 列为 AFM-15 破坏性越权；developertoolkit.ai 把不安全的智能体操作归入安全类，控制点在会话层（权限、沙箱）。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: bash
+  code: |
+    # Agent, after a merge conflict:
+    git reset --hard origin/main && git push --force
+rule: |
+  ## Irreversible actions need a human
+  - Never run destructive or irreversible commands without explicit approval in this conversation:
+    `rm -rf`, `git push --force`, `git reset --hard`, `git clean -f`, history rewrites, `DROP`/`TRUNCATE`,
+    `DELETE` without `WHERE`, infrastructure destroy, or anything touching production.
+  - When stuck, stop and describe the state and options instead of wiping it.
+  - Before risky local operations, make a backup branch (`git branch backup/<date>`).
+extras:
+  - ref: destructive-bash-hook
+  - ref: deny-permissions
+sources:
+  - title: "agent-failure-modes: AFM-15 Destructive Overreach"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-015-destructive-overreach.md
+  - title: "developertoolkit.ai: failure taxonomy (security: unsafe agent actions)"
+    url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/

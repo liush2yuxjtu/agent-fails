@@ -1,0 +1,38 @@
+slug: zombie-requirement
+category: wrong-feature
+agents: [claude-code, cursor, codex, copilot]
+tags: [context, long session, superseded instruction, changed my mind]
+title:
+  en: A requirement you cancelled comes back
+  zh: 你已经取消的需求又回来了
+summary:
+  en: You changed direction mid-session, and the old instruction resurfaces in later code or output.
+  zh: 你在会话中途改了方向，旧的指令却在后面的代码或输出里又冒了出来。
+symptom:
+  en: '"Actually, don''t add caching." Three steps later the diff has a cache layer, or the summary describes the old plan.'
+  zh: "“算了，不要加缓存。”三步之后 diff 里出现了缓存层，或者总结里描述的还是旧方案。"
+why:
+  en: Both the old and new instructions stay in context, and long sessions get compacted. Without an explicit record of what was superseded, the earlier, more detailed instruction can win. agent-failure-modes names this AFM-6 Zombie Requirement.
+  zh: 新旧两条指令都留在上下文里，长会话还会被压缩。如果没有明确记录哪条已作废，更早、更详细的那条可能胜出。agent-failure-modes 称之为 AFM-6 僵尸需求。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: text
+  code: |
+    You (turn 3):  Add a Redis cache for /products.
+    You (turn 9):  Drop the cache idea, the data must always be fresh.
+    Agent (turn 15): "Done. /products now reads through the Redis cache with a 60s TTL."
+rule: |
+  ## Track decisions explicitly
+  - Keep a short `DECISIONS.md` (or a "Decisions" section in the task file) during long tasks.
+    When the user changes direction, write `SUPERSEDED: <old instruction> -> <new instruction>`.
+  - Before the final summary, re-read that list and check the diff against the latest decisions only.
+  - If two instructions conflict and neither is marked superseded, ask.
+extras:
+  - ref: review-skill
+sources:
+  - title: "agent-failure-modes: AFM-6 Zombie Requirement"
+    url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-006-zombie-requirement.md
+  - title: "Agentic SDLC handbook, ch. 20: Stale context and context window exhaustion"
+    url: https://danielmeppiel.github.io/agentic-sdlc-handbook/handbook/ch20-anti-patterns-and-failure-modes.html

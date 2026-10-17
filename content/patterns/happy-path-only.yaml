@@ -1,0 +1,41 @@
+slug: happy-path-only
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [edge case, empty input, null, error path, boundary]
+title:
+  en: Works on the example, breaks on the edges
+  zh: 示例能跑，边界就崩
+summary:
+  en: The agent implements what passes the example and stops. Empty input, null, boundaries and failure paths are not handled.
+  zh: 智能体实现到示例能通过就停了。空输入、null、边界值和失败路径都没处理。
+symptom:
+  en: Crashes on an empty list, a missing file, invalid JSON, or the first or last element. The demo worked.
+  zh: 遇到空列表、文件不存在、JSON 不合法、首尾元素就崩。演示时明明是好的。
+why:
+  en: '"Agents focus on the happy path. They implement what passes the example, then stop." (agent-review). It lists AR029 (missing edge case) and AR030 (unhandled error path).'
+  zh: “智能体只关注顺利路径。它们实现到示例通过就停了。”（agent-review）。该分类列了 AR029（缺少边界情况）和 AR030（未处理的错误路径）。
+example:
+  caption:
+    en: From the agent-review taxonomy (AR029, AR030).
+    zh: 摘自 agent-review 分类（AR029、AR030）。
+  lang: ts
+  code: |
+    function median(xs: number[]): number {
+      return xs[xs.length / 2 | 0]; // empty? even-length? unsorted?
+    }
+
+    const cfg = JSON.parse(fs.readFileSync("cfg.json", "utf8"));
+    // throws if file missing or JSON invalid
+rule: |
+  ## Edge cases are part of the task
+  - For every function you write or change, list its edge cases (empty, null/undefined, zero,
+    boundary values, very large input, invalid format, I/O failure) and either handle each or say why it can't happen.
+  - Add at least one test for an edge case and one for a failure path, not only the happy path.
+  - Every new network, file or parse call needs an explicit failure behavior.
+extras:
+  - ref: review-skill
+sources:
+  - title: "vnmoorthy/agent-review TAXONOMY: AR029 Missing edge case"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar029-missing-edge-case
+  - title: "vnmoorthy/agent-review TAXONOMY: AR030 Unhandled error path"
+    url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar030-unhandled-error-path

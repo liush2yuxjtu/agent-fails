@@ -1,0 +1,47 @@
+slug: edited-the-wrong-twin
+category: wrong-feature
+agents: [claude-code, cursor, codex, copilot]
+tags: [legacy, deprecated, wrong file, lookalike, v1]
+title:
+  en: Fixed the deprecated twin, not the live file
+  zh: 改了废弃的“双胞胎”文件，线上那个没动
+summary:
+  en: Two files share a name (a v1 copy, a legacy folder). The agent edits the dead one, and the bug you care about stays open.
+  zh: 两个文件同名（v1 副本、legacy 目录）。智能体改了没在用的那个，你关心的 bug 依然存在。
+symptom:
+  en: The diff looks right and the agent says it's fixed, but the behavior in the app hasn't changed. The edited file isn't imported by anything that runs.
+  zh: diff 看起来没问题，智能体也说修好了，但应用里的行为没变。被改的文件根本没被运行中的代码引用。
+why:
+  en: Retrieval ranks lookalike names, and a deprecated copy can match the query better than the live one. Night Forge describes this "legacy / wrong-path edit" as one of three recurring Cursor patterns, and notes Claude Code hits the same class of failure.
+  zh: 检索会按名字相似度排序，废弃副本可能比线上文件更匹配查询。Night Forge 把这种“遗留/错误路径编辑”列为 Cursor 用户反复遇到的三种模式之一，并指出 Claude Code 也有同类问题。
+example:
+  caption:
+    en: From the Night Forge write-up.
+    zh: 摘自 Night Forge 的文章。
+  lang: text
+  code: |
+    You meant:    src/components/UserAvatar.tsx
+    Agent edited: src/v1/UserAvatar.tsx   (deprecated, not imported anywhere live)
+rule: |
+  ## Make sure you are editing the live file
+  - Before editing, confirm the file is actually used: find who imports it (`rg -n "UserAvatar" src`)
+    and trace it to a route, entry point or test that runs.
+  - Never edit files under `legacy/`, `deprecated/`, `v1/`, `old/` or `*.bak` unless the user names them.
+  - If two files have the same name, list both and say which one you will change and why.
+cursor_globs: "**/*"
+extras:
+  - kind: settings
+    title:
+      en: "Keep dead paths out of reach (.cursorignore and Claude Code deny)"
+      zh: "让废弃路径够不着（.cursorignore 和 Claude Code deny）"
+    file: .cursorignore  /  .claude/settings.json
+    lang: text
+    code: |
+      # .cursorignore
+      src/v1/
+      legacy/
+
+      # .claude/settings.json -> "permissions": { "deny": ["Edit(./src/v1/**)", "Edit(./legacy/**)"] }
+sources:
+  - title: "Night Forge: Stop your AI agent editing the wrong files"
+    url: https://night-forge.com/blog/stop-ai-agent-editing-wrong-files
