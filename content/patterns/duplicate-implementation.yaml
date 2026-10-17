@@ -46,3 +46,9 @@ sources:
     url: https://kaplira.com/guides/ai-agent-changes-unrelated-files/
   - title: "developertoolkit.ai: failure taxonomy (erosion)"
     url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/
+  - title: "@octavianslash on X: a cookie middleware with a bespoke dispatch layer duplicating the existing middleware system"
+    url: https://x.com/octavianslash/status/2111145412191232452
+  - title: "@paolocargnin on X: rejected code often reimplements something that already exists in the codebase"
+    url: https://x.com/paolocargnin/status/2111367023989031160
+  - title: "@triskweline on X: preventing a third notion of \"is this invoice paid\""
+    url: https://x.com/triskweline/status/2111262492072595469

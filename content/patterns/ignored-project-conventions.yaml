@@ -1,0 +1,49 @@
+slug: ignored-project-conventions
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [CLAUDE.md, AGENTS.md, conventions, code style, rules ignored, patterns]
+title:
+  en: Ignored the conventions in CLAUDE.md
+  zh: 无视 CLAUDE.md 里写好的约定
+summary:
+  en: The code works, but it doesn't follow the conventions written in the project's rules files or visible in the surrounding code, and steps the rules require (like running certain tests) get skipped as "unnecessary".
+  zh: 代码能跑，但不遵守项目规则文件里写明的、或周围代码里明摆着的约定；规则要求的步骤（比如跑某些测试）也被当成“没必要”而跳过。
+symptom:
+  en: New code uses a different structure, naming or layering than its neighbours; boundaries the team set are crossed; a rule in CLAUDE.md or AGENTS.md is visibly not applied. The agent may cite the rules back to you while not following them.
+  zh: 新代码的结构、命名或分层和周围代码不一样；团队划定的边界被越过；CLAUDE.md 或 AGENTS.md 里的某条规则显然没被执行。智能体甚至可能一边复述规则一边不照做。
+why:
+  en: 'Asked why he still uses PRs, @alexitcdev said it''s to review what agents write, as they are typically "ignoring my CLAUDE.md conventions" or skipping certain tests as unnecessary. @gibbostudio finds Opus and Fable code that doesn''t align with the team''s fences and code style. @_maulik13 caught Opus drifting from the patterns the project follows; when questioned, it found its own hypothesis was wrong and simplified the code. @WinterSoldier92 describes extra markdown files as more instructions for the agent to "cherry pick from and ignore". Long rules files compete with the task for attention, and nothing enforces them unless a check does. In the same thread, @Spanky4thewin suggests short rules with the must-dos at the top plus a Stop hook so skipping isn''t possible.'
+  zh: '被问到为什么还用 PR 时，@alexitcdev 说是为了审查智能体写的代码，因为它们通常会“无视我的 CLAUDE.md 约定”，或者觉得某些测试没必要而跳过。@gibbostudio 经常发现 Opus 和 Fable 写的代码不符合团队设定的边界和代码风格。@_maulik13 抓到过 Opus 偏离项目既有模式；被追问后，它发现自己的假设是错的，随后简化了代码。@WinterSoldier92 说多加的 markdown 文件只是让智能体“挑着用、然后无视”的更多指令。冗长的规则文件会和任务本身争夺注意力，除非有检查去强制，否则没人执行。同一串里，@Spanky4thewin 的建议是：规则写短，把必须做的放在最前面，再加一个 Stop 钩子，让跳过变得不可能。'
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: text
+  code: |
+    CLAUDE.md:  "Data access goes through src/repo/*. Run `npm run test:integration` for DB changes."
+    Agent diff: src/routes/orders.ts  -> raw SQL query inline in the route handler
+    Agent:      "Integration tests aren't necessary for this small change. Done ✅"
+rule: |
+  ## Follow the project's rules files
+  - Before editing, read CLAUDE.md / AGENTS.md / .cursor/rules and at least one neighbouring file that
+    does something similar. Follow their structure, naming and layering.
+  - In your summary, list which project rules applied to this change and how you followed each one.
+  - Required commands in the rules files are not optional. If you think one is unnecessary, ask;
+    don't skip it.
+  - If following a rule is impossible, say so explicitly instead of quietly deviating.
+extras:
+  - ref: stop-hook-tests
+  - ref: verify-skill
+sources:
+  - title: "@alexitcdev on X: agents ignoring CLAUDE.md conventions and skipping tests as unnecessary"
+    url: https://x.com/alexitcdev/status/2111418970506969566
+  - title: "@gibbostudio on X: code that doesn't align with the team's fences and code style"
+    url: https://x.com/gibbostudio/status/2111255305233350886
+  - title: "@_maulik13 on X: Opus drifting from the patterns the project follows"
+    url: https://x.com/_maulik13/status/2111182869754245351
+  - title: "@WinterSoldier92 on X: more MD files for the agent to cherry pick from and ignore"
+    url: https://x.com/WinterSoldier92/status/2111392025929035919
+  - title: "@Spanky4thewin on X: short rules, must-dos on top, plus a Stop hook"
+    url: https://x.com/Spanky4thewin/status/2111422112699408693
+  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+    url: https://x.com/thorstenball/status/2111130129355481240

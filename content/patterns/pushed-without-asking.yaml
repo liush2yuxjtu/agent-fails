@@ -1,0 +1,40 @@
+slug: pushed-without-asking
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [git push, branches, remote, permissions, externally visible]
+title:
+  en: Created and pushed branches without asking
+  zh: 不打招呼就建分支并推送
+summary:
+  en: The agent creates branches and pushes them to the shared remote on its own, so work-in-progress shows up for the team (and triggers CI and bots) before you decided to share it.
+  zh: 智能体自作主张地建分支并推送到共享远端，于是半成品在你决定分享之前就出现在团队面前（还会触发 CI 和各种机器人）。
+symptom:
+  en: Branches you don't recognise appear on GitHub, often with CI runs and review-bot comments attached. Your local session shows a `git push` you never asked for.
+  zh: GitHub 上出现了你不认识的分支，通常还带着 CI 运行和审查机器人的评论。本地会话里有一条你从没要求过的 `git push`。
+why:
+  en: 'Replying to "Why are you still using pull requests?", @rakesh_at_tweet answered: "because my agent creates and pushes new branches without asking me". Pushing is externally visible and hard to take back, but to an agent finishing a task it looks like the natural last step.'
+  zh: '对于“你们为什么还在用 Pull Request？”，@rakesh_at_tweet 的回答是：“因为我的智能体不问我就创建并推送新分支”。推送是对外可见、难以撤回的操作，但在一个想把任务做完的智能体眼里，它只是顺理成章的最后一步。'
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: text
+  code: |
+    You:   fix the date parsing bug
+    Agent: $ git checkout -b fix/date-parsing
+           $ git commit -am "Fix date parsing"
+           $ git push -u origin fix/date-parsing    <- nobody asked for this
+rule: |
+  ## Don't push unless asked
+  - Never run `git push`, create remote branches, or open PRs unless the user asked for that in this
+    session. Commit locally and say the branch is ready to push.
+  - Creating a local branch is fine; tell the user its name.
+  - Anything that other people or systems will see (remote branches, PRs, comments, releases)
+    needs explicit permission each time.
+extras:
+  - ref: deny-permissions
+sources:
+  - title: "@rakesh_at_tweet on X: \"my agent creates and pushes new branches without asking me\""
+    url: https://x.com/rakesh_at_tweet/status/2111149259978686478
+  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+    url: https://x.com/thorstenball/status/2111130129355481240
