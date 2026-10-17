@@ -36,3 +36,7 @@ sources:
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-007-certainty-smuggling.md
   - title: "agent-failure-modes: AFM-5 Trust Laundering"
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-005-trust-laundering.md
+  - title: "@sagivo on X: an agent re-verified a broken assumption three times, treating its own output as evidence"
+    url: https://x.com/sagivo/status/2111231925394489680
+  - title: "@mikeydoyle on X: review finds bad assumptions, which agent reviews can send in circles"
+    url: https://x.com/mikeydoyle/status/2111222704036848084

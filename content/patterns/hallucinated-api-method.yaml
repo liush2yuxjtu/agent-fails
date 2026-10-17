@@ -56,3 +56,5 @@ sources:
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar006-hallucinated-method-or-property
   - title: "developertoolkit.ai: failure taxonomy (invented API)"
     url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/
+  - title: "@we_chat_tech on X: agent code using constants that don't exist, caught in PR review"
+    url: https://x.com/we_chat_tech/status/2111362152493990390

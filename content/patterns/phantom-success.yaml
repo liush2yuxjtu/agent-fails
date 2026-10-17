@@ -37,3 +37,5 @@ sources:
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-001-phantom-success.md
   - title: "Anthropic: Solving code review at Anthropic"
     url: https://claude.dev/blog/solving-code-review-at-anthropic/
+  - title: "@Lehidev on X: the LLM doesn't always run the CI jobs before pushing"
+    url: https://x.com/Lehidev/status/2111162462418411778

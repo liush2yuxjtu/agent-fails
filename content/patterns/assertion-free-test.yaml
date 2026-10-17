@@ -44,3 +44,5 @@ extras:
 sources:
   - title: "vnmoorthy/agent-review TAXONOMY: AR010 Test without assertion"
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar010-test-without-assertion
+  - title: "@Diacritic on X: set a value to 58 in a static file, then wrote a CI test that it's >57"
+    url: https://x.com/Diacritic/status/2111318687089389859

@@ -34,3 +34,9 @@ extras:
 sources:
   - title: "vnmoorthy/agent-review TAXONOMY: AR033 Silently changed behavior"
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar033-silently-changed-behavior
+  - title: "@dusangran on X: an agent built a feature and quietly broke an unrelated part"
+    url: https://x.com/dusangran/status/2111133030182264959
+  - title: "@i_mika_el on X: behavior changed for a case the task never mentioned"
+    url: https://x.com/i_mika_el/status/2111207904191902125
+  - title: "@ArminPage on X: an agent changed aggregation logic that customers preferred for a business reason"
+    url: https://x.com/ArminPage/status/2111150318973063210

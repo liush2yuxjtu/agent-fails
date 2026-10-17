@@ -49,3 +49,7 @@ sources:
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-002-scope-vandalism.md
   - title: "@JC_bitcoin on X (Chinese): after a few rounds of Codex edits I no longer know what it changed"
     url: https://x.com/JC_bitcoin/status/2110560732257386896
+  - title: "@Sc_Meerkat on X: Opus deleted a test unrelated to the functionality it was working on"
+    url: https://x.com/Sc_Meerkat/status/2111503189682074088
+  - title: "@BVeiseh on X: the agent changed something consequential it wasn't asked to change"
+    url: https://x.com/BVeiseh/status/2111214594580709629

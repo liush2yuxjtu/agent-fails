@@ -1,0 +1,43 @@
+slug: fix-without-repro
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [reproduction, crash, unverified fix, root cause, review]
+title:
+  en: A fix for a crash it never reproduced
+  zh: 修了一个从没复现过的崩溃
+summary:
+  en: The agent adds a guard or branch "to prevent" a failure it never managed to trigger, so nobody knows whether the fix addresses the real cause, and reviewers skim past the admission in the description.
+  zh: 智能体为一个自己从没触发过的故障加了守卫或分支，说是“防止”它发生；没人知道这个修复是否对准了真正原因，审查者也没注意到描述里的这句坦白。
+symptom:
+  en: The PR description says something like "could not reproduce, but this should prevent it". There is no failing test or captured input before the change, and no proof after. The new branch has never executed.
+  zh: PR 描述里写着类似“无法复现，但这样应该能防止”的话。改动前没有失败的测试或捕获到的输入，改动后也没有证明。新加的分支从未执行过。
+why:
+  en: '@roulerdelaroute describes a Claude PR that added a code branch to stop a bad packet from causing a crash, while it "hadn''t managed to repro that bad packet". More than eight review agents missed that line in the description and nitpicked code that had never run. Writing a plausible guard is easy; proving the cause takes a reproduction, and without one the fix is a guess that reads like a solution.'
+  zh: '@roulerdelaroute 讲了一个 Claude 提的 PR：它加了一个新分支来防止坏数据包导致崩溃，但“一直没能复现那个坏数据包”。8 个以上的审查智能体都没注意到描述里的这句话，反而在从未运行过的代码上挑小毛病。写一个看似合理的守卫很容易，证明原因却需要复现；没有复现，修复就是一个读起来像答案的猜测。'
+example:
+  caption:
+    en: Illustrative, based on @roulerdelaroute's description.
+    zh: 示意，基于 @roulerdelaroute 的描述。
+  lang: diff
+  code: |
+    PR: "Prevent crash on malformed packet. Note: could not reproduce the bad packet."
+
+      function parsePacket(buf) {
+    +   if (buf.length < HEADER_LEN + 2) return null; // guess at the cause, never executed
+        const len = buf.readUInt16BE(HEADER_LEN);
+        ...
+rule: |
+  ## Reproduce before you fix
+  - Before fixing a bug, reproduce it: a failing test, a captured input, or a command that shows
+    the failure. Paste the failing output.
+  - If you cannot reproduce it, say so in the first line of your reply and do not present a change
+    as the fix. Offer it as a hypothesis, with what evidence would confirm it.
+  - After the fix, run the same reproduction and paste the passing output.
+  - Reviewers: check the description for "could not reproduce" or "should prevent" before reading the code.
+extras:
+  - ref: verify-skill
+sources:
+  - title: "@roulerdelaroute on X: a Claude PR guarding against a bad packet it never reproduced; 8+ review agents missed it"
+    url: https://x.com/roulerdelaroute/status/2111262764052394012
+  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+    url: https://x.com/thorstenball/status/2111130129355481240

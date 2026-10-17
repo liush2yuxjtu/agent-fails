@@ -1,0 +1,61 @@
+slug: imaginary-edge-case-hardening
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [defensive code, edge cases, over-engineering, overbuilding, review noise, YAGNI]
+title:
+  en: Hardened the code against cases no user will hit
+  zh: 为没有用户会遇到的情况加固代码
+summary:
+  en: The agent (or its reviewer) piles on branches, guards and tests for states no real user can reach, while the obvious problems in the same diff go unnoticed.
+  zh: 智能体（或它的审查者）为真实用户根本到不了的状态堆上分支、守卫和测试，同一个 diff 里明显的问题却没人发现。
+symptom:
+  en: Long handlers for impossible combinations of events, "just in case" checks, extra e2e tests for a throwaway change, and review comments that always find another theoretical case. The diff grows; the real issue a few lines away (an N+1 query, a design problem) stays.
+  zh: 为不可能同时发生的事件组合写的长处理逻辑、“以防万一”的检查、给一次性改动加的 e2e 测试，以及永远能再找出一个理论情况的审查意见。diff 越来越大，几行之外真正的问题（N+1 查询、设计问题）却原封不动。
+why:
+  en: 'Quoting Thorsten Ball''s PR post, @RhysSullivan wrote that models "love to add so much extra code for cases that will never happen". His example of what review "caught": "changing a setting while being demoted from admin in the same request". Replies add more: a 40-line handler for an unreachable state next to a missed N+1 query (@giskyexplorer), "useless machinery that will pass tests" (@Gabezor), e2e tests and a full test review proposed for a goodbye page on a project being shut down (@NapVeg), agents writing too many heavy, slow tests (@kopseng), and review bots that "always find something" users would never hit (@kenryu42). @leothecurious lists "paranoid defensive coding patterns" among the habits that keep him steering. Thoroughness is rewarded and nothing tells the agent how likely a case is, so every case looks worth handling.'
+  zh: '@RhysSullivan 引用 Thorsten Ball 的 PR 帖说，模型“喜欢为永远不会发生的情况加一大堆代码”。他举的审查“发现”是：“在同一个请求里一边被取消管理员身份一边改设置”。回复里还有更多：为不可达状态写了 40 行处理逻辑，却漏掉旁边的 N+1 查询（@giskyexplorer）；“能通过测试的无用机制”（@Gabezor）；给一个即将关停的项目加告别页，智能体却想先写 e2e 测试再做全量测试审查（@NapVeg）；智能体写了太多又重又慢的测试（@kopseng）；审查机器人“总能找到点什么”，修的是用户永远碰不到的问题（@kenryu42）。@leothecurious 把“偏执的防御式编码”列为他不得不一直纠偏的习惯之一。“周全”会得到奖励，而没有任何信息告诉智能体某个情况有多大可能发生，于是每个情况看起来都值得处理。'
+example:
+  caption:
+    en: Illustrative, based on @RhysSullivan's example.
+    zh: 示意，基于 @RhysSullivan 的例子。
+  lang: ts
+  code: |
+    async function updateSetting(user, key, value) {
+      // Agent-added: "user could be demoted from admin during this same request"
+      const fresh = await db.users.findFresh(user.id);
+      if (!fresh.isAdmin && wasAdminAtRequestStart(user)) {
+        await auditLog("demoted-mid-request", user.id);
+        throw new ConcurrentDemotionError(user.id);
+      }
+      // ...30 more lines of guards...
+      return db.settings.set(key, value);
+    }
+rule: |
+  ## Handle realistic cases, not imaginable ones
+  - Before adding a guard, branch or test for an edge case, state in one line how a real user or
+    caller reaches it. If you can't, don't add it; mention it in your summary instead.
+  - Match the effort to the task. A one-off or throwaway change doesn't get new e2e suites or a full
+    test review unless the user asks.
+  - When reviewing, rate each finding by severity and likelihood, and only fix findings the user
+    agrees are likely. List the rest as "not fixed: unlikely".
+  - Prefer one test that starts from real user behavior over many tests for hypothetical states.
+extras:
+  - ref: diff-budget-check
+  - ref: review-skill
+sources:
+  - title: "@RhysSullivan on X: models add extra code for cases that will never happen (admin demoted mid-request)"
+    url: https://x.com/RhysSullivan/status/2111168428883235002
+  - title: "@giskyexplorer on X: a 40-line handler for an unreachable state, the N+1 query missed"
+    url: https://x.com/giskyexplorer/status/2111319507079741905
+  - title: "@Gabezor on X: overbuilding useless machinery that passes tests"
+    url: https://x.com/Gabezor/status/2111363635276918949
+  - title: "@NapVeg on X: e2e tests and a full test review proposed for a goodbye route"
+    url: https://x.com/NapVeg/status/2111353429780320319
+  - title: "@kopseng on X: agents create too many heavy and slow tests"
+    url: https://x.com/kopseng/status/2111340624700129371
+  - title: "@kenryu42 on X: review bots always find something users would never hit"
+    url: https://x.com/kenryu42/status/2111144965346844858
+  - title: "@leothecurious on X: \"paranoid defensive coding patterns\" among recurring agent habits"
+    url: https://x.com/leothecurious/status/2111013236413714757
+  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+    url: https://x.com/thorstenball/status/2111130129355481240

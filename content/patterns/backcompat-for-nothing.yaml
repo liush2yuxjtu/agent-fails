@@ -1,0 +1,45 @@
+slug: backcompat-for-nothing
+category: overreach
+agents: [claude-code, cursor, codex, copilot]
+tags: [backwards compatibility, shims, greenfield, deprecation, memory file, YAGNI]
+title:
+  en: Backwards compatibility for code that has no users
+  zh: 给没有用户的代码做向后兼容
+summary:
+  en: The agent keeps old names, fallbacks and migration shims "for compatibility" in a greenfield project, or for code written the day before, where nothing depends on the old behavior.
+  zh: 在全新项目里，或者对昨天才写的代码，智能体保留旧名字、回退逻辑和迁移垫片，说是“为了兼容”，但根本没有东西依赖旧行为。
+symptom:
+  en: Aliases like `oldName = newName`, "legacy" branches, dual-read code paths and deprecation warnings appear in a project with no external consumers. Asked why, the agent cites a rule it wrote into its own memory or notes earlier in the same session.
+  zh: 一个没有外部使用者的项目里出现了 `oldName = newName` 之类的别名、“legacy” 分支、双读代码路径和弃用警告。问它为什么，它会引用同一会话早些时候自己写进记忆或笔记里的规则。
+why:
+  en: In replies to @RhysSullivan's post about agents over-building, @LKRBuilds calls the worst case adding backwards compatibility to a greenfield project with no users, then justifying it with a rule the agent wrote in its own memory file in the same session. @olafurns describes it adding backwards compatibility for something it did yesterday. Compatibility is a safe-sounding default when the agent doesn't know who depends on the code, and a self-written note then turns that guess into a "rule".
+  zh: 在 @RhysSullivan 关于智能体过度构建的帖子下，@LKRBuilds 说最糟的是：在一个没有用户的全新项目里加“向后兼容”，还引用它在同一会话里自己写进记忆文件的规则来为自己辩护。@olafurns 说它会为昨天才做的东西加向后兼容。智能体不知道谁依赖这段代码时，“兼容”听起来是个稳妥的默认值；一条它自己写的笔记又把这个猜测变成了“规则”。
+example:
+  caption:
+    en: Illustrative.
+    zh: 示意。
+  lang: ts
+  code: |
+    // Renamed yesterday, project not released, no external callers
+    export function createInvoice(input: InvoiceInput) { /* ... */ }
+
+    /** @deprecated kept for backwards compatibility */
+    export const makeInvoice = createInvoice;          // nothing imports this
+    const amount = input.amount ?? (input as any).total; // "legacy" field that never shipped
+rule: |
+  ## No compatibility shims without a consumer
+  - Only keep old names, fallbacks or migration paths when you can point to a real consumer of the
+    old behavior (a released version, an external caller, stored data). Name it in your summary.
+  - If the project is unreleased or the code was added in this branch, rename and update callers
+    directly. Do not leave aliases, deprecated exports or dual code paths.
+  - Notes you wrote to yourself earlier in the session are not project requirements. If a note
+    conflicts with what the user asked, follow the user and say so.
+extras:
+  - ref: review-skill
+sources:
+  - title: "@LKRBuilds on X: backwards compatibility in a greenfield project, justified by its own memory file"
+    url: https://x.com/LKRBuilds/status/2111338011938185708
+  - title: "@olafurns on X: backwards compatibility for something it did yesterday"
+    url: https://x.com/olafurns/status/2111406592771985589
+  - title: "@RhysSullivan on X: the post these replies answer"
+    url: https://x.com/RhysSullivan/status/2111168428883235002

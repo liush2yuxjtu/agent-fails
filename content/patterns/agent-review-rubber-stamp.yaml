@@ -1,0 +1,58 @@
+slug: agent-review-rubber-stamp
+category: bug
+agents: [claude-code, cursor, codex, copilot]
+tags: [code review, AI review, LGTM, false positives, correlated errors, review bots]
+title:
+  en: 'Agent review said "good to go" (and missed it)'
+  zh: "智能体审查说“可以合并”（却漏掉了问题）"
+summary:
+  en: Several agent review passes approve a change that a human then finds broken, unnecessary or architecturally wrong. More passes from similar models don't add independent checks.
+  zh: 多轮智能体审查都批准了一个改动，结果人一看就发现它有问题、多余或架构不对。同类模型多审几遍，并不等于多了几次独立检查。
+symptom:
+  en: 'Every bot left comments or approved, yet a human finds a breaking change, a duplicated subsystem or thousands of lines that shouldn''t exist. Reviews mix real bugs with false positives, find something new on every run, or comment on an empty diff.'
+  zh: 每个机器人都留了评论或批准了，结果人还是发现了破坏性改动、重复的子系统，或者成千上万行本不该存在的代码。审查把真 bug 和误报混在一起，每次运行都能找出新东西，甚至会对空 diff 发表意见。
+why:
+  en: 'Thorsten Ball''s post asked whether humans really catch what three models checking four times each would miss, and many replies gave concrete counterexamples. @MilesDigitek had agents miss the same architectural mistake four times in a row: same-family reviewers are "one review sampled four times". @joshmanders has colleagues finding issues all the AI bots had stamped "Good to go". @BradleySkuse ran several Claude, Codex, Cursor, Copilot and Bugbot review cycles, then a doc-only update made Bugbot report a critical issue, and a colleague''s AI review found a dozen things, two of them breaking. @paolocargnin stopped about 6k lines of useless code that had passed many review cycles, including agents. @octavianslash asked Claude to review a PR that duplicated his framework''s middleware system, and it waved it through. @DonutsWithData sees bugs on every run mixed with many false positives, and higher-level issues missed. @michalkuncio notes self-review never converges. @danfarrdotcom: "my agents reviewed an empty PR once. one suggested a better title".'
+  zh: 'Thorsten Ball 在帖子里问：三个模型各审四遍都发现不了的问题，人真能发现吗？很多回复给出了具体反例。@MilesDigitek 的智能体连续四次漏掉同一个架构错误：同一家族的审查者是“同一次审查采样了四遍”。@joshmanders 的同事发现过所有 AI 机器人都标了“Good to go”的问题。@BradleySkuse 跑了好几轮 Claude、Codex、Cursor、Copilot 和 Bugbot 的审查，后来只改了文档，Bugbot 却报出一个严重问题；同事用 AI 再审一遍，又找出十几处，其中两处是破坏性改动。@paolocargnin 拦下了大约 6k 行无用代码，它们已经通过了包括智能体在内的多轮审查。@octavianslash 让 Claude 审查一个重复实现了框架中间件系统的 PR，Claude 直接放行。@DonutsWithData 说 AI 审查每次都能找到 bug，但混着大量误报，还会漏掉更高层的问题。@michalkuncio 指出自我审查永远不会收敛。@danfarrdotcom：“我的智能体审查过一个空 PR，其中一个还建议换个更好的标题。”'
+example:
+  caption:
+    en: Illustrative, combining reports from the thread.
+    zh: 示意，综合了串里的几条报告。
+  lang: text
+  code: |
+    reviewer-1 (model A): LGTM, 2 nits
+    reviewer-2 (model A, new seed): LGTM, suggests better title
+    reviewer-3 (model B): 1 critical (false positive), 3 nits
+    human: this adds a second middleware dispatcher next to the existing one. Reject.
+rule: |
+  ## Treat agent review as one signal, not a gate
+  - Never report a change as "reviewed" because review agents approved it. Say which reviewers ran,
+    on which model, and what they did not check (architecture, whether the change is needed).
+  - For review, use a fresh context that sees only the request and the diff, and if possible a
+    different model family from the one that wrote the code.
+  - Every finding needs file:line, severity and a way to verify it. Drop findings you can't verify.
+  - Stop after one fix round per finding. If a new round only finds new low-severity items,
+    report them instead of fixing them, and hand the decision to a human.
+  - Always ask: does this change need to exist, and does it reuse what is already in the codebase?
+extras:
+  - ref: review-skill
+  - ref: verify-skill
+sources:
+  - title: "@MilesDigitek on X: the same architectural mistake missed four times; \"one review sampled four times\""
+    url: https://x.com/MilesDigitek/status/2111133274231779446
+  - title: "@joshmanders on X: issues that every AI bot stamped \"Good to go\""
+    url: https://x.com/joshmanders/status/2111161009956381161
+  - title: "@BradleySkuse on X: many AI review cycles, then a critical issue and two breaking changes found later"
+    url: https://x.com/BradleySkuse/status/2111444437620728060
+  - title: "@paolocargnin on X: ~6k lines of useless code that passed review cycles, including agents"
+    url: https://x.com/paolocargnin/status/2111366371430777164
+  - title: "@octavianslash on X: Claude review waved through a duplicate middleware dispatch layer"
+    url: https://x.com/octavianslash/status/2111145412191232452
+  - title: "@DonutsWithData on X: bugs on every run, mixed with false positives, higher-level issues missed"
+    url: https://x.com/DonutsWithData/status/2111149389997838655
+  - title: "@michalkuncio on X: self-review finds new issues every time you ask"
+    url: https://x.com/michalkuncio/status/2111454172952302075
+  - title: "@danfarrdotcom on X: agents reviewed an empty PR; one suggested a better title"
+    url: https://x.com/danfarrdotcom/status/2111386854746702216
+  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+    url: https://x.com/thorstenball/status/2111130129355481240
