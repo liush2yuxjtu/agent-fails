@@ -86,7 +86,7 @@ export function PatternView({ slug, lang }: { slug: string; lang: Lang }) {
                 <h3 className="font-medium text-zinc-900">{f.title[lang]}</h3>
               </div>
               {f.note && <p className="mb-2 text-sm text-zinc-600">{f.note[lang]}</p>}
-              <CopyBlock code={f.code} file={f.file} lang={lang} />
+              <CopyBlock code={f.code} file={f.file} lang={lang} patternSlug={p.slug} fixType={f.kind} />
             </div>
           ))}
         </div>

@@ -1,10 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@vercel/analytics";
 import { t } from "@/lib/i18n";
 import type { Lang } from "@/lib/site";
 
-export function CopyBlock({ code, file, lang, label }: { code: string; file?: string; lang: Lang; label?: string }) {
+export function CopyBlock({
+  code,
+  file,
+  lang,
+  label,
+  patternSlug,
+  fixType,
+}: {
+  code: string;
+  file?: string;
+  lang: Lang;
+  label?: string;
+  patternSlug?: string;
+  fixType?: string;
+}) {
   const d = t(lang);
   const [copied, setCopied] = useState(false);
 
@@ -19,6 +34,7 @@ export function CopyBlock({ code, file, lang, label }: { code: string; file?: st
       document.execCommand("copy");
       ta.remove();
     }
+    if (patternSlug && fixType) track("copy_fix", { slug: patternSlug, fixType });
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   }

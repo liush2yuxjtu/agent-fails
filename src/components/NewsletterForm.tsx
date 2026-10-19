@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@vercel/analytics";
 import { t } from "@/lib/i18n";
 import { NEWSLETTER_FORM_ACTION, REPO_URL, type Lang } from "@/lib/site";
 
@@ -29,14 +30,14 @@ export function NewsletterForm({ lang }: { lang: Lang }) {
       ) : (
         <form
           className="mt-4 flex flex-col gap-2 sm:flex-row"
-          {...(live
-            ? { action: NEWSLETTER_FORM_ACTION, method: "post", target: "_blank" }
-            : {
-                onSubmit: (e: React.FormEvent) => {
-                  e.preventDefault();
-                  setStubDone(true);
-                },
-              })}
+          onSubmit={(e) => {
+            track("newsletter_submit");
+            if (!live) {
+              e.preventDefault();
+              setStubDone(true);
+            }
+          }}
+          {...(live ? { action: NEWSLETTER_FORM_ACTION, method: "post" as const, target: "_blank" } : {})}
         >
           <label htmlFor={`nl-email-${lang}`} className="sr-only">Email</label>
           <input
