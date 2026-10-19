@@ -1,3 +1,4 @@
+import { OutboundLink } from "@/components/OutboundLink";
 import { SPONSOR_ISSUE_URL, type Lang } from "@/lib/site";
 import { getPatterns } from "@/lib/patterns";
 
@@ -76,9 +77,9 @@ export function SponsorView({ lang }: { lang: Lang }) {
       <section className="mt-10">
         <h2 className="text-2xl font-semibold">{c.contactH}</h2>
         <p className="mt-2 text-zinc-700">{c.contact}</p>
-        <a href={SPONSOR_ISSUE_URL} target="_blank" rel="noopener" className="mt-4 inline-block rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-700">
+        <OutboundLink href={SPONSOR_ISSUE_URL} target="_blank" rel="noopener" className="mt-4 inline-block rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-700">
           {c.btn} ↗
-        </a>
+        </OutboundLink>
       </section>
     </div>
   );
