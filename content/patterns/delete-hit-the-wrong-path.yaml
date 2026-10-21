@@ -1,0 +1,74 @@
+slug: delete-hit-the-wrong-path
+category: bug
+agents: [codex, cursor, claude-code]
+tags: [empty path, rm -rf, venv --clear, rmdir, quoting, data loss, guard]
+title:
+  en: The delete was approved. The path was wrong.
+  zh: 删除是批准过的，路径却错了
+summary:
+  en: The agent meant to clear a temp or build directory, but the target came out empty, split by quoting, or "allowed" by a guard that was too loose, so the delete hit the project (or everything next to it).
+  zh: 智能体本想清理临时或构建目录，但目标路径变成了空串、被引号拆开，或者被一条过宽的防护规则“放行”，结果删掉的是项目本身（或者它旁边的一切）。
+symptom:
+  en: Right after a "clean up the temp dir" or "fresh venv" step, the next command fails with "No such file or directory" or "not a git repository". Source files, `.git` and backups are gone, and the command in the log targets `""`, a drive root, or a parent directory.
+  zh: 在“清理临时目录”或“重建 venv”之后，下一条命令立刻报 “No such file or directory” 或 “not a git repository”。源码、`.git` 和备份都没了，日志里的命令目标是 `""`、某个盘的根目录或上级目录。
+why:
+  en: 'Agents build paths in strings across shells (PowerShell → wsl → bash), and nobody checks the final resolved target. Codex #55161 (18 Oct 2026): a `python -m venv --clear` meant for /tmp ran with an empty target `""` from the project directory and cleared the workspace. A Cursor forum report (via NOPE, 3 Oct 2026): the user agreed to clear about 18.5 GB of build temporaries, a `rmdir /s /q` path was split, and source, Git and backups went. Sebastian Spicker (5 Oct 2026): a guard was relaxed to allow any path "outside the repository root", a test passed it the parent directory, and `rm` deleted every sibling checkout.'
+  zh: '智能体在多层 shell 之间（PowerShell → wsl → bash）用字符串拼路径，却没人检查最终解析出来的目标。Codex #55161（2026-10-18）：本应作用于 /tmp 的 `python -m venv --clear` 在项目目录下以空目标 `""` 运行，清空了工作区。Cursor 论坛报告（经 NOPE 整理，2026-10-03）：用户同意清理约 18.5 GB 编译临时文件，`rmdir /s /q` 的路径被拆开，源码、Git 和备份全没了。Sebastian Spicker（2026-10-05）：一条防护被放宽为允许“仓库根目录之外”的任何路径，测试传入了上级目录，`rm` 删光了所有同级仓库。'
+example:
+  caption:
+    en: The empty-target case from Codex #55161 (historical excerpt, do not run).
+    zh: Codex #55161 中的空目标情形（历史摘录，请勿执行）。
+  lang: bash
+  code: |
+    # intended: python3 -m venv --clear /tmp/test-env
+    # cwd: /mnt/d/Opencode/M_easytier   (the project)
+    /usr/bin/python3.12 -m venv --clear --copies --system-site-packages ""
+    # next step: project test runner no longer exists
+rule: |
+  ## Resolve and check every delete target
+  - Before any recursive delete or "clear" (`rm -r`, `rmdir /s`, `Remove-Item -Recurse`, `venv --clear`,
+    `git clean`, `shutil.rmtree`), resolve the target to an absolute path and print it.
+  - Refuse if the target is empty, `/`, a drive root, `~`/home, the current working directory, the repo
+    root, or any parent of the repo. Use `${VAR:?}` in shell so an empty variable aborts.
+  - Delete only inside an allowlist of disposable locations (a `mktemp -d` dir or a named build output).
+    Never write guards as "anything outside X is allowed".
+  - Test destructive code with a temp directory or an injected delete function, never a real path.
+  - If a command fails with "No such file or directory" right after a delete, stop everything and tell the user.
+extras:
+  - kind: hook
+    title:
+      en: "PreToolUse hook: refuse deletes with empty or dangerous targets"
+      zh: "PreToolUse 钩子：拒绝目标为空或危险的删除"
+    file: .claude/hooks/check_delete_target.py
+    lang: python
+    note:
+      en: 'Register with matcher "Bash". It checks the command text only; the real protection is the OS sandbox plus backups.'
+      zh: '用 matcher "Bash" 注册。它只检查命令文本；真正的保护是操作系统级沙箱加备份。'
+    code: |
+      #!/usr/bin/env python3
+      """Block recursive deletes/clears whose target is empty, a root, home, or a parent dir."""
+      import json, re, sys
+
+      call = json.load(sys.stdin)
+      if call.get("tool_name") != "Bash":
+          sys.exit(0)
+      cmd = call["tool_input"].get("command", "")
+
+      deletes = r"(\brm\s+-\S*r|\brmdir\s+/s|Remove-Item\b.*-Recurse|venv\s+.*--clear|shutil\.rmtree)"
+      bad_target = r"(\"\"|''|\s/\s*$|\s/[\s;&|]|\s~/?(\s|$)|\$HOME/?(\s|$|\")|\s\.\.(/|\s|$)|\s[A-Za-z]:\\?(\s|$|\"))"
+      if re.search(deletes, cmd) and re.search(bad_target, cmd):
+          print("BLOCKED: delete target is empty, a root, home, or a parent directory. "
+                "Resolve the absolute path, show it to the user, and ask.", file=sys.stderr)
+          sys.exit(2)
+      if re.search(r"\brm\s+-\S*r\S*\s+\"?\$\{?\w+\}?/", cmd) and ":?" not in cmd:
+          print("BLOCKED: use ${VAR:?} so an empty variable cannot expand to /.", file=sys.stderr)
+          sys.exit(2)
+      sys.exit(0)
+  - ref: destructive-bash-hook
+sources:
+  - title: "openai/codex #55161: cleared project workspace via venv --clear after empty-path expansion"
+    url: https://github.com/openai/codex/issues/55161
+  - title: "NOPE AI incidents: Cursor cleanup delete command split path, wiped a six-month project and backups"
+    url: https://nope.net/incidents/2026-cursor-agent-cleanup-delete-command-split-path-wiped-six-month-project-and-backups-windows-drive-first-person-forum
+  - title: "Sebastian Spicker: The Day Claude Decided to Delete My Whole Codebase"
+    url: https://sebastianspicker.github.io/posts/the-day-claude-deleted-my-codebase/

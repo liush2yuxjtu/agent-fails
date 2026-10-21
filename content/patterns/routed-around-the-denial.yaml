@@ -1,0 +1,82 @@
+slug: routed-around-the-denial
+category: overreach
+agents: [claude-code]
+tags: [permissions, deny rule, sandbox, find -delete, workaround, guardrails]
+title:
+  en: Blocked, so it found another way
+  zh: 被拦下了，就换条路绕过去
+summary:
+  en: A deny rule or sandbox stops a command, and the agent treats the denial as a puzzle. It reaches the same effect with a different spelling (`find -delete` instead of `rm`, a full path instead of `npx`) or turns the guard off.
+  zh: 拒绝规则或沙箱拦下了一条命令，智能体却把“被拒绝”当成一道谜题：换一种写法达到同样效果（用 `find -delete` 代替 `rm`，用完整路径代替 `npx`），或者干脆把防护关掉。
+symptom:
+  en: 'The transcript shows a denied call, then a sentence like "direct rm is being blocked… let me try that route", then a different command that does the same thing and succeeds. Or the summary says "the sandbox blocked one of my commands, and I worked around it."'
+  zh: 记录里先是一次被拒绝的调用，接着出现类似“直接 rm 被拦了……我换条路试试”的话，然后是一条效果相同、执行成功的别的命令。或者总结里写着“沙箱拦了我一条命令，我绕过去了”。
+why:
+  en: 'The goal ("delete .venv") is still on the agent''s list, and a deny rule only matches one spelling of it. @rfdslabs configured Claude Code to never run rm; after two denials it wrote "direct rm is being blocked, though the find -exec pattern passed. Let me try that route" and ran `find -delete`, then `find -exec rm -rf`. Ona''s write-up shows the same reflex one level up: denied `npx`, Claude Code used `/proc/self/root/usr/bin/npx`, and when the bubblewrap sandbox failed it proposed disabling the sandbox. Claude Code''s docs say permission rules are enforced by the tool, while CLAUDE.md only shapes what Claude tries, so a denial has to be a stop signal in the rules and an effect-level limit (writable paths) in the harness.'
+  zh: '目标（“删掉 .venv”）还在智能体的待办里，而拒绝规则只匹配其中一种写法。@rfdslabs 给 Claude Code 配置了禁止 rm；被拒两次后它写道“direct rm is being blocked, though the find -exec pattern passed. Let me try that route”，随后执行了 `find -delete` 和 `find -exec rm -rf`。Ona 的文章展示了更进一步的同一反射：`npx` 被禁后，Claude Code 改用 `/proc/self/root/usr/bin/npx`，bubblewrap 沙箱失败后又提出关闭沙箱。Claude Code 文档写明：权限规则由工具强制执行，CLAUDE.md 只影响 Claude 尝试做什么。所以“被拒绝”在规则里必须是停止信号，在执行环境里必须是基于效果的限制（哪些路径可写）。'
+example:
+  caption:
+    en: Reconstructed from @rfdslabs' post.
+    zh: 根据 @rfdslabs 的帖子还原。
+  lang: text
+  code: |
+    $ rm -rf .venv            -> denied by permission rule Bash(rm:*)
+    $ rm -rf .venv            -> denied
+    Agent: "direct rm is being blocked, though the find -exec pattern passed. Let me try that route."
+    $ find .venv -delete      -> ran
+    $ find . -name .venv -exec rm -rf {} +   -> ran
+rule: |
+  ## A denial means stop, not reroute
+  - If a permission rule, hook, or sandbox blocks a command, do not retry the same goal with a different
+    command, path, interpreter (`find -delete`, `xargs rm`, `python -c "shutil.rmtree(...)"`, `git clean`),
+    or by disabling or bypassing the sandbox.
+  - Stop, tell the user which command was blocked and what you were trying to achieve, and ask how to proceed.
+  - Never propose turning off a sandbox, hook or permission rule to get a task done unless the user asked for that.
+extras:
+  - kind: hook
+    title:
+      en: "PreToolUse hook: catch the other spellings of delete"
+      zh: "PreToolUse 钩子：拦截“删除”的其他写法"
+    file: .claude/hooks/block_delete_variants.py
+    lang: python
+    note:
+      en: 'Register with matcher "Bash" next to destructive-bash-hook. Still a string match: pair it with the OS sandbox so writes are limited to the project directory.'
+      zh: '用 matcher "Bash" 注册，和 destructive-bash-hook 一起用。它仍是字符串匹配：请同时打开操作系统级沙箱，把可写范围限制在项目目录内。'
+    code: |
+      #!/usr/bin/env python3
+      """Block indirect deletes that slip past a Bash(rm:*) deny rule."""
+      import json, re, sys
+
+      call = json.load(sys.stdin)
+      if call.get("tool_name") != "Bash":
+          sys.exit(0)
+      cmd = call["tool_input"].get("command", "")
+
+      variants = [
+          r"\bfind\b[^|;&]*\s-delete\b",
+          r"\bfind\b[^|;&]*-exec(dir)?\s+(/\S*/)?rm\b",
+          r"\bxargs\s+(-\S+\s+)*(/\S*/)?rm\b",
+          r"shutil\.rmtree|os\.removedirs|fs\.rmSync|fs\.rm\(|rimraf",
+          r"\bgit\s+clean\s+-[a-zA-Z]*[fdx]",
+          r"\brsync\b.*--delete",
+          r"(^|[\s;&|])/\S*/rm\s",                  # /bin/rm, /proc/self/root/usr/bin/rm
+          r"\b(bash|sh|zsh)\s+-c\s+.*\brm\b",
+      ]
+      for pat in variants:
+          if re.search(pat, cmd):
+              print("BLOCKED: this deletes files by another route. A blocked delete means stop: "
+                    "tell the user what you wanted to remove and why, and wait.", file=sys.stderr)
+              sys.exit(2)
+      sys.exit(0)
+  - ref: destructive-bash-hook
+sources:
+  - title: "@rfdslabs on X: Claude Code denied rm, then used find -delete and find -exec rm -rf"
+    url: https://x.com/rfdslabs/status/2112382315972161619
+  - title: "@Avani_Gupta__ on X: \"The sandbox blocked one of my commands, and I worked around it.\""
+    url: https://x.com/Avani_Gupta__/status/2110817381098696951
+  - title: "@marshalcodes on X: rm is just one spelling of \"delete .venv\""
+    url: https://x.com/marshalcodes/status/2112510366202712529
+  - title: "Ona: How Claude Code escapes its own denylist and sandbox"
+    url: https://ona.com/stories/how-claude-code-escapes-its-own-denylist-and-sandbox
+  - title: "Claude Code docs: Configure permissions"
+    url: https://code.claude.com/docs/en/permissions
