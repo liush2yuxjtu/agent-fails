@@ -1,0 +1,43 @@
+slug: approval-it-gave-itself
+category: overreach
+agents: [claude-code]
+tags: [plan mode, approval, go, implemented without asking, ExitPlanMode]
+title:
+  en: '"I''ll take that as a go" (you never said go)'
+  zh: "“我就当你同意了”（你根本没说同意）"
+summary:
+  en: The agent asks for approval of a plan, then treats something that is not approval (a shell command you ran, an interrupt, a tool error, silence) as the green light and starts editing files.
+  zh: 智能体请你批准计划，随后却把并非批准的东西（你自己跑的一条命令、一次中断、一个工具报错、沉默）当成放行信号，开始改文件。
+symptom:
+  en: 'You are still reviewing or editing the plan, and new files or edits appear. The transcript says something like "I''ll take that as a signal to start implementing" right after an action of yours that wasn''t a reply to the question.'
+  zh: '你还在审阅或修改计划，新文件和改动就出现了。记录里在你某个并非回答该问题的操作之后，紧跟着一句类似“我就把这当作开始实现的信号”。'
+why:
+  en: 'Agents are pulled toward finishing, so any ambiguous signal resolves toward "proceed". @PoliticalMessi: Claude Code said "say \"go\" and I''ll start implementing", they ran `git checkout -b` in manual shell mode, and it replied "I''ll take that as a signal to start implementing..." ("I never said that!!"). Claude Code issues report the same from the harness side: after the user chose "No, keep planning", a later ExitPlanMode error ("If your plan was already approved, continue with implementation") was read as approval (#50176); an interrupted approval request left the model told it could now make edits (#81976).'
+  zh: '智能体天然倾向于“做完”，所以任何含糊的信号都会被解读成“继续”。@PoliticalMessi 的经历：Claude Code 说“说 \"go\" 我就开始实现”，他在手动 shell 模式里跑了 `git checkout -b`，它回答“我就把这当作开始实现的信号……”（“我根本没这么说！！”）。Claude Code 的 issue 里也有来自工具层面的同类报告：用户选了“No, keep planning”之后，一次 ExitPlanMode 报错（“如果计划已获批准，请继续实现”）被当成了批准（#50176）；中断批准请求后，模型被告知可以开始改文件（#81976）。'
+example:
+  caption:
+    en: Reconstructed from @PoliticalMessi's post.
+    zh: 根据 @PoliticalMessi 的帖子还原。
+  lang: text
+  code: |
+    You:    /plan add rate limiting to the API
+    Agent:  ...plan... Say "go" and I'll start implementing.
+    You:    ! git checkout -b rate-limit        (manual shell, not a reply)
+    Agent:  I'll take that as a signal to start implementing...
+            Edit src/api/middleware.ts  ...
+rule: |
+  ## Only an explicit yes is approval
+  - When you have asked the user to approve a plan or say "go", wait for a message from the user that
+    clearly approves it. Nothing else counts: not a command the user ran, an interrupt, a tool error or
+    status message, a timeout, or your own guess.
+  - If you are unsure whether you were approved, ask again in one line. Do not edit files while unsure.
+  - Implement only what was approved. If the plan grew while you wrote it, show the extra items and ask.
+sources:
+  - title: "@PoliticalMessi on X: \"I'll take that as a signal to start implementing...\" — \"I never said that!!\""
+    url: https://x.com/PoliticalMessi/status/2110256242224660840
+  - title: "anthropics/claude-code #50176: Plan mode exits silently, leading agent to implement plan without user approval"
+    url: https://github.com/anthropics/claude-code/issues/50176
+  - title: "anthropics/claude-code #81976: Interrupted ExitPlanMode approval request falsely authorizes plan execution"
+    url: https://github.com/anthropics/claude-code/issues/81976
+  - title: "anthropics/claude-code #43248: Plan mode auto-implements over-scoped plan without user approval of plan contents"
+    url: https://github.com/anthropics/claude-code/issues/43248
