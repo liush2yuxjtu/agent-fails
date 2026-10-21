@@ -14,7 +14,7 @@ import { SponsorView } from "@/views/SponsorView";
 const DESC = {
   submit: { en: "Submit an AI coding agent failure case to AgentFails via a prefilled GitHub issue or pull request.", zh: "通过预填好的 GitHub Issue 或 Pull Request，向智能体翻车库投稿 AI 编程智能体的翻车案例。" },
   about: { en: "The three-part view of AI coding agent failures (wrong feature, bug, overreach) behind AgentFails, and credits to the public taxonomies it builds on.", zh: "智能体翻车库背后的三分法（做错功能、有 bug、越界），以及对所引用公开分类的致谢。" },
-  sponsor: { en: "Sponsor slots on AgentFails: pattern pages, the weekly newsletter, and featured fixes. Contact via GitHub issue.", zh: "智能体翻车库赞助位：条目页、每周周报、精选修复。通过 GitHub Issue 联系。" },
+  sponsor: { en: "Sponsor slots on AgentFails: pattern pages, the weekly newsletter, and featured fixes. Founding rates from $29. Contact via GitHub issue.", zh: "智能体翻车库赞助位：条目页、每周周报、精选修复。创始价 $29 起。通过 GitHub Issue 联系。" },
 };
 
 const TITLES = {
