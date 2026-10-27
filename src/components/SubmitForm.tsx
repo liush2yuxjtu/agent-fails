@@ -31,6 +31,10 @@ const L = {
   },
 };
 
+/**
+ * Render localized fields that build a prefilled GitHub issue link.
+ * Users submit the issue on GitHub after opening the populated form in a new tab.
+ */
 export function SubmitForm({ lang }: { lang: Lang }) {
   const l = L[lang];
   const [title, setTitle] = useState("");

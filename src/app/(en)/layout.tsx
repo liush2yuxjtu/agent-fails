@@ -5,6 +5,7 @@ import "../globals.css";
 
 export const viewport: Viewport = { themeColor: "#0b1218", width: "device-width", initialScale: 1 };
 
+/** Render the English document shell with shared fonts, page content, and analytics. */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`h-full antialiased ${fontVariableClass}`}>

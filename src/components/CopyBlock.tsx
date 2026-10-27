@@ -5,6 +5,13 @@ import { track } from "@vercel/analytics";
 import { t } from "@/lib/i18n";
 import type { Lang } from "@/lib/site";
 
+/**
+ * Render copyable code with a header that prefers file over label.
+ * Clipboard API failures trigger a legacy copy fallback; exceptions from that
+ * fallback reject the click handler's promise. A completed attempt shows copied
+ * feedback for 1,600 ms and records copy_fix when both patternSlug and fixType
+ * are provided, even if the fallback reports failure.
+ */
 export function CopyBlock({
   code,
   file,

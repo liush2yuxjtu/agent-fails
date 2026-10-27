@@ -71,6 +71,7 @@ const C = {
   },
 };
 
+/** Render localized category explanations, filtered catalog links, and source credits. */
 export function AboutView({ lang }: { lang: Lang }) {
   const c = C[lang];
   return (

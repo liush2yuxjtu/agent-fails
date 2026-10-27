@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { href, type Lang } from "@/lib/site";
 
+/**
+ * Render a decorative three-channel recorder with a localized text alternative.
+ * frameId labels the graphic; an empty title hides the caption. A nonempty slug
+ * makes the entire graphic link to that pattern's localized page.
+ */
 export function RecorderPlane({
   lang,
   frameId,

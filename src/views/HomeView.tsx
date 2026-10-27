@@ -7,6 +7,11 @@ import { NewsletterForm } from "@/components/NewsletterForm";
 import { RecorderPlane } from "@/components/RecorderPlane";
 import { frameIndex } from "@/components/Badges";
 
+/**
+ * Render the localized catalog, featured recorder, search, and newsletter signup.
+ * Include WebSite and ItemList structured data for the catalog. Errors reading,
+ * parsing, or validating catalog content propagate.
+ */
 export function HomeView({ lang }: { lang: Lang }) {
   const d = t(lang);
   const patterns = getPatterns();

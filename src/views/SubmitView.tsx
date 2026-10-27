@@ -48,6 +48,7 @@ const C = {
   },
 };
 
+/** Render localized submission guidance, GitHub contribution links, and a copyable YAML template. */
 export function SubmitView({ lang }: { lang: Lang }) {
   const c = C[lang];
   return (

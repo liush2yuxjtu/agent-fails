@@ -2,6 +2,11 @@ import Link from "next/link";
 import { t } from "@/lib/i18n";
 import { href, REPO_URL, SITE_NAME, SITE_NAME_ZH, OWNER_X_URL, OWNER_X_HANDLE, type Lang } from "@/lib/site";
 
+/**
+ * Render localized navigation and a footer around page content.
+ * path is the route without a language prefix; it determines the active navigation
+ * item and the destination of the language switch.
+ */
 export function SiteShell({ lang, path, children }: { lang: Lang; path: string; children: React.ReactNode }) {
   const d = t(lang);
   const other: Lang = lang === "en" ? "zh" : "en";

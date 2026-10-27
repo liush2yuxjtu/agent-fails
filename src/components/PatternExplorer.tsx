@@ -12,6 +12,16 @@ function matches(card: PatternCard, q: string): boolean {
   return terms.every((term) => card.search.includes(term));
 }
 
+/**
+ * Render category-grouped pattern search with an optional hero above the controls.
+ * Cards need lowercase search text; every query term must match a substring.
+ * Display IDs follow the full cards array and stay unchanged when filtering.
+ *
+ * Initialize q, cat, and agent from the URL on mount, ignoring unknown categories
+ * and agents. Filter edits replace the query string while preserving the hash.
+ * Slash focuses and selects search outside editable fields; Ctrl/Cmd+K does so
+ * from any target. Submitting scrolls to results, respecting reduced motion.
+ */
 export function PatternExplorer({ cards, lang, hero }: { cards: PatternCard[]; lang: Lang; hero?: ReactNode }) {
   const d = t(lang);
   const [q, setQ] = useState("");

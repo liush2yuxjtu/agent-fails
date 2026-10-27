@@ -5,6 +5,7 @@ import "./globals.css";
 
 export const metadata: Metadata = { title: "404 · AgentFails", robots: { index: false } };
 
+/** Render a standalone 404 document with links to both language homepages. */
 export default function GlobalNotFound() {
   return (
     <html lang="en" className={fontVariableClass}>

@@ -47,6 +47,10 @@ const C = {
   },
 };
 
+/**
+ * Render localized sponsorship options, the catalog count, and an inquiry link.
+ * Errors reading, parsing, or validating catalog content propagate.
+ */
 export function SponsorView({ lang }: { lang: Lang }) {
   const c = C[lang];
   return (

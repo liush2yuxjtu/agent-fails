@@ -17,6 +17,12 @@ const KIND_LABEL: Record<string, { en: string; zh: string }> = {
   spec: { en: "Template", zh: "模板" },
 };
 
+/**
+ * Render localized pattern details, copyable fixes, sources, and up to three
+ * related patterns from the same category.
+ * Throw the Next.js not-found error for an unknown slug. Errors reading, parsing,
+ * or validating catalog content propagate.
+ */
 export function PatternView({ slug, lang }: { slug: string; lang: Lang }) {
   const p = getPattern(slug);
   if (!p) notFound();

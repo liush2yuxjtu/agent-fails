@@ -14,7 +14,10 @@ export const CAT_RAIL: Record<Category, string> = {
   overreach: "af-rail-ovr",
 };
 
-/** Display ids such as WF-01. Index follows the list order passed in, which is category then English title. */
+/**
+ * Map slugs to display IDs such as WF-01, counting from 1 per category in input order.
+ * Numbers use at least two digits; later duplicate slugs replace earlier entries.
+ */
 export function frameIndex(items: { slug: string; category: Category }[]): Map<string, string> {
   const n: Partial<Record<Category, number>> = {};
   const out = new Map<string, string>();
@@ -32,6 +35,7 @@ export const CAT_STYLES: Record<Category, { badge: string; dot: string; ring: st
   overreach: { badge: "", dot: "ovr", ring: "" },
 };
 
+/** Render a category code alongside its localized label. */
 export function CategoryBadge({ category, lang }: { category: Category; lang: Lang }) {
   return (
     <span className="af-badge">
@@ -41,6 +45,7 @@ export function CategoryBadge({ category, lang }: { category: Category; lang: La
   );
 }
 
+/** Render agent display labels in the supplied order. */
 export function AgentChips({ agents }: { agents: AgentId[] }) {
   return (
     <span className="af-agents">
