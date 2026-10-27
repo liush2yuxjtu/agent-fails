@@ -2,29 +2,55 @@ import { CATEGORY_META, AGENT_LABEL } from "@/lib/i18n";
 import type { AgentId, Category } from "@/lib/types";
 import type { Lang } from "@/lib/site";
 
-export const CAT_STYLES: Record<Category, { badge: string; dot: string; ring: string }> = {
-  "wrong-feature": { badge: "bg-blue-50 text-blue-700 ring-blue-200", dot: "bg-blue-500", ring: "border-blue-200" },
-  bug: { badge: "bg-red-50 text-red-700 ring-red-200", dot: "bg-red-500", ring: "border-red-200" },
-  overreach: { badge: "bg-amber-50 text-amber-800 ring-amber-200", dot: "bg-amber-500", ring: "border-amber-200" },
+export const CAT_CODE: Record<Category, string> = {
+  "wrong-feature": "WF",
+  bug: "BUG",
+  overreach: "OVR",
 };
 
+export const CAT_RAIL: Record<Category, string> = {
+  "wrong-feature": "af-rail-wf",
+  bug: "af-rail-bug",
+  overreach: "af-rail-ovr",
+};
+
+/**
+ * Map slugs to display IDs such as WF-01, counting from 1 per category in input order.
+ * Numbers use at least two digits; later duplicate slugs replace earlier entries.
+ */
+export function frameIndex(items: { slug: string; category: Category }[]): Map<string, string> {
+  const n: Partial<Record<Category, number>> = {};
+  const out = new Map<string, string>();
+  for (const item of items) {
+    const next = (n[item.category] ?? 0) + 1;
+    n[item.category] = next;
+    out.set(item.slug, `${CAT_CODE[item.category]}-${String(next).padStart(2, "0")}`);
+  }
+  return out;
+}
+
+export const CAT_STYLES: Record<Category, { badge: string; dot: string; ring: string }> = {
+  "wrong-feature": { badge: "", dot: "wf", ring: "" },
+  bug: { badge: "", dot: "bug", ring: "" },
+  overreach: { badge: "", dot: "ovr", ring: "" },
+};
+
+/** Render a category code alongside its localized label. */
 export function CategoryBadge({ category, lang }: { category: Category; lang: Lang }) {
-  const s = CAT_STYLES[category];
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${s.badge}`}>
-      <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} aria-hidden />
-      {CATEGORY_META[category][lang]}
+    <span className="af-badge">
+      <span className={`rail ${CAT_STYLES[category].dot}`} aria-hidden />
+      {CAT_CODE[category]} · {CATEGORY_META[category][lang]}
     </span>
   );
 }
 
+/** Render agent display labels in the supplied order. */
 export function AgentChips({ agents }: { agents: AgentId[] }) {
   return (
-    <span className="flex flex-wrap gap-1">
+    <span className="af-agents">
       {agents.map((a) => (
-        <span key={a} className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11px] font-medium text-zinc-600">
-          {AGENT_LABEL[a]}
-        </span>
+        <span key={a}>{AGENT_LABEL[a]}</span>
       ))}
     </span>
   );

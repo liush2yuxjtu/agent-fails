@@ -31,6 +31,10 @@ const L = {
   },
 };
 
+/**
+ * Render localized fields that build a prefilled GitHub issue link.
+ * Users submit the issue on GitHub after opening the populated form in a new tab.
+ */
 export function SubmitForm({ lang }: { lang: Lang }) {
   const l = L[lang];
   const [title, setTitle] = useState("");
@@ -45,38 +49,44 @@ export function SubmitForm({ lang }: { lang: Lang }) {
     what_happened: what,
   });
 
-  const input = "mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100";
-
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-      <label className="block text-sm font-medium">
+    <div className="af-form-panel">
+      <label>
         {l.title}
-        <input className={input} value={title} onChange={(e) => setTitle(e.target.value)} placeholder={l.titlePh} />
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={l.titlePh} />
       </label>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <label className="block text-sm font-medium">
+      <div style={{ display: "grid", gap: 12, marginTop: 12, gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+        <label>
           {l.agent}
-          <select className={input} value={agent} onChange={(e) => setAgent(e.target.value)}>
+          <select value={agent} onChange={(e) => setAgent(e.target.value)}>
             <option value="">{l.unsure}</option>
-            {AGENTS.map((a) => <option key={a} value={a}>{AGENT_LABEL[a]}</option>)}
+            {AGENTS.map((a) => (
+              <option key={a} value={a}>
+                {AGENT_LABEL[a]}
+              </option>
+            ))}
           </select>
         </label>
-        <label className="block text-sm font-medium">
+        <label>
           {l.category}
-          <select className={input} value={category} onChange={(e) => setCategory(e.target.value)}>
+          <select value={category} onChange={(e) => setCategory(e.target.value)}>
             <option value="">{l.unsure}</option>
-            {CATEGORIES.map((c) => <option key={c} value={c}>{CATEGORY_META[c][lang]}</option>)}
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {CATEGORY_META[c][lang]}
+              </option>
+            ))}
           </select>
         </label>
       </div>
-      <label className="mt-3 block text-sm font-medium">
+      <label style={{ marginTop: 12 }}>
         {l.what}
-        <textarea className={`${input} min-h-28`} value={what} onChange={(e) => setWhat(e.target.value)} placeholder={l.whatPh} />
+        <textarea value={what} onChange={(e) => setWhat(e.target.value)} placeholder={l.whatPh} />
       </label>
-      <a href={url} target="_blank" rel="noopener" className="mt-4 inline-block rounded-lg bg-orange-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-orange-700">
+      <a href={url} target="_blank" rel="noopener" className="af-btn" style={{ marginTop: 16 }}>
         {l.open} ↗
       </a>
-      <p className="mt-2 text-xs text-zinc-500">{l.hint}</p>
+      <p className="af-form-hint">{l.hint}</p>
     </div>
   );
 }

@@ -5,6 +5,13 @@ import { track } from "@vercel/analytics";
 import { t } from "@/lib/i18n";
 import type { Lang } from "@/lib/site";
 
+/**
+ * Render copyable code with a header that prefers file over label.
+ * Clipboard API failures trigger a legacy copy fallback; exceptions from that
+ * fallback reject the click handler's promise. A completed attempt shows copied
+ * feedback for 1,600 ms and records copy_fix when both patternSlug and fixType
+ * are provided, even if the fallback reports failure.
+ */
 export function CopyBlock({
   code,
   file,
@@ -40,19 +47,14 @@ export function CopyBlock({
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-zinc-800 bg-zinc-950">
-      <div className="flex items-center justify-between gap-2 border-b border-zinc-800 px-3 py-1.5">
-        <code className="truncate text-xs text-zinc-400">{file ?? label}</code>
-        <button
-          type="button"
-          onClick={copy}
-          aria-label={`${d.copy} ${file ?? ""}`}
-          className="shrink-0 rounded-md bg-zinc-800 px-2.5 py-1 text-xs font-medium text-zinc-100 hover:bg-zinc-700"
-        >
-          {copied ? `✓ ${d.copied}` : d.copy}
+    <div className="af-copy">
+      <div className="af-copy-bar">
+        <code>{file ?? label}</code>
+        <button type="button" onClick={copy} aria-label={`${d.copy} ${file ?? ""}`} data-copied={copied ? "true" : "false"}>
+          {copied ? d.copied : d.copy}
         </button>
       </div>
-      <pre className="overflow-x-auto p-4 text-[13px] leading-relaxed text-zinc-100">
+      <pre>
         <code>{code}</code>
       </pre>
     </div>
