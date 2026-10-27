@@ -50,35 +50,39 @@ const C = {
 export function SponsorView({ lang }: { lang: Lang }) {
   const c = C[lang];
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-3xl font-bold tracking-tight">{c.h1}</h1>
-      <p className="mt-3 text-lg text-zinc-600">{c.lead}</p>
-      <p className="mt-2 text-sm text-zinc-500">{c.stat(getPatterns().length)}</p>
+    <div className="af-page">
+      <h1 className="af-h1">{c.h1}</h1>
+      <p className="af-lead">{c.lead}</p>
+      <p className="af-meta">{c.stat(getPatterns().length)}</p>
 
-      <section className="mt-10">
-        <h2 className="text-2xl font-semibold">{c.slotsH}</h2>
-        <div className="mt-4 grid gap-4 md:grid-cols-3">
+      <section className="af-section">
+        <h2 className="af-h2">{c.slotsH}</h2>
+        <div className="af-slots">
           {c.slots.map((s) => (
-            <div key={s.t} className="rounded-xl border border-zinc-200 bg-white p-5">
-              <h3 className="font-semibold">{s.t}</h3>
-              <p className="mt-3 text-2xl font-bold tracking-tight">{s.price}</p>
-              <p className="mt-2 text-sm text-zinc-600">{s.d}</p>
+            <div key={s.t} className="af-slot">
+              <h3>{s.t}</h3>
+              <p className="af-price">{s.price}</p>
+              <p className="af-muted">{s.d}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-2xl font-semibold">{c.rulesH}</h2>
-        <ul className="mt-3 list-disc space-y-1 pl-5 text-zinc-700">
-          {c.rules.map((r) => <li key={r}>{r}</li>)}
+      <section className="af-section">
+        <h2 className="af-h2">{c.rulesH}</h2>
+        <ul className="af-list">
+          {c.rules.map((r) => (
+            <li key={r}>{r}</li>
+          ))}
         </ul>
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-2xl font-semibold">{c.contactH}</h2>
-        <p className="mt-2 text-zinc-700">{c.contact}</p>
-        <OutboundLink href={SPONSOR_ISSUE_URL} target="_blank" rel="noopener" className="mt-4 inline-block rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-zinc-700">
+      <section className="af-section">
+        <h2 className="af-h2">{c.contactH}</h2>
+        <p className="af-muted" style={{ color: "var(--ink-soft)" }}>
+          {c.contact}
+        </p>
+        <OutboundLink href={SPONSOR_ISSUE_URL} target="_blank" rel="noopener" className="af-btn" style={{ marginTop: 16 }}>
           {c.btn} ↗
         </OutboundLink>
       </section>

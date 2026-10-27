@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CATEGORY_META } from "@/lib/i18n";
 import { CATEGORIES } from "@/lib/types";
 import { href, OWNER_POSTS, OWNER_X_HANDLE, OWNER_X_URL, REPO_URL, type Lang } from "@/lib/site";
-import { CAT_STYLES } from "@/components/Badges";
+import { CAT_CODE, CAT_RAIL } from "@/components/Badges";
 
 const CREDITS = [
   { name: "ralfyishere/agent-failure-modes (AFM index, CC BY 4.0)", url: "https://github.com/ralfyishere/agent-failure-modes" },
@@ -74,55 +74,89 @@ const C = {
 export function AboutView({ lang }: { lang: Lang }) {
   const c = C[lang];
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-3xl font-bold tracking-tight">{c.h1}</h1>
-      <p className="mt-3 text-lg text-zinc-600">{c.lead}</p>
+    <div className="af-page">
+      <h1 className="af-h1">{c.h1}</h1>
+      <p className="af-lead">{c.lead}</p>
 
-      <section className="mt-10">
-        <h2 className="text-2xl font-semibold">{c.viewH}</h2>
-        <p className="mt-2 text-zinc-700">
+      <section className="af-section">
+        <h2 className="af-h2">{c.viewH}</h2>
+        <p className="af-muted" style={{ marginTop: 10, color: "var(--ink-soft)" }}>
           {c.viewP1}
-          <a href={OWNER_POSTS[0]} className="underline">{OWNER_X_HANDLE}</a>
+          <a href={OWNER_POSTS[0]} style={{ color: "var(--amber-hot)" }}>
+            {OWNER_X_HANDLE}
+          </a>
           {c.viewP2}
         </p>
-        <ol className="mt-5 space-y-4">
-          {CATEGORIES.map((cat, i) => (
-            <li key={cat} className={`rounded-xl border bg-white p-5 ${CAT_STYLES[cat].ring}`}>
-              <h3 className="flex items-center gap-2 text-lg font-semibold">
-                <span className={`h-2.5 w-2.5 rounded-full ${CAT_STYLES[cat].dot}`} aria-hidden />
-                {i + 1}. {CATEGORY_META[cat][lang]}: {CATEGORY_META[cat].q[lang]}
+        <div className="af-about-cats">
+          {CATEGORIES.map((cat) => (
+            <div key={cat} className="af-about-cat">
+              <span className={`af-rail ${CAT_RAIL[cat]}`} aria-hidden />
+              <h3 className="af-h2" style={{ fontSize: "1.05rem" }}>
+                <span className="mono" style={{ color: "var(--amber-hot)", marginRight: 8 }}>
+                  {CAT_CODE[cat]}
+                </span>
+                {CATEGORY_META[cat][lang]}: {CATEGORY_META[cat].q[lang]}
               </h3>
-              <p className="mt-2 text-zinc-700">{c.explain[cat]}</p>
-              <Link href={`${href(lang, "/")}?cat=${cat}#patterns`} className="mt-2 inline-block text-sm font-medium text-orange-700 underline">
+              <p className="af-muted" style={{ marginTop: 10, color: "var(--ink-soft)" }}>
+                {c.explain[cat]}
+              </p>
+              <Link
+                href={`${href(lang, "/")}?cat=${cat}#patterns`}
+                style={{ display: "inline-block", marginTop: 10, color: "var(--amber-hot)", fontFamily: "var(--font-mono)", fontSize: "0.75rem", letterSpacing: "0.08em" }}
+              >
                 {CATEGORY_META[cat][lang]} →
               </Link>
+            </div>
+          ))}
+        </div>
+        <p className="af-meta" style={{ marginTop: 14 }}>
+          X:{" "}
+          {OWNER_POSTS.map((u, i) => (
+            <a key={u} href={u} style={{ marginRight: 12, color: "var(--amber-hot)" }}>
+              {`post ${i + 1}`}
+            </a>
+          ))}
+        </p>
+      </section>
+
+      <section className="af-section">
+        <h2 className="af-h2">{c.howH}</h2>
+        <ul className="af-list">
+          {c.how.map((x) => (
+            <li key={x}>{x}</li>
+          ))}
+        </ul>
+        <p className="af-muted">{c.agentsNote}</p>
+      </section>
+
+      <section className="af-section">
+        <h2 className="af-h2">{c.creditsH}</h2>
+        <p className="af-muted" style={{ color: "var(--ink-soft)" }}>
+          {c.creditsP}
+        </p>
+        <ul className="af-sources">
+          {CREDITS.map((x) => (
+            <li key={x.url}>
+              <a href={x.url} rel="noopener">
+                {x.name}
+              </a>
             </li>
           ))}
-        </ol>
-        <p className="mt-3 text-sm text-zinc-500">
-          X: {OWNER_POSTS.map((u, i) => <a key={u} href={u} className="mr-3 underline">{`post ${i + 1}`}</a>)}
-        </p>
-      </section>
-
-      <section className="mt-10">
-        <h2 className="text-2xl font-semibold">{c.howH}</h2>
-        <ul className="mt-3 list-disc space-y-1 pl-5 text-zinc-700">
-          {c.how.map((x) => <li key={x}>{x}</li>)}
         </ul>
-        <p className="mt-3 text-sm text-zinc-500">{c.agentsNote}</p>
-      </section>
-
-      <section className="mt-10">
-        <h2 className="text-2xl font-semibold">{c.creditsH}</h2>
-        <p className="mt-2 text-zinc-700">{c.creditsP}</p>
-        <ul className="mt-3 list-disc space-y-1 pl-5 text-sm">
-          {CREDITS.map((x) => <li key={x.url}><a href={x.url} className="text-blue-700 hover:underline" rel="noopener">{x.name}</a></li>)}
-        </ul>
-        <p className="mt-6 text-zinc-700">
-          {c.who}<a href={OWNER_X_URL} className="underline">{OWNER_X_HANDLE}</a>{c.who2}
-          <a href={REPO_URL} className="underline">GitHub</a>{c.who3}
+        <p className="af-muted" style={{ marginTop: 24, color: "var(--ink-soft)" }}>
+          {c.who}
+          <a href={OWNER_X_URL} style={{ color: "var(--amber-hot)" }}>
+            {OWNER_X_HANDLE}
+          </a>
+          {c.who2}
+          <a href={REPO_URL} style={{ color: "var(--amber-hot)" }}>
+            GitHub
+          </a>
+          {c.who3}
         </p>
-        <Link href={href(lang, "/submit")} className="mt-4 inline-block rounded-lg bg-orange-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-orange-700">{c.submit}</Link>
+        <Link href={href(lang, "/submit")} className="af-btn" style={{ marginTop: 16 }}>
+          {c.submit}
+        </Link>
       </section>
     </div>
   );

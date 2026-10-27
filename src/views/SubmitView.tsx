@@ -51,37 +51,43 @@ const C = {
 export function SubmitView({ lang }: { lang: Lang }) {
   const c = C[lang];
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-3xl font-bold tracking-tight">{c.h1}</h1>
-      <p className="mt-3 text-lg text-zinc-600">{c.lead}</p>
+    <div className="af-page">
+      <h1 className="af-h1">{c.h1}</h1>
+      <p className="af-lead">{c.lead}</p>
 
-      <section className="mt-8">
-        <h2 className="text-xl font-semibold">{c.a}</h2>
-        <p className="mt-1 mb-4 text-zinc-600">{c.aBody}</p>
+      <section className="af-section">
+        <h2 className="af-h2">{c.a}</h2>
+        <p className="af-muted" style={{ marginBottom: 14 }}>
+          {c.aBody}
+        </p>
         <SubmitForm lang={lang} />
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-xl font-semibold">{c.b}</h2>
-        <p className="mt-1 text-zinc-600">{c.bBody}</p>
-        <a href={PR_URL} target="_blank" rel="noopener" className="mt-4 inline-block rounded-lg border border-zinc-900 px-4 py-2.5 text-sm font-semibold hover:bg-zinc-900 hover:text-white">
+      <section className="af-section">
+        <h2 className="af-h2">{c.b}</h2>
+        <p className="af-muted">{c.bBody}</p>
+        <a href={PR_URL} target="_blank" rel="noopener" className="af-btn-ghost" style={{ marginTop: 14 }}>
           {c.bBtn} ↗
         </a>
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-xl font-semibold">{c.rules}</h2>
-        <ul className="mt-3 list-disc space-y-1 pl-5 text-zinc-700">
-          {c.list.map((x) => <li key={x}>{x}</li>)}
+      <section className="af-section">
+        <h2 className="af-h2">{c.rules}</h2>
+        <ul className="af-list">
+          {c.list.map((x) => (
+            <li key={x}>{x}</li>
+          ))}
         </ul>
-        <div className="mt-4 flex gap-4 text-sm">
-          <a href={`${REPO_URL}/blob/main/CONTRIBUTING.md`} className="underline">{c.contributing}</a>
-          <Link href={href(lang, "/about")} className="underline">{c.about}</Link>
+        <div className="af-inline-links">
+          <a href={`${REPO_URL}/blob/main/CONTRIBUTING.md`}>{c.contributing}</a>
+          <Link href={href(lang, "/about")}>{c.about}</Link>
         </div>
       </section>
 
-      <section className="mt-10">
-        <h2 className="mb-3 text-xl font-semibold">{c.template}</h2>
+      <section className="af-section">
+        <h2 className="af-h2" style={{ marginBottom: 12 }}>
+          {c.template}
+        </h2>
         <CopyBlock code={PATTERN_TEMPLATE} file="content/patterns/your-pattern-slug.yaml" lang={lang} />
       </section>
     </div>
