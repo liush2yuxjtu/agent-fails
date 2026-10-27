@@ -1493,7 +1493,7 @@ pre code {
 
   .af-glass svg {
     margin-left: 0;
-    max-height: 200px;
+    max-height: 180px;
   }
 
   .af-chans,
@@ -1513,16 +1513,38 @@ pre code {
 
 @media (max-width: 720px) {
   .af-bezel {
-    gap: 10px;
-    padding: 0 12px;
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .af-rec-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
   }
 
   .af-bezel-nav {
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .af-bezel-nav a {
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
   }
 
   .af-bezel-brand {
-    font-size: 1.35rem;
+    font-size: 1.15rem;
+  }
+
+  .af-lang {
+    padding: 5px 6px;
+    font-size: 0.64rem;
+  }
+
+  .af-glass svg {
+    max-height: 150px;
   }
 
   .af-recall input {

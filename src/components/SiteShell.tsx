@@ -20,7 +20,7 @@ export function SiteShell({ lang, path, children }: { lang: Lang; path: string; 
         {!onCase && (
           <Link href={href(lang, "/")} className="af-bezel-id" aria-label="AgentFails">
             <span className="af-lamp" aria-hidden />
-            REC
+            <span className="af-rec-word">REC</span>
           </Link>
         )}
         <Link href={href(lang, "/")} className="af-bezel-brand">

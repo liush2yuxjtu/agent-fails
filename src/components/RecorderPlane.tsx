@@ -19,6 +19,11 @@ export function RecorderPlane({
         <span className="af-mk af-mk-tr" aria-hidden />
         <span className="af-mk af-mk-bl" aria-hidden />
         <span className="af-mk af-mk-br" aria-hidden />
+        <span className="sr-only">
+          {lang === "zh"
+            ? "三类通道：做错了功能、有 Bug、越界。"
+            : "Three channels: Wrong feature, Bug, Overreach."}
+        </span>
         <svg viewBox="0 0 760 460" aria-hidden>
           <g className="af-gridline">
             <line x1="150" y1="36" x2="150" y2="392" />

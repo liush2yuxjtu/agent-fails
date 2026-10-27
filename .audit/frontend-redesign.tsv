@@ -8,3 +8,7 @@ ts	phase	decision	why	evidence	result
 2026-10-27T18:03:41Z	graft	apply C2 compact rows + first-viewport channels + C4 slash-cmdk focus; reject hero meta and full-svh poster	synthesis grafts/rejects	/tmp/arena-agentfails-ui/SYNTHESIS.md#GRAFTS	in_progress
 2026-10-27T18:18:59Z	verify	lint build green; sponsor prices present; browser confirms dark chassis amber rails three channels brand hero	prove-it-works against real pages	/opt/cursor/artifacts/redesign/home-desktop.png	VERIFIED
 2026-10-27T18:19:39Z	ship	commit presentation redesign; trail kept in .audit for PR	figure-it-out phase D commits trail for ambitious UI rewrite	.audit/frontend-redesign.tsv	open
+2026-10-27T18:23:10Z	graft	shipped C2 compact rows + slash-cmdk; dropped C4 hunks and C5 bands	C4 hunks need YAML diffs; C5 bands duplicate rails; C2 row density wins	/tmp/arena-agentfails-ui/SYNTHESIS.md	done
+2026-10-27T18:23:11Z	verify	lint clean; build OK; sponsor HTML has 49/99/29; screenshots home mobile zh pattern sponsor	prove-it-works multi-artifact	/opt/cursor/artifacts/redesign/;.next/server/app/sponsor.html	VERIFIED
+2026-10-27T18:23:11Z	ship	PR 6 opened on cursor/frontend-redesign-bda1	opening-a-pr	https://github.com/liush2yuxjtu/agent-fails/pull/6	open
+2026-10-27T18:23:32Z	fix	removed channel fix-hint lines; added sr-only taxonomy on recorder plane	user asked layout not page notes; a11y for aria-hidden SVG	PatternExplorer.tsx;RecorderPlane.tsx	done

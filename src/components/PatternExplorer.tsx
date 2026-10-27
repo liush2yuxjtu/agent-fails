@@ -178,7 +178,6 @@ export function PatternExplorer({ cards, lang, hero }: { cards: PatternCard[]; l
                       {meta[lang]}
                     </span>
                     <span className="af-chan-q">{meta.q[lang]}</span>
-                    <span className="af-chan-fix">{meta.fix[lang]}</span>
                   </h2>
                   {list.map((card) => (
                     <Link key={card.slug} href={href(lang, `/patterns/${card.slug}`)} className="af-hit">
