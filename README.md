@@ -25,6 +25,8 @@ Every pattern belongs to exactly one type, following
 - Full: add one YAML file to [`content/patterns/`](content/patterns/). See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Accepted cases are credited on the site and in the "翻车 of the week" newsletter.
+Drafts the owner can paste into Buttondown live in [`content/newsletter/`](content/newsletter/).
+Week 1 is [`content/newsletter/2026-w44.md`](content/newsletter/2026-w44.md).
 
 ## Develop
 
@@ -38,11 +40,20 @@ npm run build      # validate + production build
 Stack: Next.js (App Router, TypeScript, Tailwind CSS). Every page is statically generated from the YAML files
 in `content/`, with an English site at `/` and a full Chinese mirror at `/zh`. Pushes to `main` deploy on Vercel.
 
-Environment variables (all optional, all public; see `.env.example`):
+Environment variables (public; see `.env.example`):
 
 - `NEXT_PUBLIC_SITE_URL`: canonical URL (default `https://agent-fails.vercel.app`)
-- `NEXT_PUBLIC_NEWSLETTER_FORM_ACTION`: public newsletter subscribe URL. When unset, the signup form is a
-  stub that stores nothing.
+- `NEXT_PUBLIC_NEWSLETTER_FORM_ACTION`: public newsletter subscribe URL. The homepage form POSTs a field
+  named `email` and a hidden `tag` (`en` or `zh`), then opens the provider response in a new tab. Next.js
+  inlines the value at build time, so changing it needs a new deploy.
+
+  Production and Preview on the `agent-fails` Vercel project already set this to the free Buttondown embed
+  for [AgentFails Weekly](https://buttondown.com/agentfails):
+
+  `https://buttondown.com/api/emails/embed-subscribe/agentfails`
+
+  To capture signups the same way locally, put that URL in `.env.local` and restart `npm run dev`.
+  With the variable empty, the form is a stub: it thanks the visitor and stores nothing.
 
 ## Credits
 
