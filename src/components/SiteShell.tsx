@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LangSwitch } from "@/components/LangSwitch";
 import { t } from "@/lib/i18n";
 import { href, REPO_URL, SITE_NAME, SITE_NAME_ZH, OWNER_X_URL, OWNER_X_HANDLE, type Lang } from "@/lib/site";
 
@@ -9,7 +10,6 @@ import { href, REPO_URL, SITE_NAME, SITE_NAME_ZH, OWNER_X_URL, OWNER_X_HANDLE, t
  */
 export function SiteShell({ lang, path, children }: { lang: Lang; path: string; children: React.ReactNode }) {
   const d = t(lang);
-  const other: Lang = lang === "en" ? "zh" : "en";
   const nav = [
     { to: "/", label: d.nav.patterns },
     { to: "/submit", label: d.nav.submit },
@@ -42,13 +42,7 @@ export function SiteShell({ lang, path, children }: { lang: Lang; path: string; 
             </Link>
           ))}
         </nav>
-        <Link
-          href={href(other, path)}
-          hrefLang={other === "zh" ? "zh-CN" : "en"}
-          className="af-lang"
-        >
-          {d.langSwitch}
-        </Link>
+        <LangSwitch current={lang} path={path} label={d.langSwitch} />
       </header>
       <main className="af-main">{children}</main>
       <footer className="af-foot">
