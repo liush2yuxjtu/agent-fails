@@ -546,6 +546,7 @@ pre code {
 .af-deck-rest {
   grid-area: rest;
   padding-bottom: 36px;
+  scroll-margin-top: calc(var(--bezel) + 8px);
 }
 
 .af-recall:focus-within {
@@ -815,6 +816,17 @@ pre code {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.01em;
+}
+
+.af-hit-why {
+  display: -webkit-box;
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--ink-dim);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .af-page {
@@ -1468,6 +1480,10 @@ pre code {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .af-playhead {
     display: none;
   }

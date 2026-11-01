@@ -21,6 +21,7 @@ function matches(card: PatternCard, q: string): boolean {
  * and agents. Filter edits replace the query string while preserving the hash.
  * Slash focuses and selects search outside editable fields; Ctrl/Cmd+K does so
  * from any target. Submitting scrolls to results, respecting reduced motion.
+ * While a query is active, each row also shows its summary.
  */
 export function PatternExplorer({ cards, lang, hero }: { cards: PatternCard[]; lang: Lang; hero?: ReactNode }) {
   const d = t(lang);
@@ -195,6 +196,7 @@ export function PatternExplorer({ cards, lang, hero }: { cards: PatternCard[]; l
                       <span className="af-hit-copy">
                         <span className="af-hit-title">{card.title}</span>
                         <span className="af-altline">{card.altTitle}</span>
+                        {q ? <span className="af-hit-why">{card.summary}</span> : null}
                         <span className="af-slug">{card.slug}</span>
                       </span>
                     </Link>
