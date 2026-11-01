@@ -1,23 +1,67 @@
 slug: frontend-tweak-changed-backend
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [frontend, backend, ui tweak, api change, layer, overreach]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - frontend
+  - backend
+  - ui tweak
+  - api change
+  - layer
+  - overreach
 title:
   en: Asked for a UI tweak, it changed backend logic
   zh: 只让改个前端样式，它动了后端逻辑
+  pt: Pediu ajuste de UI, mudou lógica de backend
+  ko: UI 조정을 시켰더니 백엔드 로직을 바꿈
+  vi: Nhờ chỉnh UI, nó đổi logic backend
+  de: UI-Tweak erbeten, Backend-Logik geändert
 summary:
-  en: A small frontend request ("make the button say Save", "hide this field") comes back with changes to API handlers, validation or database queries.
+  en: >-
+    A small frontend request ("make the button say Save", "hide this field") comes back with changes to API handlers,
+    validation or database queries.
   zh: 一个小小的前端需求（“按钮改成‘保存’”“隐藏这个字段”）回来时，API 处理、校验逻辑或数据库查询也被改了。
+  pt: Um pedido pequeno de frontend vira mudanças em API, schema ou regras de negócio "para fazer funcionar".
+  ko: 작은 프론트 요청이 "되게 하려고" API·스키마·비즈니스 규칙 변경으로 번집니다.
+  vi: Yêu cầu frontend nhỏ thành đổi API, schema hoặc rule nghiệp vụ "cho chạy".
+  de: Eine kleine Frontend-Anfrage wird zu API-/Schema-/Business-Rule-Änderungen „damit es läuft“.
 symptom:
-  en: The UI change works and nothing is buggy, but the diff touches `api/`, `server/` or `db/`. A field got removed from the API response instead of hidden in the view, or validation was "aligned" with the new label.
+  en: >-
+    The UI change works and nothing is buggy, but the diff touches `api/`, `server/` or `db/`. A field got removed from
+    the API response instead of hidden in the view, or validation was "aligned" with the new label.
   zh: 前端改动生效了，也没 bug，但 diff 碰了 `api/`、`server/` 或 `db/`。本该在视图里隐藏的字段被直接从 API 返回里删了，或者校验逻辑被“对齐”成新文案。
+  pt: Diff inclui handlers, models ou migrations quando o ticket era CSS/copy/layout.
+  ko: 티켓은 CSS/카피/레이아웃인데 diff에 핸들러·모델·마이그레이션이 들어갑니다.
+  vi: Diff gồm handler, model hoặc migration trong khi ticket là CSS/copy/layout.
+  de: Der Diff enthält Handler, Models oder Migrations, obwohl das Ticket CSS/Copy/Layout war.
 why:
-  en: The agent picks the change that most directly makes the visible result true, wherever it lives. Without a declared layer boundary, "hide the field" can be satisfied in the API as easily as in the component. It is the example @liushiyumath gives for part 3 of the three-part view (works, bug-free, not how you wanted it). Lawrence Jones described the same kind of thing as agents that "sometimes do things that aren't ideal".
-  zh: 智能体会选能最直接让可见结果成立的改法，不管它在哪一层。没有声明分层边界时，“隐藏字段”在 API 里做和在组件里做一样容易。这正是 @liushiyumath 三分法里第 3 类的例子：能用、没 bug，但不是你想要的做法。Lawrence Jones 也说过，智能体“有时会做一些不太理想的事”。
+  en: >-
+    The agent picks the change that most directly makes the visible result true, wherever it lives. Without a declared
+    layer boundary, "hide the field" can be satisfied in the API as easily as in the component. It is the example
+    @liushiyumath gives for part 3 of the three-part view (works, bug-free, not how you wanted it). Lawrence Jones
+    described the same kind of thing as agents that "sometimes do things that aren't ideal".
+  zh: >-
+    智能体会选能最直接让可见结果成立的改法，不管它在哪一层。没有声明分层边界时，“隐藏字段”在 API 里做和在组件里做一样容易。这正是 @liushiyumath 三分法里第 3 类的例子：能用、没
+    bug，但不是你想要的做法。Lawrence Jones 也说过，智能体“有时会做一些不太理想的事”。
+  pt: >-
+    O caminho mais curto para o comportamento desejado na UI muitas vezes atravessa o backend. Scope guards e /verify
+    pegam o blast radius.
+  ko: 원하는 UI 동작으로 가는 최단 경로가 종종 백엔드를 통과합니다. Scope guard와 /verify가 영향 반경을 잡습니다.
+  vi: Đường ngắn tới hành vi UI mong muốn thường đi qua backend. Scope guard và /verify bắt bán kính ảnh hưởng.
+  de: >-
+    Der kürzeste Weg zum gewünschten UI-Verhalten geht oft durchs Backend. Scope-Guards und /verify fangen den
+    Blast-Radius.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     Request: "Don't show the phone number on the profile card."
@@ -34,13 +78,13 @@ rule: |
 extras:
   - kind: hook
     title:
-      en: "Per-task scope file for a frontend-only task"
-      zh: "仅限前端任务的范围文件"
+      en: Per-task scope file for a frontend-only task
+      zh: 仅限前端任务的范围文件
     file: .agent-scope
     lang: text
     note:
-      en: "Used by the scope-guard hook below. Write it at the start of the task; delete it when done."
-      zh: "供下面的范围守卫钩子使用。任务开始时写好，结束后删除。"
+      en: Used by the scope-guard hook below. Write it at the start of the task; delete it when done.
+      zh: 供下面的范围守卫钩子使用。任务开始时写好，结束后删除。
     code: |
       # Frontend-only task: UI tweak on the profile card
       src/components/**
@@ -51,9 +95,9 @@ extras:
   - ref: scope-guard-settings
   - ref: verify-skill
 sources:
-  - title: "@liushiyumath on X: part 3, is it ideal / no overreach?"
+  - title: '@liushiyumath on X: part 3, is it ideal / no overreach?'
     url: https://x.com/liushiyumath/status/2111201130277662883
-  - title: "@lawrjones on X: agents \"sometimes do things that aren't ideal\""
+  - title: '@lawrjones on X: agents "sometimes do things that aren''t ideal"'
     url: https://x.com/lawrjones/status/2111204507891687781
-  - title: "Kaplira: When an AI agent changes unrelated files (edit boundary example)"
+  - title: 'Kaplira: When an AI agent changes unrelated files (edit boundary example)'
     url: https://kaplira.com/guides/ai-agent-changes-unrelated-files/

@@ -1,23 +1,62 @@
 slug: patch-spiral
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [debugging, root cause, fix loop, anchoring, whack-a-mole]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - debugging
+  - root cause
+  - fix loop
+  - anchoring
+  - whack-a-mole
 title:
   en: Fix on top of fix on top of fix
   zh: 补丁摞补丁
+  pt: Fix em cima de fix em cima de fix
+  ko: 고침 위에 고침 위에 고침
+  vi: Fix chồng lên fix chồng lên fix
+  de: Fix auf Fix auf Fix
 summary:
-  en: The agent stacks unverified fixes, each aimed at the symptom the previous fix caused, and never goes back to the root cause.
+  en: >-
+    The agent stacks unverified fixes, each aimed at the symptom the previous fix caused, and never goes back to the
+    root cause.
   zh: 智能体一层层叠加未经验证的修复，每次都在修上一次修复带来的症状，从不回头找根因。
+  pt: Cada tentativa de correção empilha outro patch sem remover a abordagem falha, e a complexidade explode.
+  ko: 실패한 접근을 제거하지 않고 수정 시도마다 패치를 쌓아 복잡도가 폭발합니다.
+  vi: Mỗi lần sửa chồng thêm patch mà không bỏ hướng sai, độ phức tạp nổ.
+  de: >-
+    Jeder Korrekturversuch stapelt einen weiteren Patch, ohne den fehlgeschlagenen Ansatz zu entfernen — Komplexität
+    explodiert.
 symptom:
   en: Five rounds of "now try this", a diff full of special cases, and the original bug still there, or a new one.
   zh: 五轮“再试试这个”，diff 里塞满特殊处理，原来的 bug 还在，或者冒出了新 bug。
+  pt: Diff longo de band-aids; o primeiro design errado ainda está lá por baixo.
+  ko: 반창고 diff가 길고, 잘못된 첫 설계가 아래에 그대로 있습니다.
+  vi: Diff dài toàn băng keo; thiết kế sai đầu vẫn nằm bên dưới.
+  de: Langer Band-Aid-Diff; das erste falsche Design liegt noch darunter.
 why:
-  en: Each attempt starts from the latest error message, not from a fresh look at the cause, and the first guess is rarely revisited. agent-failure-modes names AFM-4 Patch Spiral and the related AFM-9 First-Hypothesis Anchoring.
+  en: >-
+    Each attempt starts from the latest error message, not from a fresh look at the cause, and the first guess is rarely
+    revisited. agent-failure-modes names AFM-4 Patch Spiral and the related AFM-9 First-Hypothesis Anchoring.
   zh: 每次尝试都从最新的报错出发，而不是重新审视原因，第一个猜测也很少被推翻。agent-failure-modes 称之为 AFM-4 补丁螺旋，相关的还有 AFM-9 首个假设锚定。
+  pt: >-
+    Reverter e recomeçar custa tokens e ego sintético; empilhar é mais barato localmente. Force um reset quando o
+    terceiro fix tocar o mesmo hotspot.
+  ko: 되돌리고 다시 시작하는 건 토큰과 합성 자존심 비용이 커서, 쌓는 편이 국소적으로 싸습니다. 세 번째 픽스가 같은 hotspot을 건드리면 리셋을 강제하세요.
+  vi: Revert và làm lại tốn token và "ego" tổng hợp; chồng rẻ hơn cục bộ. Ép reset khi fix thứ ba chạm cùng hotspot.
+  de: >-
+    Revert und Neustart kosten Tokens und synthetisches Ego; Stapeln ist lokal billiger. Erzwingen Sie Reset, wenn der
+    dritte Fix denselben Hotspot trifft.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     try 1: add null check        -> new error: undefined.map
@@ -33,8 +72,8 @@ rule: |
 extras:
   - kind: skill
     title:
-      en: "/debug skill: reproduce, hypothesize, verify"
-      zh: "/debug 技能：复现、假设、验证"
+      en: '/debug skill: reproduce, hypothesize, verify'
+      zh: /debug 技能：复现、假设、验证
     file: .claude/skills/debug/SKILL.md
     lang: markdown
     code: |
@@ -48,7 +87,7 @@ extras:
       4. Fix the cause, re-run the reproduction, and show it now passes.
       5. If two fixes fail, `git stash` the attempts and return to step 2 with new hypotheses.
 sources:
-  - title: "agent-failure-modes: AFM-4 Patch Spiral"
+  - title: 'agent-failure-modes: AFM-4 Patch Spiral'
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-004-patch-spiral.md
-  - title: "agent-failure-modes: AFM-9 First-Hypothesis Anchoring"
+  - title: 'agent-failure-modes: AFM-9 First-Hypothesis Anchoring'
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-009-first-hypothesis-anchoring.md

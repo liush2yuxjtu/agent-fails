@@ -1,23 +1,57 @@
 slug: unawaited-promise
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [async, await, promise, race condition, javascript, typescript]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - async
+  - await
+  - promise
+  - race condition
+  - javascript
+  - typescript
 title:
   en: Dropped an await
   zh: 漏了一个 await
+  pt: Esqueceu um await
+  ko: await를 빠뜨림
+  vi: Bỏ sót một await
+  de: Ein await fallen gelassen
 summary:
-  en: After a refactor, an async call's promise is discarded, so writes happen out of order or errors vanish as unhandled rejections.
+  en: >-
+    After a refactor, an async call's promise is discarded, so writes happen out of order or errors vanish as unhandled
+    rejections.
   zh: 重构之后，一个异步调用返回的 promise 被丢弃了，导致写入顺序错乱，或者错误变成了无人处理的 rejection。
+  pt: O agente chama async sem await / `.then`, então erros somem e a ordem fica errada.
+  ko: 에이전트가 await/`.then` 없이 async를 호출해 에러가 사라지고 순서가 틀어집니다.
+  vi: Agent gọi async không await / `.then`, nên lỗi biến mất và thứ tự sai.
+  de: Der Agent ruft Async ohne await / `.then` auf — Fehler verschwinden und die Reihenfolge stimmt nicht.
 symptom:
   en: Intermittent "it saved but didn't show up" bugs, flaky tests, unhandled rejection warnings in logs.
   zh: 偶发的“保存了但没显示”问题、不稳定的测试、日志里的 unhandled rejection 警告。
+  pt: Flakes, "then" rodando cedo demais, rejeições unhandled.
+  ko: 플레이크, 너무 이른 then, unhandled rejection.
+  vi: Flake, "then" chạy quá sớm, unhandled rejection.
+  de: Flakes, „then“ zu früh, unhandled Rejections.
 why:
-  en: Agents drop awaits when a function looks synchronous, especially right after making it async. agent-review lists it as AR022 (High severity).
+  en: >-
+    Agents drop awaits when a function looks synchronous, especially right after making it async. agent-review lists it
+    as AR022 (High severity).
   zh: 函数看起来像同步的时候，智能体就容易漏掉 await，特别是刚把它改成 async 之后。agent-review 列为 AR022（高严重度）。
+  pt: agent-review AR022. Typecheck estrito e lint de floating promises pegam cedo.
+  ko: agent-review AR022. 엄격한 타입체크와 floating promise 린트가 일찍 잡습니다.
+  vi: agent-review AR022. Typecheck chặt và lint floating promise bắt sớm.
+  de: agent-review AR022. Strenger Typecheck und Lint für floating Promises fangen früh.
 example:
   caption:
     en: From the agent-review taxonomy (AR022).
     zh: 摘自 agent-review 分类（AR022）。
+    pt: Da taxonomia agent-review (AR022).
+    ko: agent-review 분류에서 (AR022).
+    vi: Từ phân loại agent-review (AR022).
+    de: Aus der agent-review-Taxonomie (AR022).
   lang: ts
   code: |
     async function persist() {
@@ -29,12 +63,12 @@ rule: |
     promise explicitly. List the call sites you changed.
   - Never leave a floating promise. If fire-and-forget is intended, write `void task().catch(report)` with a comment.
   - Keep `@typescript-eslint/no-floating-promises` on; don't disable it to get green.
-cursor_globs: "**/*.{ts,tsx,js,jsx}"
+cursor_globs: '**/*.{ts,tsx,js,jsx}'
 extras:
   - kind: ci
     title:
-      en: "ESLint: make floating promises an error"
-      zh: "ESLint：把悬空 promise 设为错误"
+      en: 'ESLint: make floating promises an error'
+      zh: ESLint：把悬空 promise 设为错误
     file: eslint.config.mjs
     lang: js
     code: |
@@ -44,5 +78,5 @@ extras:
         "@typescript-eslint/no-misused-promises": "error",
       }
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR022 Unawaited promise"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR022 Unawaited promise'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar022-unawaited-promise

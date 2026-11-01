@@ -1,23 +1,63 @@
 slug: swallowed-error
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [try catch, exception, silent failure, error handling, except pass]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - try catch
+  - exception
+  - silent failure
+  - error handling
+  - except pass
 title:
   en: Errors swallowed to make it "work"
   zh: 把错误吞掉，让它“能跑”
+  pt: Erros engolidos para "fazer funcionar"
+  ko: '"되게 하려고" 에러를 삼킴'
+  vi: Nuốt lỗi để "cho chạy"
+  de: Fehler geschluckt, damit es „läuft“
 summary:
-  en: The agent wraps failing code in a catch that does nothing (or only logs) so the error disappears, and so does the signal that something is broken.
+  en: >-
+    The agent wraps failing code in a catch that does nothing (or only logs) so the error disappears, and so does the
+    signal that something is broken.
   zh: 智能体用一个什么都不做（或只打日志）的 catch 包住出错的代码，错误消失了，“出问题了”的信号也跟着消失了。
+  pt: 'Try/catch vazio, `except: pass`, ou log-and-continue esconde falhas reais até bem mais tarde.'
+  ko: '빈 try/catch, `except: pass`, 또는 log-and-continue가 실제 실패를 훨씬 늦게까지 숨깁니다.'
+  vi: 'Try/catch rỗng, `except: pass`, hoặc log-and-continue che failure thật đến rất muộn.'
+  de: 'Leeres try/catch, `except: pass` oder log-and-continue versteckt echte Failures bis viel später.'
 symptom:
-  en: '`catch (e) {}`, `except: pass`, `except Exception:` replacing a narrow handler, or a catch that returns `null` and lets bad data flow downstream.'
+  en: >-
+    `catch (e) {}`, `except: pass`, `except Exception:` replacing a narrow handler, or a catch that returns `null` and
+    lets bad data flow downstream.
   zh: '出现 `catch (e) {}`、`except: pass`、用 `except Exception:` 替换原本精确的异常处理，或者 catch 里返回 `null`，让坏数据流向下游。'
+  pt: UI "funciona"; dados faltam; logs silenciosos; oncall vê sintomas distantes.
+  ko: UI는 "되고" 데이터는 빠지고 로그는 조용하며, 온콜은 먼 증상만 봅니다.
+  vi: UI "chạy"; thiếu dữ liệu; log im; oncall thấy triệu chứng xa.
+  de: UI „läuft“; Daten fehlen; Logs still; Oncall sieht entfernte Symptome.
 why:
-  en: A crash is a visible failure; a swallowed error makes the task look done and the test pass. agent-review lists AR017 (silent or swallowed catch) and AR019 (broad exception catch), noting agents widen catches to make tests pass when the real failure is upstream.
-  zh: 崩溃是看得见的失败；吞掉错误则让任务看起来完成、测试看起来通过。agent-review 列了 AR017（静默/吞掉的 catch）和 AR019（过宽的异常捕获），并指出当真正的问题在上游时，智能体会放宽 catch 来让测试通过。
+  en: >-
+    A crash is a visible failure; a swallowed error makes the task look done and the test pass. agent-review lists AR017
+    (silent or swallowed catch) and AR019 (broad exception catch), noting agents widen catches to make tests pass when
+    the real failure is upstream.
+  zh: >-
+    崩溃是看得见的失败；吞掉错误则让任务看起来完成、测试看起来通过。agent-review 列了 AR017（静默/吞掉的 catch）和 AR019（过宽的异常捕获），并指出当真正的问题在上游时，智能体会放宽 catch
+    来让测试通过。
+  pt: Engolir erros é o atalho para verde. Proíba catch vazio nas regras e exija falhar alto em caminhos inesperados.
+  ko: 에러를 삼키는 게 초록으로 가는 지름길입니다. 규칙에서 빈 catch를 금지하고 예상 밖 경로에서는 크게 실패하게 하세요.
+  vi: Nuốt lỗi là đường tắt tới xanh. Cấm catch rỗng trong rule và đòi fail to trên đường bất ngờ.
+  de: >-
+    Fehler schlucken ist die Abkürzung zu Grün. Leere Catches in Regeln verbieten und auf unerwarteten Pfaden laut
+    failen lassen.
 example:
   caption:
     en: From the agent-review taxonomy (AR017).
     zh: 摘自 agent-review 分类（AR017）。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: js
   code: |
     try { fn() } catch (e) { /* swallow */ }
@@ -31,8 +71,8 @@ rule: |
 extras:
   - kind: ci
     title:
-      en: "Lint rules that catch it (ESLint / Ruff)"
-      zh: "能抓住它的 lint 规则（ESLint / Ruff）"
+      en: Lint rules that catch it (ESLint / Ruff)
+      zh: 能抓住它的 lint 规则（ESLint / Ruff）
     file: eslint.config.mjs  /  pyproject.toml
     lang: text
     code: |
@@ -43,7 +83,7 @@ extras:
       [tool.ruff.lint]
       extend-select = ["E722", "BLE001", "S110"]  # bare except, blind except, try-except-pass
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR017 Silent or swallowed catch"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR017 Silent or swallowed catch'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar017-silent-or-swallowed-catch
-  - title: "vnmoorthy/agent-review TAXONOMY: AR019 Broad exception catch"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR019 Broad exception catch'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar019-broad-exception-catch

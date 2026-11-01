@@ -1,23 +1,86 @@
 slug: dependency-or-config-bump
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [package.json, lockfile, config, tsconfig, eslint, version bump]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - package.json
+  - lockfile
+  - config
+  - tsconfig
+  - eslint
+  - version bump
 title:
   en: Bumped a dependency or config "along the way"
   zh: “顺手”升级了依赖或改了配置
+  pt: Bumpou dependência ou config "no caminho"
+  ko: '"지나가며" 의존성·설정을 올림'
+  vi: Bump dependency hoặc config "tiện tay"
+  de: Dependency oder Config „nebenbei“ gebumpt
 summary:
-  en: To get past an unrelated warning or error, the agent upgrades a package, edits the lockfile, or changes a config default.
+  en: >-
+    To get past an unrelated warning or error, the agent upgrades a package, edits the lockfile, or changes a config
+    default.
   zh: 为了绕过一个无关的警告或错误，智能体升级了某个包、改了 lockfile，或改了配置默认值。
+  pt: >-
+    Para passar de um warning/erro não relacionado, o agente sobe um pacote, edita o lockfile ou muda um default de
+    config.
+  ko: 관련 없는 경고/에러를 피하려고 패키지를 올리고 lockfile을 고치거나 설정 기본값을 바꿉니다.
+  vi: Để vượt warning/lỗi không liên quan, agent nâng package, sửa lockfile hoặc đổi default config.
+  de: >-
+    Um an einer unrelated Warning/Error vorbeizukommen, upgraded der Agent ein Paket, editiert die Lockfile oder ändert
+    ein Config-Default.
 symptom:
-  en: '`package.json`, the lockfile, `tsconfig.json`, `.eslintrc` or CI config appear in a diff that was about feature code. Strictness quietly drops.'
+  en: >-
+    `package.json`, the lockfile, `tsconfig.json`, `.eslintrc` or CI config appear in a diff that was about feature
+    code. Strictness quietly drops.
   zh: 一个关于功能代码的 diff 里出现了 `package.json`、lockfile、`tsconfig.json`、`.eslintrc` 或 CI 配置。严格程度被悄悄降低了。
+  pt: >-
+    `package.json`, lockfile, `tsconfig.json`, `.eslintrc` ou config de CI aparecem num diff que era sobre feature.
+    Strictness cai em silêncio.
+  ko: 기능 코드 diff에 `package.json`·lockfile·`tsconfig.json`·`.eslintrc`·CI 설정이 등장합니다. 엄격도가 조용히 떨어집니다.
+  vi: >-
+    `package.json`, lockfile, `tsconfig.json`, `.eslintrc` hoặc config CI xuất hiện trong diff về feature. Độ nghiêm
+    ngặt giảm im lặng.
+  de: >-
+    `package.json`, Lockfile, `tsconfig.json`, `.eslintrc` oder CI-Config tauchen in einem Feature-Diff auf. Strenge
+    sinkt still.
 why:
-  en: Config is the shortest path to green. developertoolkit.ai's scope-creep class names "a dependency bumped along the way, a config default changed to make a test pass" and says the earliest reliable catch is mechanical, CI comparing changed paths to the declared scope. The dev.to post's agent also "updates a config file because the linter complained about something unrelated".
-  zh: 改配置是变绿的最短路径。developertoolkit.ai 的 scope creep 类别点名了“顺手升级的依赖、为让测试通过而改的配置默认值”，并指出最可靠的最早拦截是机械式的：CI 比对改动路径与声明范围。dev.to 那篇文章里的智能体也会“因为 linter 抱怨了无关的东西而改配置文件”。
+  en: >-
+    Config is the shortest path to green. developertoolkit.ai's scope-creep class names "a dependency bumped along the
+    way, a config default changed to make a test pass" and says the earliest reliable catch is mechanical, CI comparing
+    changed paths to the declared scope. The dev.to post's agent also "updates a config file because the linter
+    complained about something unrelated".
+  zh: >-
+    改配置是变绿的最短路径。developertoolkit.ai 的 scope creep 类别点名了“顺手升级的依赖、为让测试通过而改的配置默认值”，并指出最可靠的最早拦截是机械式的：CI 比对改动路径与声明范围。dev.to
+    那篇文章里的智能体也会“因为 linter 抱怨了无关的东西而改配置文件”。
+  pt: >-
+    Config é o caminho mais curto para verde. A classe scope-creep de developertoolkit.ai nomeia "dependency bumped
+    along the way, config default changed to make a test pass" e diz que o catch mais cedo confiável é mecânico: CI
+    comparando paths mudados ao escopo declarado. No post do dev.to o agente também "updates a config file because the
+    linter complained about something unrelated".
+  ko: >-
+    설정 변경은 초록으로 가는 최단 경로입니다. developertoolkit.ai의 scope-creep 클래스는 "지나가며 올린 의존성, 테스트 통과를 위해 바꾼 설정 기본값"을 짚고, 가장 이른 확실한
+    포착은 기계적 CI(변경 경로 vs 선언 범위)라고 합니다. dev.to 글의 에이전트도 "linter가 관련 없는 걸 불평해서 config를 고칩니다".
+  vi: >-
+    Config là đường ngắn nhất tới xanh. Lớp scope-creep của developertoolkit.ai nêu "dependency bumped along the way,
+    config default changed to make a test pass" và nói bắt sớm đáng tin là cơ học: CI so path đổi với scope khai báo.
+    Bài dev.to cũng có agent "updates a config file because the linter complained about something unrelated".
+  de: >-
+    Config ist der kürzeste Weg zu Grün. Die Scope-Creep-Klasse von developertoolkit.ai nennt „dependency bumped along
+    the way, config default changed to make a test pass“ und sagt, der früheste zuverlässige Catch sei mechanisch: CI
+    vergleicht geänderte Pfade mit deklariertem Scope. Im dev.to-Post updated der Agent auch „a config file because the
+    linter complained about something unrelated“.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: diff
   code: |
     + src/cart/total.ts           (the requested fix)
@@ -33,8 +96,12 @@ extras:
   - ref: deny-permissions
   - kind: ci
     title:
-      en: "CI guard: flag config/dependency edits in feature PRs"
-      zh: "CI 守卫：功能类 PR 中出现配置/依赖改动时报警"
+      en: 'CI guard: flag config/dependency edits in feature PRs'
+      zh: CI 守卫：功能类 PR 中出现配置/依赖改动时报警
+      pt: 'Guarda de CI: sinalizar edits de config/dependência em PRs de feature'
+      ko: 'CI 가드: 기능 PR의 설정/의존성 편집 표시'
+      vi: 'CI guard: gắn cờ edit config/dependency trong PR feature'
+      de: 'CI-Guard: Config-/Dependency-Edits in Feature-PRs markieren'
     file: .github/workflows/config-guard.yml
     lang: yaml
     code: |
@@ -54,9 +121,9 @@ extras:
                   echo "Config/dependency files changed without the 'deps-or-config' label:"; echo "$hits"; exit 1
                 fi
 sources:
-  - title: "developertoolkit.ai: failure taxonomy (scope creep)"
+  - title: 'developertoolkit.ai: failure taxonomy (scope creep)'
     url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/
-  - title: "dev.to (yureki_lab): diff budget"
+  - title: 'dev.to (yureki_lab): diff budget'
     url: https://dev.to/yureki_lab/how-i-stopped-my-ai-coding-agents-scope-creep-with-a-diff-budget-47lj
-  - title: "claudecodeguides.com: permissions deny for config, lock files and migrations"
+  - title: 'claudecodeguides.com: permissions deny for config, lock files and migrations'
     url: https://claudecodeguides.com/claude-code-stop-modifying-unrelated-files/

@@ -1,23 +1,60 @@
 slug: silently-changed-behavior
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [refactor, behavior change, status code, default value, regression]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - refactor
+  - behavior change
+  - status code
+  - default value
+  - regression
 title:
   en: A "refactor" that changed behavior
   zh: 名为“重构”，实则改了行为
+  pt: Um "refactor" que mudou comportamento
+  ko: 동작을 바꾼 "리팩터"
+  vi: '"Refactor" đã đổi hành vi'
+  de: Ein „Refactor“, das Verhalten änderte
 summary:
-  en: Code that looks like a cleanup changes something observable (a default value, an error message, a status code, a log level), and tests don't notice.
+  en: >-
+    Code that looks like a cleanup changes something observable (a default value, an error message, a status code, a log
+    level), and tests don't notice.
   zh: 看起来只是清理的代码，改变了可观察的行为（默认值、错误信息、状态码、日志级别），测试却没发现。
+  pt: Rotulado como cleanup/rename, o diff altera semântica (ordem, defaults, error handling) sem testes ou menção.
+  ko: cleanup/rename으로 포장했지만 테스트나 언급 없이 의미(순서·기본값·에러 처리)를 바꿉니다.
+  vi: Gắn nhãn cleanup/rename nhưng diff đổi ngữ nghĩa (thứ tự, default, error handling) không test hay nhắc.
+  de: >-
+    Als Cleanup/Rename gelabelt, ändert der Diff Semantik (Reihenfolge, Defaults, Error-Handling) ohne Tests oder
+    Erwähnung.
 symptom:
-  en: Clean diff, passing tests, broken production. A client that matched on an error string or relied on a default starts failing.
+  en: >-
+    Clean diff, passing tests, broken production. A client that matched on an error string or relied on a default starts
+    failing.
   zh: diff 很干净、测试全通过，生产环境却坏了。依赖某个错误字符串或默认值的调用方开始出错。
+  pt: Reviewer assume cosmético; runtime diverge em edge cases.
+  ko: 리뷰어는 화장품으로 가정하지만 런타임이 엣지에서 갈라집니다.
+  vi: Reviewer coi là thẩm mỹ; runtime lệch ở edge case.
+  de: Reviewer nimmt Kosmetik an; Runtime weicht an Edge Cases ab.
 why:
-  en: Agents treat wording, defaults and messages as cosmetic. agent-review calls AR033 "the most insidious agent failure mode".
+  en: >-
+    Agents treat wording, defaults and messages as cosmetic. agent-review calls AR033 "the most insidious agent failure
+    mode".
   zh: 智能体把措辞、默认值和提示信息当成无关紧要的表面细节。agent-review 称 AR033 是“最阴险的智能体失败模式”。
+  pt: agent-review AR033. Refactors precisam de testes de comportamento ou diff revisado linha a linha quanto à semântica.
+  ko: agent-review AR033. 리팩터는 동작 테스트나 의미에 대한 줄 단위 리뷰가 필요합니다.
+  vi: agent-review AR033. Refactor cần test hành vi hoặc review từng dòng về ngữ nghĩa.
+  de: agent-review AR033. Refactors brauchen Verhaltens-Tests oder zeilenweisen Review auf Semantik.
 example:
   caption:
     en: From the agent-review taxonomy (AR033).
     zh: 摘自 agent-review 分类（AR033）。
+    pt: Da taxonomia agent-review (AR033).
+    ko: agent-review 분류에서 (AR033).
+    vi: Từ phân loại agent-review (AR033).
+    de: Aus der agent-review-Taxonomie (AR033).
   lang: diff
   code: |
     - throw new Error("not found"); // mapped to 404 by middleware
@@ -32,11 +69,11 @@ rule: |
 extras:
   - ref: review-skill
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR033 Silently changed behavior"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR033 Silently changed behavior'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar033-silently-changed-behavior
-  - title: "@dusangran on X: an agent built a feature and quietly broke an unrelated part"
+  - title: '@dusangran on X: an agent built a feature and quietly broke an unrelated part'
     url: https://x.com/dusangran/status/2111133030182264959
-  - title: "@i_mika_el on X: behavior changed for a case the task never mentioned"
+  - title: '@i_mika_el on X: behavior changed for a case the task never mentioned'
     url: https://x.com/i_mika_el/status/2111207904191902125
-  - title: "@ArminPage on X: an agent changed aggregation logic that customers preferred for a business reason"
+  - title: '@ArminPage on X: an agent changed aggregation logic that customers preferred for a business reason'
     url: https://x.com/ArminPage/status/2111150318973063210

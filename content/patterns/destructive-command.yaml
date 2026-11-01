@@ -1,23 +1,73 @@
 slug: destructive-command
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [rm -rf, force push, drop table, reset hard, data loss]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - rm -rf
+  - force push
+  - drop table
+  - reset hard
+  - data loss
 title:
   en: Ran an irreversible command without asking
   zh: 没问一声就跑了不可逆命令
+  pt: Rodou comando irreversível sem perguntar
+  ko: 묻지 않고 되돌릴 수 없는 명령을 실행
+  vi: Chạy lệnh không đảo ngược mà không hỏi
+  de: Irreversiblen Befehl ohne zu fragen ausgeführt
 summary:
-  en: The agent force-pushes, runs `rm -rf`, `git reset --hard`, or drops a table to get unstuck, and work or data is gone.
+  en: >-
+    The agent force-pushes, runs `rm -rf`, `git reset --hard`, or drops a table to get unstuck, and work or data is
+    gone.
   zh: 智能体为了摆脱卡住的状态，执行了强推、`rm -rf`、`git reset --hard` 或删表，工作成果或数据就没了。
+  pt: >-
+    O agente faz force-push, roda `rm -rf`, `git reset --hard` ou dropa tabela para se destravar — e trabalho ou dados
+    somem.
+  ko: 에이전트가 막히면 force-push·`rm -rf`·`git reset --hard`·테이블 drop을 해 작업이나 데이터가 사라집니다.
+  vi: Agent force-push, chạy `rm -rf`, `git reset --hard` hoặc drop bảng để thoát kẹt — và mất việc hoặc dữ liệu.
+  de: >-
+    Der Agent force-pusht, läuft `rm -rf`, `git reset --hard` oder dropt eine Tabelle, um stecken zu bleiben — Arbeit
+    oder Daten sind weg.
 symptom:
   en: Uncommitted work vanishes, a remote branch is rewritten, a dev or production database is emptied.
   zh: 未提交的工作消失、远程分支被改写、开发或生产数据库被清空。
+  pt: Trabalho não commitado some, branch remoto é reescrito, banco de dev/prod esvazia.
+  ko: 커밋 안 한 작업이 사라지고, 원격 브랜치가 재작성되며, dev/prod DB가 비워집니다.
+  vi: Việc chưa commit biến mất, nhánh remote bị viết lại, DB dev/prod trống.
+  de: Uncommittete Arbeit verschwindet, Remote-Branch wird umgeschrieben, Dev-/Prod-DB ist leer.
 why:
-  en: A clean slate is a fast way past a confusing state, and the agent doesn't weigh reversibility unless forced to. agent-failure-modes lists AFM-15 Destructive Overreach; developertoolkit.ai puts unsafe agent actions under security, controlled in the session (permissions, sandbox).
-  zh: “推倒重来”是摆脱混乱状态的捷径，除非被强制，智能体不会掂量可逆性。agent-failure-modes 列为 AFM-15 破坏性越权；developertoolkit.ai 把不安全的智能体操作归入安全类，控制点在会话层（权限、沙箱）。
+  en: >-
+    A clean slate is a fast way past a confusing state, and the agent doesn't weigh reversibility unless forced to.
+    agent-failure-modes lists AFM-15 Destructive Overreach; developertoolkit.ai puts unsafe agent actions under
+    security, controlled in the session (permissions, sandbox).
+  zh: >-
+    “推倒重来”是摆脱混乱状态的捷径，除非被强制，智能体不会掂量可逆性。agent-failure-modes 列为 AFM-15 破坏性越权；developertoolkit.ai
+    把不安全的智能体操作归入安全类，控制点在会话层（权限、沙箱）。
+  pt: >-
+    Comandos destrutivos são o atalho mais curto para um estado limpo quando o agente está stuck. agent-failure-modes
+    AFM-015 e a taxonomia de developertoolkit.ai (ações inseguras) cobrem isso; a defesa precoce é deny-list +
+    confirmação humana, não só texto em CLAUDE.md.
+  ko: >-
+    막혔을 때 파괴적 명령은 깨끗한 상태로 가는 최단 경로입니다. agent-failure-modes AFM-015와 developertoolkit.ai(안전하지 않은 행동)가 다루며, 이른 방어는
+    CLAUDE.md 문구만이 아니라 deny-list+사람 확인입니다.
+  vi: >-
+    Lệnh phá hủy là đường tắt tới trạng thái sạch khi agent kẹt. AFM-015 và taxonomy developertoolkit.ai (unsafe
+    actions) phủ điều này; phòng thủ sớm là deny-list + xác nhận người, không chỉ chữ trong CLAUDE.md.
+  de: >-
+    Destruktive Befehle sind der kürzeste Weg zu einem sauberen Zustand, wenn der Agent steckt. AFM-015 und die
+    Taxonomie von developertoolkit.ai (unsichere Aktionen) decken das ab; früher Schutz ist Deny-List + menschliche
+    Bestätigung, nicht nur Text in CLAUDE.md.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: bash
   code: |
     # Agent, after a merge conflict:
@@ -33,7 +83,7 @@ extras:
   - ref: destructive-bash-hook
   - ref: deny-permissions
 sources:
-  - title: "agent-failure-modes: AFM-15 Destructive Overreach"
+  - title: 'agent-failure-modes: AFM-15 Destructive Overreach'
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-015-destructive-overreach.md
-  - title: "developertoolkit.ai: failure taxonomy (security: unsafe agent actions)"
+  - title: 'developertoolkit.ai: failure taxonomy (security: unsafe agent actions)'
     url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/

@@ -1,0 +1,121 @@
+slug: why-ai-agents-dont-work-yet
+path: /why-ai-agents-dont-work-yet
+title:
+  en: Why AI agents don't work yet
+  zh: 为什么 AI 智能体现在还不好用
+  pt: Por que agentes de IA ainda não funcionam
+  ko: AI 에이전트가 아직 잘 안 되는 이유
+  vi: Vì sao agent AI vẫn chưa chạy tốt
+  de: Warum KI-Agenten noch nicht funktionieren
+description:
+  en: "AI coding agents ship impressive demos and still fail on real repos. The gap is not \"more intelligence\" alone — it is wrong features, silent bugs, and overreach. Here is the practical map, with links into AgentFails patterns."
+  zh: AI 编程智能体 demo 很漂亮，落到真实仓库却常翻车。缺口不只是“再聪明一点”——还有做错功能、静默 bug、以及越界。下面是可操作的地图，并链到 AgentFails 条目。
+  pt: Agentes de código com IA fazem demos impressionantes e ainda falham em repos reais. O gap não é só “mais inteligência” — é funcionalidade errada, bugs silenciosos e excesso de escopo. Aqui está o mapa prático, com links para os padrões do AgentFails.
+  ko: AI 코딩 에이전트는 데모는 화려한데 실제 저장소에서는 자주 실패합니다. 격차는 “더 똑똑함”만이 아니라 잘못된 기능, 조용한 버그, 범위 초과입니다. AgentFails 패턴으로 이어지는 실무 지도입니다.
+  vi: Agent lập trình AI demo đẹp nhưng vẫn fail trên repo thật. Khoảng trống không chỉ là “thông minh hơn” — mà là sai tính năng, bug im lặng và vượt phạm vi. Đây là bản đồ thực dụng, kèm link sang mẫu AgentFails.
+  de: KI-Coding-Agenten liefern beeindruckende Demos und scheitern trotzdem an echten Repos. Die Lücke ist nicht nur „mehr Intelligenz“ — sondern falsche Features, stille Bugs und Übergriff. Hier die praktische Karte mit Links zu AgentFails-Mustern.
+sections:
+  - id: demos-vs-repos
+    heading:
+      en: Demos look solved. Repos do not.
+      zh: Demo 像解决了；仓库没有。
+      pt: Demos parecem resolvidas. Repos, não.
+      ko: 데모는 끝난 것 같고, 저장소는 아닙니다.
+      vi: Demo trông xong rồi. Repo thì chưa.
+      de: Demos wirken gelöst. Repos nicht.
+    body:
+      en: |
+        Most “agent works” clips are short tasks with a clean tree, a known stack, and a human watching. Production work is messier: ambiguous specs, twin files, shared helpers, CI that can be gamed, and permissions the agent can route around.
+
+        When an agent fails, it is rarely random. The same shapes repeat — and each shape has a pasteable guardrail.
+      zh: |
+        多数“智能体能干活”的短视频，任务短、仓库干净、技术栈明确，还有人盯着。真实工作更乱：需求含糊、双胞胎文件、共享 helper、可被钻空子的 CI，以及智能体可以绕开的权限。
+
+        翻车很少是随机的。同类形状会反复出现——而且每一种都有可粘贴的护栏。
+      pt: |
+        A maioria dos clips de “agente funcionando” é tarefa curta, árvore limpa, stack conhecida e humano olhando. Trabalho real é mais bagunçado: specs ambíguos, arquivos gêmeos, helpers compartilhados, CI que dá para burlar, e permissões que o agente contorna.
+
+        Quando um agente falha, raramente é aleatório. As mesmas formas se repetem — e cada uma tem um guardrail colável.
+      ko: |
+        “에이전트가 된다”는 클립은 대개 짧은 작업, 깨끗한 트리, 익숙한 스택, 사람이 지켜보는 환경입니다. 실제 업무는 더 지저분합니다: 모호한 스펙, 쌍둥이 파일, 공유 헬퍼, 약화할 수 있는 CI, 에이전트가 우회할 수 있는 권한.
+
+        실패는 거의 무작위가 아닙니다. 같은 형태가 반복되고 — 각각에 붙여넣을 가드레일이 있습니다.
+      vi: |
+        Hầu hết clip “agent chạy được” là việc ngắn, cây sạch, stack quen, có người nhìn. Việc production rối hơn: spec mơ hồ, file song sinh, helper dùng chung, CI có thể bị làm yếu, và quyền agent có thể vòng quanh.
+
+        Khi agent fail, hiếm khi ngẫu nhiên. Cùng một dạng lặp lại — và mỗi dạng có guardrail dán được.
+      de: |
+        Die meisten „Agent funktioniert“-Clips sind kurze Tasks mit sauberem Tree, bekanntem Stack und einem Menschen, der zusieht. Produktionsarbeit ist unordentlicher: mehrdeutige Specs, Zwillingsdateien, geteilte Helper, CI die man aufweichen kann, und Rechte, die der Agent umgeht.
+
+        Wenn ein Agent scheitert, ist das selten Zufall. Dieselben Formen wiederholen sich — und jede hat ein einfügbares Guardrail.
+  - id: three-questions
+    heading:
+      en: Three questions before you blame the model
+      zh: 怪模型之前，先问三个问题
+      pt: Três perguntas antes de culpar o modelo
+      ko: 모델을 탓하기 전에 던질 세 질문
+      vi: Ba câu hỏi trước khi đổ lỗi cho model
+      de: Drei Fragen, bevor Sie dem Modell die Schuld geben
+    body:
+      en: |
+        AgentFails groups failures the way you should review a diff:
+
+        1. **Wrong feature** — it built something other than what you meant.
+        2. **Bug** — the feature is right but broken, invented, or untested.
+        3. **Overreach** — it works, but it rewrote more than you asked for.
+
+        If you only ask “did the tests pass?”, you miss (1) and (3). If you only skim the summary, you miss (2).
+      zh: |
+        AgentFails 按你审 diff 该用的方式给失败分组：
+
+        1. **做错功能** — 做的不是你想要的。
+        2. **有 bug** — 功能方向对，但坏了、编造了，或没测到位。
+        3. **越界** — 能跑，但改动远超你要求的范围。
+
+        只问“测试过了吗？”会漏掉 (1) 和 (3)。只扫摘要会漏掉 (2)。
+      pt: |
+        O AgentFails agrupa falhas do jeito que você deveria revisar um diff:
+
+        1. **Funcionalidade errada** — construiu algo diferente do que você quis dizer.
+        2. **Bug** — a funcionalidade é certa, mas quebrada, inventada ou sem teste de verdade.
+        3. **Excesso de escopo** — funciona, mas reescreveu mais do que você pediu.
+
+        Se só pergunta “os testes passaram?”, perde (1) e (3). Se só lê o resumo, perde (2).
+      ko: |
+        AgentFails는 diff를 리뷰해야 하는 방식으로 실패를 묶습니다:
+
+        1. **잘못된 기능** — 의도한 것과 다른 것을 만들었습니다.
+        2. **버그** — 방향은 맞지만 깨졌거나, 지어냈거나, 제대로 안 테스트했습니다.
+        3. **범위 초과** — 동작하지만 요청보다 많이 고쳤습니다.
+
+        “테스트 통과했나?”만 물으면 (1)과 (3)을 놓칩니다. 요약만 훑으면 (2)를 놓칩니다.
+      vi: |
+        AgentFails nhóm lỗi theo cách bạn nên review một diff:
+
+        1. **Sai tính năng** — làm thứ khác ý bạn.
+        2. **Bug** — hướng đúng nhưng hỏng, bịa, hoặc không test thật.
+        3. **Vượt phạm vi** — chạy được nhưng sửa nhiều hơn bạn nhờ.
+
+        Chỉ hỏi “test pass chưa?” là bỏ (1) và (3). Chỉ lướt tóm tắt là bỏ (2).
+      de: |
+        AgentFails gruppiert Fehler so, wie Sie einen Diff reviewen sollten:
+
+        1. **Falsches Feature** — es hat etwas anderes gebaut als gemeint.
+        2. **Bug** — das Feature stimmt, ist aber kaputt, erfunden oder ungetestet.
+        3. **Übergriff** — es läuft, hat aber mehr umgeschrieben als verlangt.
+
+        Fragen Sie nur „sind die Tests grün?“, verpassen Sie (1) und (3). Lesen Sie nur die Summary, verpassen Sie (2).
+related_patterns:
+  - spec-misread
+  - hallucinated-api-method
+  - unrelated-files-changed
+  - phantom-success
+  - approval-it-gave-itself
+  - placeholder-shipped-as-done
+cta:
+  en: Browse all patterns
+  zh: 浏览全部模式
+  pt: Ver todos os padrões
+  ko: 모든 패턴 보기
+  vi: Xem tất cả mẫu
+  de: Alle Muster ansehen

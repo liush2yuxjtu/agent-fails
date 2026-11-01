@@ -1,23 +1,78 @@
 slug: hallucinated-api-method
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [invented api, method does not exist, wrong language, config key, flag]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - invented api
+  - method does not exist
+  - wrong language
+  - config key
+  - flag
 title:
   en: Called a method that doesn't exist
   zh: 调用了不存在的方法
+  pt: Chamou um método que não existe
+  ko: 존재하지 않는 메서드를 호출
+  vi: Gọi phương thức không tồn tại
+  de: Eine Methode aufgerufen, die nicht existiert
 summary:
-  en: The agent uses a method, option, config key or CLI flag that exists in some other language or library version, but not in yours.
+  en: >-
+    The agent uses a method, option, config key or CLI flag that exists in some other language or library version, but
+    not in yours.
   zh: 智能体用了某个方法、选项、配置项或命令行参数，它存在于别的语言或别的版本里，但不在你的项目里。
+  pt: O agente usa método, option, config key ou flag de CLI que existe em outra linguagem/versão, mas não na sua.
+  ko: 에이전트가 다른 언어/버전에는 있지만 당신 프로젝트에는 없는 메서드·옵션·설정 키·CLI 플래그를 씁니다.
+  vi: Agent dùng method, option, config key hoặc CLI flag có ở ngôn ngữ/phiên bản khác, không phải của bạn.
+  de: >-
+    Der Agent nutzt Methode, Option, Config-Key oder CLI-Flag, die in anderer Sprache/Version existieren — nicht in
+    Ihrer.
 symptom:
-  en: '`haystack.contains(needle)` in JavaScript, a config key the framework silently ignores, or a CLI flag that errors at runtime.'
+  en: >-
+    `haystack.contains(needle)` in JavaScript, a config key the framework silently ignores, or a CLI flag that errors at
+    runtime.
   zh: JavaScript 里写 `haystack.contains(needle)`、框架会悄悄忽略的配置项，或运行时才报错的命令行参数。
+  pt: >-
+    `haystack.contains(needle)` em JavaScript, config key que o framework ignora em silêncio, ou flag de CLI que erroa
+    em runtime.
+  ko: JS에서 `haystack.contains(needle)`, 프레임워크가 조용히 무시하는 설정 키, 런타임에 에러 나는 CLI 플래그.
+  vi: '`haystack.contains(needle)` trong JavaScript, config key framework bỏ qua im lặng, hoặc CLI flag lỗi lúc runtime.'
+  de: >-
+    `haystack.contains(needle)` in JavaScript, Config-Key den das Framework still ignoriert, oder CLI-Flag das zur
+    Laufzeit fehlschlägt.
 why:
-  en: Agents conflate APIs across languages and versions; the signature looks plausible because some language has it. Config keys are worse, because unknown keys are often ignored without an error. agent-review lists this as AR006; developertoolkit.ai puts its earliest control in the session (type check and tests in the agent's own loop).
-  zh: 智能体会把不同语言、不同版本的 API 混为一谈；签名看起来合理，是因为确实有某种语言这么写。配置项更糟，未知的键常常被静默忽略。agent-review 列为 AR006；developertoolkit.ai 认为最早的控制点在会话内（让智能体自己跑类型检查和测试）。
+  en: >-
+    Agents conflate APIs across languages and versions; the signature looks plausible because some language has it.
+    Config keys are worse, because unknown keys are often ignored without an error. agent-review lists this as AR006;
+    developertoolkit.ai puts its earliest control in the session (type check and tests in the agent's own loop).
+  zh: >-
+    智能体会把不同语言、不同版本的 API 混为一谈；签名看起来合理，是因为确实有某种语言这么写。配置项更糟，未知的键常常被静默忽略。agent-review 列为 AR006；developertoolkit.ai
+    认为最早的控制点在会话内（让智能体自己跑类型检查和测试）。
+  pt: >-
+    Agentes misturam APIs entre linguagens e versões; a assinatura parece plausível porque alguma linguagem tem. Config
+    keys são piores: chaves desconhecidas muitas vezes são ignoradas sem erro. agent-review AR006; developertoolkit.ai
+    coloca o controle mais cedo na sessão (type check e testes no loop do agente).
+  ko: >-
+    에이전트는 언어·버전 간 API를 섞습니다. 어떤 언어에 있어서 서명이 그럴듯합니다. 설정 키는 더 나쁩니다: 모르는 키는 오류 없이 무시되는 경우가 많습니다. agent-review AR006;
+    developertoolkit.ai는 세션 안 통제(에이전트 루프의 타입체크·테스트)를 가장 이른 지점으로 둡니다.
+  vi: >-
+    Agent trộn API giữa ngôn ngữ/phiên bản; chữ ký trông hợp lý vì ngôn ngữ nào đó có. Config key tệ hơn: key lạ thường
+    bị bỏ qua không lỗi. agent-review AR006; developertoolkit.ai đặt kiểm soát sớm trong phiên (type check và test trong
+    vòng agent).
+  de: >-
+    Agenten vermischen APIs über Sprachen und Versionen; die Signatur wirkt plausibel, weil irgendeine Sprache sie hat.
+    Config-Keys sind schlimmer: unbekannte Keys werden oft ohne Fehler ignoriert. agent-review AR006;
+    developertoolkit.ai setzt die früheste Kontrolle in die Session (Typecheck und Tests in der Agent-Schleife).
 example:
   caption:
     en: From the agent-review taxonomy (AR006).
     zh: 摘自 agent-review 分类（AR006）。
+    pt: Da taxonomia agent-review (AR006).
+    ko: agent-review 분류에서 (AR006).
+    vi: Từ phân loại agent-review (AR006).
+    de: Aus der agent-review-Taxonomie (AR006).
   lang: js
   code: |
     if (haystack.contains(needle)) { ... } // should be .includes
@@ -31,13 +86,27 @@ rule: |
 extras:
   - kind: hook
     title:
-      en: "Claude Code PostToolUse hook: type-check after every edit"
-      zh: "Claude Code PostToolUse 钩子：每次编辑后做类型检查"
+      en: 'Claude Code PostToolUse hook: type-check after every edit'
+      zh: Claude Code PostToolUse 钩子：每次编辑后做类型检查
+      pt: 'Hook PostToolUse do Claude Code: type-check após cada edit'
+      ko: 'Claude Code PostToolUse 훅: 매 편집 후 타입체크'
+      vi: 'Hook PostToolUse Claude Code: type-check sau mỗi edit'
+      de: 'Claude-Code-PostToolUse-Hook: Typecheck nach jedem Edit'
     file: .claude/settings.json
     lang: json
     note:
-      en: "Exit code 2 from a PostToolUse hook shows stderr to Claude so it can fix the error right away. Replace tsc with mypy, cargo check, go vet, etc."
-      zh: "PostToolUse 钩子返回退出码 2 时，stderr 会展示给 Claude，让它立刻修。可把 tsc 换成 mypy、cargo check、go vet 等。"
+      en: >-
+        Exit code 2 from a PostToolUse hook shows stderr to Claude so it can fix the error right away. Replace tsc with
+        mypy, cargo check, go vet, etc.
+      zh: PostToolUse 钩子返回退出码 2 时，stderr 会展示给 Claude，让它立刻修。可把 tsc 换成 mypy、cargo check、go vet 等。
+      pt: >-
+        Exit code 2 de um PostToolUse mostra stderr ao Claude para corrigir na hora. Troque tsc por mypy, cargo check,
+        go vet, etc.
+      ko: PostToolUse가 종료 코드 2면 stderr가 Claude에 보여 바로 고칩니다. tsc를 mypy·cargo check·go vet 등으로 바꾸세요.
+      vi: Exit code 2 từ PostToolUse hiện stderr cho Claude để sửa ngay. Đổi tsc sang mypy, cargo check, go vet, v.v.
+      de: >-
+        Exit-Code 2 eines PostToolUse zeigt stderr an Claude, damit es sofort fixt. Ersetzen Sie tsc durch mypy, cargo
+        check, go vet usw.
     code: |
       {
         "hooks": {
@@ -52,9 +121,9 @@ extras:
         }
       }
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR006 Hallucinated method or property"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR006 Hallucinated method or property'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar006-hallucinated-method-or-property
-  - title: "developertoolkit.ai: failure taxonomy (invented API)"
+  - title: 'developertoolkit.ai: failure taxonomy (invented API)'
     url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/
-  - title: "@we_chat_tech on X: agent code using constants that don't exist, caught in PR review"
+  - title: '@we_chat_tech on X: agent code using constants that don''t exist, caught in PR review'
     url: https://x.com/we_chat_tech/status/2111362152493990390

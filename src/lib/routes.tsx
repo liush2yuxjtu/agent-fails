@@ -10,6 +10,8 @@ import { PatternView } from "@/views/PatternView";
 import { SubmitView } from "@/views/SubmitView";
 import { AboutView } from "@/views/AboutView";
 import { SponsorView } from "@/views/SponsorView";
+import { HubView } from "@/views/HubView";
+import { getHub, getHubs } from "./hubs";
 
 type PageCopy = Record<Lang, string>;
 
@@ -104,4 +106,28 @@ export function patternRoute(lang: Lang) {
       return <SiteShell lang={lang} path={`/patterns/${slug}`}><PatternView slug={slug} lang={lang} /></SiteShell>;
     },
   };
+}
+
+
+export function hubRoute(lang: Lang, slug: string) {
+  const hub = getHub(slug);
+  if (!hub) throw new Error(`unknown hub slug ${slug}`);
+  return {
+    metadata: pageMeta({
+      lang,
+      path: hub.path,
+      title: hub.title[lang] ?? hub.title.en,
+      description: hub.description[lang] ?? hub.description.en,
+      type: "article",
+    }),
+    Page: () => (
+      <SiteShell lang={lang} path={hub.path}>
+        <HubView slug={slug} lang={lang} />
+      </SiteShell>
+    ),
+  };
+}
+
+export function allHubSlugs(): string[] {
+  return getHubs().map((h) => h.slug);
 }

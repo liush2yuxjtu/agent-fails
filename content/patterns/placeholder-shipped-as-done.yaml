@@ -1,23 +1,59 @@
 slug: placeholder-shipped-as-done
 category: wrong-feature
-agents: [claude-code, cursor, codex, copilot]
-tags: [stub, placeholder, not implemented, almost done, TODO]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - stub
+  - placeholder
+  - not implemented
+  - almost done
+  - TODO
 title:
   en: A stub shipped as "done"
   zh: 桩代码冒充“已完成”
+  pt: Um stub enviado como "pronto"
+  ko: 스텁을 "완료"로 출하
+  vi: Stub giao như "xong"
+  de: Ein Stub als „fertig“ ausgeliefert
 summary:
-  en: The agent reports the feature complete, but a function body is `pass`, `return null`, or `throw new Error("not implemented")`.
+  en: >-
+    The agent reports the feature complete, but a function body is `pass`, `return null`, or `throw new Error("not
+    implemented")`.
   zh: 智能体说功能做完了，但某个函数体其实是 `pass`、`return null` 或 `throw new Error("not implemented")`。
+  pt: TODO, `throw new Error("not implemented")`, ou UI fake é marcado como tarefa concluída.
+  ko: TODO, `throw new Error("not implemented")`, 가짜 UI가 완료 작업으로 표시됩니다.
+  vi: TODO, `throw new Error("not implemented")`, hoặc UI giả được đánh dấu task xong.
+  de: TODO, `throw new Error("not implemented")` oder Fake-UI wird als erledigt markiert.
 symptom:
-  en: The summary says done. The UI or endpoint exists. The core function behind it is a placeholder, a TODO, or returns a hard-coded value.
+  en: >-
+    The summary says done. The UI or endpoint exists. The core function behind it is a placeholder, a TODO, or returns a
+    hard-coded value.
   zh: 总结里写着“完成”。界面或接口都有了，但背后的核心函数是占位符、TODO，或者返回写死的值。
+  pt: Aceite falha no primeiro uso real; o agente já declarou done.
+  ko: 실제 첫 사용에서 수락 기준이 실패하는데 에이전트는 이미 done을 선언했습니다.
+  vi: Tiêu chí chấp nhận fail lần dùng thật đầu; agent đã tuyên bố done.
+  de: Abnahme scheitert beim ersten echten Gebrauch; der Agent hat schon done erklärt.
 why:
-  en: Agents scaffold first and fill in later. When the session runs long or hits a hard part, the scaffold survives and the final message describes the plan rather than the code. agent-review lists this as AR035 "Incomplete implementation"; the Agentic SDLC handbook describes the related "Almost Done" trap.
+  en: >-
+    Agents scaffold first and fill in later. When the session runs long or hits a hard part, the scaffold survives and
+    the final message describes the plan rather than the code. agent-review lists this as AR035 "Incomplete
+    implementation"; the Agentic SDLC handbook describes the related "Almost Done" trap.
   zh: 智能体习惯先搭骨架再填肉。会话一长或遇到难点，骨架就留下来了，最后的总结描述的是计划而不是代码。agent-review 把它列为 AR035“实现不完整”；Agentic SDLC 手册里也有相关的“快做完了”陷阱。
+  pt: Placeholders desbloqueiam o próximo passo na cabeça do agente. Exija evidência ponta a ponta antes de "done".
+  ko: 플레이스홀더는 에이전트 머릿속 다음 단계를 엽니다. "done" 전에 엔드투엔드 증거를 요구하세요.
+  vi: Placeholder mở bước tiếp trong đầu agent. Đòi bằng chứng end-to-end trước "done".
+  de: Platzhalter entblocken den nächsten Schritt im Agentenkopf. Fordern Sie End-to-End-Evidenz vor „done“.
 example:
   caption:
     en: From the agent-review taxonomy (AR035).
     zh: 摘自 agent-review 分类（AR035）。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: python
   code: |
     def refund(order):
@@ -32,8 +68,8 @@ rule: |
 extras:
   - kind: ci
     title:
-      en: "CI step: fail if the diff adds placeholders"
-      zh: "CI 步骤：diff 中新增占位符则失败"
+      en: 'CI step: fail if the diff adds placeholders'
+      zh: CI 步骤：diff 中新增占位符则失败
     file: .github/workflows/no-placeholders.yml
     lang: yaml
     code: |
@@ -53,7 +89,7 @@ extras:
                 fi
   - ref: verify-skill
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR035 Incomplete implementation"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR035 Incomplete implementation'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar035-incomplete-implementation
-  - title: "Agentic SDLC handbook, ch. 20: the \"Almost Done\" trap"
+  - title: 'Agentic SDLC handbook, ch. 20: the "Almost Done" trap'
     url: https://danielmeppiel.github.io/agentic-sdlc-handbook/handbook/ch20-anti-patterns-and-failure-modes.html

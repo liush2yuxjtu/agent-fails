@@ -1,23 +1,60 @@
 slug: zombie-requirement
 category: wrong-feature
-agents: [claude-code, cursor, codex, copilot]
-tags: [context, long session, superseded instruction, changed my mind]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - context
+  - long session
+  - superseded instruction
+  - changed my mind
 title:
   en: A requirement you cancelled comes back
   zh: 你已经取消的需求又回来了
+  pt: Um requisito que você cancelou volta
+  ko: 취소한 요구사항이 되살아남
+  vi: Yêu cầu bạn đã hủy quay lại
+  de: Eine gestrichene Anforderung kommt zurück
 summary:
   en: You changed direction mid-session, and the old instruction resurfaces in later code or output.
   zh: 你在会话中途改了方向，旧的指令却在后面的代码或输出里又冒了出来。
+  pt: >-
+    Você disse para não fazer X; versões posteriores do agente (ou da mesma sessão) reintroduzem X a partir de contexto
+    antigo.
+  ko: X 하지 말라고 했는데, 이후 에이전트(또는 같은 세션)가 옛 맥락에서 X를 다시 넣습니다.
+  vi: Bạn bảo đừng làm X; phiên sau (hoặc cùng phiên) agent đưa X lại từ ngữ cảnh cũ.
+  de: Sie sagten, X nicht zu tun; spätere Agent-Versionen (oder dieselbe Session) führen X aus altem Kontext wieder ein.
 symptom:
   en: '"Actually, don''t add caching." Three steps later the diff has a cache layer, or the summary describes the old plan.'
-  zh: "“算了，不要加缓存。”三步之后 diff 里出现了缓存层，或者总结里描述的还是旧方案。"
+  zh: “算了，不要加缓存。”三步之后 diff 里出现了缓存层，或者总结里描述的还是旧方案。
+  pt: Código/docs para um requisito cancelado reaparecem após um "continue" ou nova sessão.
+  ko: 취소된 요구의 코드/문서가 "continue"나 새 세션 후 다시 나타납니다.
+  vi: Code/docs cho yêu cầu đã hủy xuất hiện lại sau "continue" hoặc phiên mới.
+  de: Code/Docs für eine gestrichene Anforderung tauchen nach „continue“ oder neuer Session wieder auf.
 why:
-  en: Both the old and new instructions stay in context, and long sessions get compacted. Without an explicit record of what was superseded, the earlier, more detailed instruction can win. agent-failure-modes names this AFM-6 Zombie Requirement.
+  en: >-
+    Both the old and new instructions stay in context, and long sessions get compacted. Without an explicit record of
+    what was superseded, the earlier, more detailed instruction can win. agent-failure-modes names this AFM-6 Zombie
+    Requirement.
   zh: 新旧两条指令都留在上下文里，长会话还会被压缩。如果没有明确记录哪条已作废，更早、更详细的那条可能胜出。agent-failure-modes 称之为 AFM-6 僵尸需求。
+  pt: >-
+    Contexto antigo e notas do agente sobrevivem à sua correção verbal. Review skills e acceptance checks que listam
+    "não fazer" ajudam.
+  ko: 옛 맥락과 에이전트 노트가 구두 교정을 이깁니다. "하지 말 것"을 적은 review skill과 수락 검사가 도움이 됩니다.
+  vi: Ngữ cảnh cũ và note của agent sống sót qua chỉnh sửa lời. Review skill và acceptance check liệt kê "không làm" giúp.
+  de: >-
+    Alter Kontext und Agent-Notizen überleben Ihre mündliche Korrektur. Review-Skills und Abnahmechecks mit „nicht tun“
+    helfen.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     You (turn 3):  Add a Redis cache for /products.
@@ -32,7 +69,7 @@ rule: |
 extras:
   - ref: review-skill
 sources:
-  - title: "agent-failure-modes: AFM-6 Zombie Requirement"
+  - title: 'agent-failure-modes: AFM-6 Zombie Requirement'
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-006-zombie-requirement.md
-  - title: "Agentic SDLC handbook, ch. 20: Stale context and context window exhaustion"
+  - title: 'Agentic SDLC handbook, ch. 20: Stale context and context window exhaustion'
     url: https://danielmeppiel.github.io/agentic-sdlc-handbook/handbook/ch20-anti-patterns-and-failure-modes.html

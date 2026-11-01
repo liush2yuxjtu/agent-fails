@@ -1,23 +1,59 @@
 slug: speculative-dead-code
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [dead code, unused, over-engineering, abstraction, YAGNI, wrapper]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - dead code
+  - unused
+  - over-engineering
+  - abstraction
+  - YAGNI
+  - wrapper
 title:
   en: Helpers, types and wrappers nobody calls
   zh: 没人调用的辅助函数、类型和包装层
+  pt: Helpers, types e wrappers que ninguém chama
+  ko: 아무도 호출하지 않는 헬퍼·타입·래퍼
+  vi: Helper, type và wrapper chẳng ai gọi
+  de: Helper, Types und Wrapper, die niemand aufruft
 summary:
-  en: The agent adds speculative helpers, unused types, one-line wrappers and commented-out "reference" code. It works, but it is more to read and maintain.
+  en: >-
+    The agent adds speculative helpers, unused types, one-line wrappers and commented-out "reference" code. It works,
+    but it is more to read and maintain.
   zh: 智能体加了投机性的辅助函数、没用到的类型、只有一行的包装层，以及注释掉的“参考”代码。能用，但要读的、要维护的东西变多了。
+  pt: O agente deixa código "para depois" — abstrações, enums, adapters — que nunca entram no caminho quente.
+  ko: 에이전트가 "나중을 위해" 추상화·enum·어댑터를 남기지만 핫 패스에 안 들어갑니다.
+  vi: Agent để lại code "cho sau" — abstraction, enum, adapter — không bao giờ vào hot path.
+  de: Der Agent lässt Code „für später“ — Abstraktionen, Enums, Adapter — die nie in den Hot Path kommen.
 symptom:
-  en: '`fetchUserByEmail()` that is never called, an `interface UserSnapshot` nothing uses, `persistEntity(e) { save(e) }`, blocks of commented-out old code.'
+  en: >-
+    `fetchUserByEmail()` that is never called, an `interface UserSnapshot` nothing uses, `persistEntity(e) { save(e) }`,
+    blocks of commented-out old code.
   zh: 从未被调用的 `fetchUserByEmail()`、没人用的 `interface UserSnapshot`、`persistEntity(e) { save(e) }`，以及成片注释掉的旧代码。
+  pt: Arquivos novos com zero referências, ou exports só usados em testes do próprio arquivo.
+  ko: 참조 0인 새 파일, 또는 자기 파일 테스트에서만 쓰는 exports.
+  vi: File mới zero reference, hoặc export chỉ dùng trong test của chính file đó.
+  de: Neue Dateien mit null Referenzen, oder Exports nur in den Tests der eigenen Datei.
 why:
-  en: '"Agents over-build. They speculate about what helpers will be useful and leave them in" (agent-review). It catalogs AR001 dead code, AR007 phantom type, AR031 redundant abstraction and AR003 commented-out code left behind.'
+  en: >-
+    "Agents over-build. They speculate about what helpers will be useful and leave them in" (agent-review). It catalogs
+    AR001 dead code, AR007 phantom type, AR031 redundant abstraction and AR003 commented-out code left behind.
   zh: “智能体倾向于过度构建。它们会预想哪些辅助函数有用，然后就留着不删”（agent-review）。该分类收录了 AR001 死代码、AR007 幽灵类型、AR031 冗余抽象和 AR003 遗留的注释代码。
+  pt: Gerar estrutura parece progresso. Review skills devem marcar código sem caller.
+  ko: 구조를 생성하는 건 진전처럼 보입니다. Review skill이 caller 없는 코드를 표시해야 합니다.
+  vi: Sinh cấu trúc trông như tiến độ. Review skill nên gắn cờ code không có caller.
+  de: Struktur zu erzeugen wirkt wie Fortschritt. Review-Skills sollten Code ohne Caller markieren.
 example:
   caption:
     en: From the agent-review taxonomy (AR001, AR031).
     zh: 摘自 agent-review 分类（AR001、AR031）。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: js
   code: |
     function fetchUser(id) { return db.find(id); }
@@ -33,8 +69,8 @@ rule: |
 extras:
   - kind: ci
     title:
-      en: "Find unused exports and files (knip, JS/TS)"
-      zh: "查找未使用的导出和文件（knip，JS/TS）"
+      en: Find unused exports and files (knip, JS/TS)
+      zh: 查找未使用的导出和文件（knip，JS/TS）
     file: package.json (scripts)
     lang: json
     code: |
@@ -45,9 +81,9 @@ extras:
       }
   - ref: review-skill
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR001 Dead code introduced"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR001 Dead code introduced'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar001-dead-code-introduced
-  - title: "vnmoorthy/agent-review TAXONOMY: AR031 Redundant abstraction"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR031 Redundant abstraction'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar031-redundant-abstraction
-  - title: "vnmoorthy/agent-review TAXONOMY: AR003 Commented-out code left behind"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR003 Commented-out code left behind'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar003-commented-out-code-left-behind

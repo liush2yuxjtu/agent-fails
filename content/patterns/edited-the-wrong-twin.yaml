@@ -1,23 +1,65 @@
 slug: edited-the-wrong-twin
 category: wrong-feature
-agents: [claude-code, cursor, codex, copilot]
-tags: [legacy, deprecated, wrong file, lookalike, v1]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - legacy
+  - deprecated
+  - wrong file
+  - lookalike
+  - v1
 title:
   en: Fixed the deprecated twin, not the live file
   zh: 改了废弃的“双胞胎”文件，线上那个没动
+  pt: Corrigiu o gêmeo depreciado, não o arquivo vivo
+  ko: 살아 있는 파일이 아니라 deprecated 쌍둥이를 고침
+  vi: Sửa bản song sinh deprecated, không phải file sống
+  de: Den deprecated Zwilling gefixt, nicht die Live-Datei
 summary:
-  en: Two files share a name (a v1 copy, a legacy folder). The agent edits the dead one, and the bug you care about stays open.
+  en: >-
+    Two files share a name (a v1 copy, a legacy folder). The agent edits the dead one, and the bug you care about stays
+    open.
   zh: 两个文件同名（v1 副本、legacy 目录）。智能体改了没在用的那个，你关心的 bug 依然存在。
+  pt: O agente edita uma cópia, legacy path ou arquivo gerado em vez do fonte canônico que a app realmente carrega.
+  ko: 앱이 실제로 로드하는 정본 대신 복사본·레거시 경로·생성 파일을 편집합니다.
+  vi: Agent sửa bản sao, legacy path hoặc file generate thay vì nguồn canonical app thật sự load.
+  de: >-
+    Der Agent editiert eine Kopie, einen Legacy-Pfad oder eine generierte Datei statt der kanonischen Quelle, die die
+    App wirklich lädt.
 symptom:
-  en: The diff looks right and the agent says it's fixed, but the behavior in the app hasn't changed. The edited file isn't imported by anything that runs.
+  en: >-
+    The diff looks right and the agent says it's fixed, but the behavior in the app hasn't changed. The edited file
+    isn't imported by anything that runs.
   zh: diff 看起来没问题，智能体也说修好了，但应用里的行为没变。被改的文件根本没被运行中的代码引用。
+  pt: Seu fix "aplicou", mas o runtime não muda; o arquivo vivo ainda tem o bug.
+  ko: 수정은 "적용"됐는데 런타임은 그대로; 살아 있는 파일에 버그가 남습니다.
+  vi: Fix "đã áp" nhưng runtime không đổi; file sống vẫn còn bug.
+  de: Ihr Fix „sitzt“, aber Runtime ändert sich nicht; die Live-Datei hat den Bug noch.
 why:
-  en: Retrieval ranks lookalike names, and a deprecated copy can match the query better than the live one. Night Forge describes this "legacy / wrong-path edit" as one of three recurring Cursor patterns, and notes Claude Code hits the same class of failure.
+  en: >-
+    Retrieval ranks lookalike names, and a deprecated copy can match the query better than the live one. Night Forge
+    describes this "legacy / wrong-path edit" as one of three recurring Cursor patterns, and notes Claude Code hits the
+    same class of failure.
   zh: 检索会按名字相似度排序，废弃副本可能比线上文件更匹配查询。Night Forge 把这种“遗留/错误路径编辑”列为 Cursor 用户反复遇到的三种模式之一，并指出 Claude Code 也有同类问题。
+  pt: >-
+    Nomes parecidos e resultados de search ranqueiam o gêmeo errado primeiro. Verificar o path carregado de verdade é o
+    catch.
+  ko: 비슷한 이름과 검색 결과가 잘못된 쌍둥이를 먼저 올립니다. 실제로 로드되는 경로를 확인하는 것이 포착입니다.
+  vi: Tên giống và kết quả search xếp twin sai lên trước. Kiểm path thật sự được load là cách bắt.
+  de: >-
+    Ähnliche Namen und Search-Ranking bringen den falschen Zwilling zuerst. Den wirklich geladenen Pfad prüfen ist der
+    Catch.
 example:
   caption:
     en: From the Night Forge write-up.
     zh: 摘自 Night Forge 的文章。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     You meant:    src/components/UserAvatar.tsx
@@ -28,12 +70,12 @@ rule: |
     and trace it to a route, entry point or test that runs.
   - Never edit files under `legacy/`, `deprecated/`, `v1/`, `old/` or `*.bak` unless the user names them.
   - If two files have the same name, list both and say which one you will change and why.
-cursor_globs: "**/*"
+cursor_globs: '**/*'
 extras:
   - kind: settings
     title:
-      en: "Keep dead paths out of reach (.cursorignore and Claude Code deny)"
-      zh: "让废弃路径够不着（.cursorignore 和 Claude Code deny）"
+      en: Keep dead paths out of reach (.cursorignore and Claude Code deny)
+      zh: 让废弃路径够不着（.cursorignore 和 Claude Code deny）
     file: .cursorignore  /  .claude/settings.json
     lang: text
     code: |
@@ -43,5 +85,5 @@ extras:
 
       # .claude/settings.json -> "permissions": { "deny": ["Edit(./src/v1/**)", "Edit(./legacy/**)"] }
 sources:
-  - title: "Night Forge: Stop your AI agent editing the wrong files"
+  - title: 'Night Forge: Stop your AI agent editing the wrong files'
     url: https://night-forge.com/blog/stop-ai-agent-editing-wrong-files

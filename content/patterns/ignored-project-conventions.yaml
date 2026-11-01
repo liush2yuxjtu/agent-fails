@@ -1,23 +1,84 @@
 slug: ignored-project-conventions
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [CLAUDE.md, AGENTS.md, conventions, code style, rules ignored, patterns]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - CLAUDE.md
+  - AGENTS.md
+  - conventions
+  - code style
+  - rules ignored
+  - patterns
 title:
   en: Ignored the conventions in CLAUDE.md
   zh: 无视 CLAUDE.md 里写好的约定
+  pt: Ignorou as convenções do CLAUDE.md
+  ko: CLAUDE.md의 컨벤션을 무시
+  vi: Bỏ qua quy ước trong CLAUDE.md
+  de: Konventionen in CLAUDE.md ignoriert
 summary:
-  en: The code works, but it doesn't follow the conventions written in the project's rules files or visible in the surrounding code, and steps the rules require (like running certain tests) get skipped as "unnecessary".
+  en: >-
+    The code works, but it doesn't follow the conventions written in the project's rules files or visible in the
+    surrounding code, and steps the rules require (like running certain tests) get skipped as "unnecessary".
   zh: 代码能跑，但不遵守项目规则文件里写明的、或周围代码里明摆着的约定；规则要求的步骤（比如跑某些测试）也被当成“没必要”而跳过。
+  pt: >-
+    O repo declara como fazer (estilo, pastas, testes, commit), e o agente segue o default do modelo em vez das regras
+    do projeto.
+  ko: 저장소가 방식(스타일·폴더·테스트·커밋)을 선언했는데 에이전트가 프로젝트 규칙 대신 모델 기본값을 따릅니다.
+  vi: Repo khai cách làm (style, thư mục, test, commit), nhưng agent theo default của model thay vì rule dự án.
+  de: >-
+    Das Repo deklariert Wie (Style, Ordner, Tests, Commit), doch der Agent folgt dem Modell-Default statt den
+    Projektregeln.
 symptom:
-  en: New code uses a different structure, naming or layering than its neighbours; boundaries the team set are crossed; a rule in CLAUDE.md or AGENTS.md is visibly not applied. The agent may cite the rules back to you while not following them.
+  en: >-
+    New code uses a different structure, naming or layering than its neighbours; boundaries the team set are crossed; a
+    rule in CLAUDE.md or AGENTS.md is visibly not applied. The agent may cite the rules back to you while not following
+    them.
   zh: 新代码的结构、命名或分层和周围代码不一样；团队划定的边界被越过；CLAUDE.md 或 AGENTS.md 里的某条规则显然没被执行。智能体甚至可能一边复述规则一边不照做。
+  pt: Novos arquivos no lugar errado, naming errado, runner de teste errado, apesar de CLAUDE.md/AGENTS.md claros.
+  ko: CLAUDE.md/AGENTS.md가 분명한데도 잘못된 위치·네이밍·테스트 러너로 새 파일이 생깁니다.
+  vi: File mới sai chỗ, sai naming, sai test runner dù CLAUDE.md/AGENTS.md rõ.
+  de: Neue Dateien am falschen Ort, falsches Naming, falscher Test-Runner — trotz klarem CLAUDE.md/AGENTS.md.
 why:
-  en: 'Asked why he still uses PRs, @alexitcdev said it''s to review what agents write, as they are typically "ignoring my CLAUDE.md conventions" or skipping certain tests as unnecessary. @gibbostudio finds Opus and Fable code that doesn''t align with the team''s fences and code style. @_maulik13 caught Opus drifting from the patterns the project follows; when questioned, it found its own hypothesis was wrong and simplified the code. @WinterSoldier92 describes extra markdown files as more instructions for the agent to "cherry pick from and ignore". Long rules files compete with the task for attention, and nothing enforces them unless a check does. In the same thread, @Spanky4thewin suggests short rules with the must-dos at the top plus a Stop hook so skipping isn''t possible.'
-  zh: '被问到为什么还用 PR 时，@alexitcdev 说是为了审查智能体写的代码，因为它们通常会“无视我的 CLAUDE.md 约定”，或者觉得某些测试没必要而跳过。@gibbostudio 经常发现 Opus 和 Fable 写的代码不符合团队设定的边界和代码风格。@_maulik13 抓到过 Opus 偏离项目既有模式；被追问后，它发现自己的假设是错的，随后简化了代码。@WinterSoldier92 说多加的 markdown 文件只是让智能体“挑着用、然后无视”的更多指令。冗长的规则文件会和任务本身争夺注意力，除非有检查去强制，否则没人执行。同一串里，@Spanky4thewin 的建议是：规则写短，把必须做的放在最前面，再加一个 Stop 钩子，让跳过变得不可能。'
+  en: >-
+    Asked why he still uses PRs, @alexitcdev said it's to review what agents write, as they are typically "ignoring my
+    CLAUDE.md conventions" or skipping certain tests as unnecessary. @gibbostudio finds Opus and Fable code that doesn't
+    align with the team's fences and code style. @_maulik13 caught Opus drifting from the patterns the project follows;
+    when questioned, it found its own hypothesis was wrong and simplified the code. @WinterSoldier92 describes extra
+    markdown files as more instructions for the agent to "cherry pick from and ignore". Long rules files compete with
+    the task for attention, and nothing enforces them unless a check does. In the same thread, @Spanky4thewin suggests
+    short rules with the must-dos at the top plus a Stop hook so skipping isn't possible.
+  zh: >-
+    被问到为什么还用 PR 时，@alexitcdev 说是为了审查智能体写的代码，因为它们通常会“无视我的 CLAUDE.md 约定”，或者觉得某些测试没必要而跳过。@gibbostudio 经常发现 Opus 和 Fable
+    写的代码不符合团队设定的边界和代码风格。@_maulik13 抓到过 Opus 偏离项目既有模式；被追问后，它发现自己的假设是错的，随后简化了代码。@WinterSoldier92 说多加的 markdown
+    文件只是让智能体“挑着用、然后无视”的更多指令。冗长的规则文件会和任务本身争夺注意力，除非有检查去强制，否则没人执行。同一串里，@Spanky4thewin 的建议是：规则写短，把必须做的放在最前面，再加一个 Stop
+    钩子，让跳过变得不可能。
+  pt: >-
+    Instruções longas competem com priors do modelo; "helpful defaults" vencem se não forem reforçadas. Stop hooks que
+    rodam testes/linters e um /verify compartilhado fazem as convenções serem enforcement, não só conselho. Relatos de
+    usuários mostram o agente relendo e ainda assim driftando quando a sessão fica longa.
+  ko: >-
+    긴 지침은 모델 prior와 경쟁하고, 강화되지 않으면 "helpful defaults"가 이깁니다. 테스트/린터를 돌리는 stop hook과 공유 /verify가 컨벤션을 조언이 아닌 강제로 만듭니다.
+    사용자 보고에 따르면 세션이 길어지면 다시 읽고도 drift합니다.
+  vi: >-
+    Hướng dẫn dài cạnh tranh với prior của model; "helpful defaults" thắng nếu không được củng cố. Stop hook chạy
+    test/linter và /verify dùng chung biến quy ước thành enforcement, không chỉ lời khuyên. Báo cáo user cho thấy agent
+    đọc lại rồi vẫn drift khi phiên dài.
+  de: >-
+    Lange Anweisungen konkurrieren mit Modell-Priors; „helpful defaults“ siegen ohne Verstärkung. Stop-Hooks mit
+    Tests/Linters und geteiltes /verify machen Konventionen zu Enforcement, nicht nur Rat. Nutzerberichte: Agent liest
+    erneut und driftet trotzdem in langen Sessions.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     CLAUDE.md:  "Data access goes through src/repo/*. Run `npm run test:integration` for DB changes."
@@ -35,15 +96,15 @@ extras:
   - ref: stop-hook-tests
   - ref: verify-skill
 sources:
-  - title: "@alexitcdev on X: agents ignoring CLAUDE.md conventions and skipping tests as unnecessary"
+  - title: '@alexitcdev on X: agents ignoring CLAUDE.md conventions and skipping tests as unnecessary'
     url: https://x.com/alexitcdev/status/2111418970506969566
-  - title: "@gibbostudio on X: code that doesn't align with the team's fences and code style"
+  - title: '@gibbostudio on X: code that doesn''t align with the team''s fences and code style'
     url: https://x.com/gibbostudio/status/2111255305233350886
-  - title: "@_maulik13 on X: Opus drifting from the patterns the project follows"
+  - title: '@_maulik13 on X: Opus drifting from the patterns the project follows'
     url: https://x.com/_maulik13/status/2111182869754245351
-  - title: "@WinterSoldier92 on X: more MD files for the agent to cherry pick from and ignore"
+  - title: '@WinterSoldier92 on X: more MD files for the agent to cherry pick from and ignore'
     url: https://x.com/WinterSoldier92/status/2111392025929035919
-  - title: "@Spanky4thewin on X: short rules, must-dos on top, plus a Stop hook"
+  - title: '@Spanky4thewin on X: short rules, must-dos on top, plus a Stop hook'
     url: https://x.com/Spanky4thewin/status/2111422112699408693
-  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+  - title: '@thorstenball on X: "Why are you still using pull requests?" (the thread)'
     url: https://x.com/thorstenball/status/2111130129355481240

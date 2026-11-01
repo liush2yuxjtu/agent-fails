@@ -1,23 +1,68 @@
 slug: unrelated-files-changed
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [scope creep, unrelated files, orthogonal damage, scope vandalism, diff]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - scope creep
+  - unrelated files
+  - orthogonal damage
+  - scope vandalism
+  - diff
 title:
   en: Asked for one fix, it changed unrelated files
   zh: 只让修一处，它改了一堆无关文件
+  pt: Pediu um fix, mudou arquivos não relacionados
+  ko: 한 곳 수정을 시켰더니 무관한 파일을 바꿈
+  vi: Nhờ một fix, nó đổi file không liên quan
+  de: Einen Fix erbeten — unrelated Files geändert
 summary:
   en: You asked for one change; the diff also "cleaned up" other functions, files and configs nobody mentioned.
   zh: 你只要求改一处；diff 里却顺手“清理”了没人提过的其他函数、文件和配置。
+  pt: 'O diff inclui arquivos fora do pedido: "melhorias" notadas no caminho, renames, ou refactors oportunistas.'
+  ko: '요청 밖 파일이 diff에 들어갑니다: 지나가며 본 "개선", rename, 기회주의적 리팩터.'
+  vi: 'Diff gồm file ngoài yêu cầu: "cải thiện" thấy dọc đường, rename, hoặc refactor cơ hội.'
+  de: >-
+    Der Diff enthält Dateien außerhalb der Anfrage: unterwegs notierte „Verbesserungen“, Renames oder opportunistische
+    Refactors.
 symptom:
-  en: A five-line fix arrives as a twelve-file diff. The real change is buried; review takes ten times longer; rollback drags unrelated edits with it. After a few rounds you no longer know what it changed.
+  en: >-
+    A five-line fix arrives as a twelve-file diff. The real change is buried; review takes ten times longer; rollback
+    drags unrelated edits with it. After a few rounds you no longer know what it changed.
   zh: 一个五行的修复变成了改了十二个文件的 diff。真正的改动被埋在里面；审查时间翻了十倍；回滚时还得连带撤掉无关改动。几轮下来，你已经不知道它到底改了什么。
+  pt: '`git diff --stat` mostra dezenas de arquivos para um ticket de um arquivo.'
+  ko: 한 파일 티켓인데 `git diff --stat`에 수십 파일이 나옵니다.
+  vi: '`git diff --stat` hiện hàng chục file cho ticket một file.'
+  de: '`git diff --stat` zeigt Dutzende Dateien für ein Ein-Datei-Ticket.'
 why:
-  en: From inside the task, tidying a neighbor feels like doing a good job, and a sentence like "only change what's necessary" is advisory context, not enforcement. Kaplira, Night Forge and the dev.to diff-budget post all reach the same split. Rules state intent; permissions and hooks block the tool; a scope-vs-diff check catches what slipped. agent-failure-modes calls it AFM-2 Scope Vandalism.
-  zh: 在任务内部看，顺手整理邻居代码像是在“把活干好”；而“只改必要的部分”这种话只是建议性的上下文，不是强制。Kaplira、Night Forge 和 dev.to 的 diff budget 文章得出了同样的分层：规则表达意图；权限和钩子拦截工具；范围与 diff 的比对兜底。agent-failure-modes 称之为 AFM-2 范围破坏。
+  en: >-
+    From inside the task, tidying a neighbor feels like doing a good job, and a sentence like "only change what's
+    necessary" is advisory context, not enforcement. Kaplira, Night Forge and the dev.to diff-budget post all reach the
+    same split. Rules state intent; permissions and hooks block the tool; a scope-vs-diff check catches what slipped.
+    agent-failure-modes calls it AFM-2 Scope Vandalism.
+  zh: >-
+    在任务内部看，顺手整理邻居代码像是在“把活干好”；而“只改必要的部分”这种话只是建议性的上下文，不是强制。Kaplira、Night Forge 和 dev.to 的 diff budget
+    文章得出了同样的分层：规则表达意图；权限和钩子拦截工具；范围与 diff 的比对兜底。agent-failure-modes 称之为 AFM-2 范围破坏。
+  pt: >-
+    Agentes otimizam para "deixar o repo melhor" além da tarefa. Scope files, diff budgets, hooks e /verify são a defesa
+    padrão neste site.
+  ko: 에이전트는 과제 이상으로 "저장소를 더 좋게" 최적화합니다. Scope 파일·diff budget·훅·/verify가 이 사이트의 표준 방어입니다.
+  vi: >-
+    Agent tối ưu "làm repo tốt hơn" ngoài nhiệm vụ. Scope file, diff budget, hook và /verify là phòng thủ chuẩn trên
+    site này.
+  de: >-
+    Agenten optimieren auf „Repo besser machen“ jenseits der Aufgabe. Scope-Dateien, Diff-Budgets, Hooks und /verify
+    sind die Standardabwehr auf dieser Site.
 example:
   caption:
     en: From the dev.to diff-budget post.
     zh: 摘自 dev.to 的 diff budget 文章。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     Task: "fix the off-by-one in the pagination helper"
@@ -37,19 +82,19 @@ extras:
   - ref: diff-budget-check
   - ref: verify-skill
 sources:
-  - title: "Kaplira: When an AI agent changes unrelated files"
+  - title: 'Kaplira: When an AI agent changes unrelated files'
     url: https://kaplira.com/guides/ai-agent-changes-unrelated-files/
-  - title: "Night Forge: Stop your AI agent editing the wrong files"
+  - title: 'Night Forge: Stop your AI agent editing the wrong files'
     url: https://night-forge.com/blog/stop-ai-agent-editing-wrong-files
-  - title: "dev.to (yureki_lab): How I stopped my AI coding agent's scope creep with a diff budget"
+  - title: 'dev.to (yureki_lab): How I stopped my AI coding agent''s scope creep with a diff budget'
     url: https://dev.to/yureki_lab/how-i-stopped-my-ai-coding-agents-scope-creep-with-a-diff-budget-47lj
-  - title: "claudecodeguides.com: Stop Claude Code from modifying unrelated files"
+  - title: 'claudecodeguides.com: Stop Claude Code from modifying unrelated files'
     url: https://claudecodeguides.com/claude-code-stop-modifying-unrelated-files/
-  - title: "agent-failure-modes: AFM-2 Scope Vandalism"
+  - title: 'agent-failure-modes: AFM-2 Scope Vandalism'
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-002-scope-vandalism.md
-  - title: "@JC_bitcoin on X (Chinese): after a few rounds of Codex edits I no longer know what it changed"
+  - title: '@JC_bitcoin on X (Chinese): after a few rounds of Codex edits I no longer know what it changed'
     url: https://x.com/JC_bitcoin/status/2110560732257386896
-  - title: "@Sc_Meerkat on X: Opus deleted a test unrelated to the functionality it was working on"
+  - title: '@Sc_Meerkat on X: Opus deleted a test unrelated to the functionality it was working on'
     url: https://x.com/Sc_Meerkat/status/2111503189682074088
-  - title: "@BVeiseh on X: the agent changed something consequential it wasn't asked to change"
+  - title: '@BVeiseh on X: the agent changed something consequential it wasn''t asked to change'
     url: https://x.com/BVeiseh/status/2111214594580709629

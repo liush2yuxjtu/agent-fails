@@ -1,23 +1,74 @@
 slug: assumption-smuggled-as-fact
 category: wrong-feature
-agents: [claude-code, cursor, codex, copilot]
-tags: [assumption, hallucination, certainty, subagent, trust]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - assumption
+  - hallucination
+  - certainty
+  - subagent
+  - trust
 title:
   en: A guess that came back as a fact
   zh: 一个猜测，回来时变成了事实
+  pt: Um chute que voltou como fato
+  ko: 추측이 사실로 돌아온 경우
+  vi: Phỏng đoán trở thành sự thật
+  de: Eine Vermutung, die als Fakt zurückkam
 summary:
-  en: An assumption (its own, or a subagent's) enters the work labelled as a guess and exits in the summary as verified fact, and the feature gets built on it.
+  en: >-
+    An assumption (its own, or a subagent's) enters the work labelled as a guess and exits in the summary as verified
+    fact, and the feature gets built on it.
   zh: 一个假设（它自己的或子智能体的）进来时还标着“猜测”，出去时在总结里变成了“已验证的事实”，功能就建在它上面。
+  pt: >-
+    O agente trata um palpite (formato de API, quem chama um endpoint, o que um arquivo faz) como fato verificado e
+    constrói em cima.
+  ko: 에이전트가 추측(API 형식, 엔드포인트 호출자, 파일 역할)을 검증된 사실처럼 다루고 그 위에 코드를 쌓습니다.
+  vi: Agent coi phỏng đoán (định dạng API, ai gọi endpoint, file làm gì) như sự thật đã kiểm và xây tiếp lên đó.
+  de: >-
+    Der Agent behandelt eine Vermutung (API-Format, wer einen Endpoint ruft, was eine Datei tut) als verifizierten Fakt
+    und baut darauf.
 symptom:
-  en: Confident specifics with no source ("the API returns ISO dates", "this endpoint is unused") that turn out to be wrong, and the code depends on them.
+  en: >-
+    Confident specifics with no source ("the API returns ISO dates", "this endpoint is unused") that turn out to be
+    wrong, and the code depends on them.
   zh: 没有出处却很确定的细节（“API 返回 ISO 日期”“这个接口没人用”），后来证明是错的，而代码依赖了它们。
+  pt: >-
+    Específicos confiantes sem fonte ("a API retorna datas ISO", "este endpoint não é usado") que acabam errados, e o
+    código depende deles.
+  ko: 출처 없는 자신만만한 디테일("API가 ISO 날짜를 반환", "이 엔드포인트는 안 씀")이 틀렸는데 코드가 의존합니다.
+  vi: Chi tiết tự tin không nguồn ("API trả ngày ISO", "endpoint này không dùng") hóa ra sai, và code phụ thuộc chúng.
+  de: >-
+    Selbstsichere Details ohne Quelle („API liefert ISO-Daten“, „dieser Endpoint ist unbenutzt“), die falsch sind, und
+    der Code hängt daran.
 why:
-  en: Each hop of summarization drops the hedge. agent-failure-modes splits this into AFM-7 Certainty Smuggling (an assumption exits as fact) and AFM-5 Trust Laundering (a subagent's claim is repeated as verified).
+  en: >-
+    Each hop of summarization drops the hedge. agent-failure-modes splits this into AFM-7 Certainty Smuggling (an
+    assumption exits as fact) and AFM-5 Trust Laundering (a subagent's claim is repeated as verified).
   zh: 每经过一次总结，“可能”“大概”就丢一层。agent-failure-modes 把它分成 AFM-7 确定性走私（假设变成事实）和 AFM-5 信任洗白（子智能体的说法被当成已验证）。
+  pt: >-
+    Cada salto de sumarização dropa o hedge. agent-failure-modes divide em AFM-7 Certainty Smuggling (suposição sai como
+    fato) e AFM-5 Trust Laundering (claim de subagente repetido como verificado).
+  ko: >-
+    요약 한 hop마다 유보가 빠집니다. agent-failure-modes는 AFM-7 Certainty Smuggling(가정이 사실로 나감)과 AFM-5 Trust Laundering(서브에이전트 주장을
+    검증된 것처럼 반복)으로 나눕니다.
+  vi: >-
+    Mỗi bước tóm tắt làm mất hedge. agent-failure-modes tách AFM-7 Certainty Smuggling (giả định ra thành sự thật) và
+    AFM-5 Trust Laundering (claim subagent lặp lại như đã verify).
+  de: >-
+    Jeder Summarisierungs-Hop streicht den Hedge. agent-failure-modes teilt das in AFM-7 Certainty Smuggling (Annahme
+    kommt als Fakt) und AFM-5 Trust Laundering (Claim eines Subagents als verifiziert wiederholt).
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     Subagent: "Probably nothing calls /v1/legacy-export, couldn't find callers in src/."
@@ -32,11 +83,11 @@ rule: |
 extras:
   - ref: review-skill
 sources:
-  - title: "agent-failure-modes: AFM-7 Certainty Smuggling"
+  - title: 'agent-failure-modes: AFM-7 Certainty Smuggling'
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-007-certainty-smuggling.md
-  - title: "agent-failure-modes: AFM-5 Trust Laundering"
+  - title: 'agent-failure-modes: AFM-5 Trust Laundering'
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-005-trust-laundering.md
-  - title: "@sagivo on X: an agent re-verified a broken assumption three times, treating its own output as evidence"
+  - title: '@sagivo on X: an agent re-verified a broken assumption three times, treating its own output as evidence'
     url: https://x.com/sagivo/status/2111231925394489680
-  - title: "@mikeydoyle on X: review finds bad assumptions, which agent reviews can send in circles"
+  - title: '@mikeydoyle on X: review finds bad assumptions, which agent reviews can send in circles'
     url: https://x.com/mikeydoyle/status/2111222704036848084

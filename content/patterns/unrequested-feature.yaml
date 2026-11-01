@@ -1,23 +1,59 @@
 slug: unrequested-feature
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [feature creep, extra feature, gold plating, metrics, feature flag]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - feature creep
+  - extra feature
+  - gold plating
+  - metrics
+  - feature flag
 title:
   en: Shipped a feature you never asked for
   zh: 交付了一个你从没要过的功能
+  pt: Entregou uma feature que você nunca pediu
+  ko: 요청하지 않은 기능을 출하
+  vi: Giao một tính năng bạn chưa bao giờ nhờ
+  de: Ein Feature ausgeliefert, das Sie nie wollten
 summary:
   en: A bug-fix PR also adds a metrics middleware, a feature-flag client, a settings page or a CLI option.
   zh: 一个修 bug 的 PR，顺带加了监控中间件、功能开关客户端、设置页或命令行选项。
+  pt: Além do pedido, o agente adiciona UX, flags, ou integrações "úteis" que aumentam escopo e superfície de review.
+  ko: 요청 외에 "유용한" UX·플래그·통합을 추가해 범위와 리뷰 표면을 키웁니다.
+  vi: Ngoài yêu cầu, agent thêm UX, flag hoặc tích hợp "hữu ích" làm tăng scope và bề mặt review.
+  de: >-
+    Neben der Anfrage fügt der Agent „nützliche“ UX, Flags oder Integrationen hinzu — Scope und Review-Oberfläche
+    wachsen.
 symptom:
-  en: New behavior in the diff that no line of the request asks for. It may work fine, but now you own it, test it and maintain it.
+  en: >-
+    New behavior in the diff that no line of the request asks for. It may work fine, but now you own it, test it and
+    maintain it.
   zh: diff 里有需求中任何一句都没提到的新行为。它也许能正常工作，但从此要由你来负责、测试和维护。
+  pt: PR description lista bônus que você não pediu; aceitar o ticket agora exige product review.
+  ko: PR 설명에 요청하지 않은 보너스가 있고, 티켓 수락에 제품 리뷰가 필요해집니다.
+  vi: Mô tả PR liệt kê bonus bạn không nhờ; chấp nhận ticket giờ cần product review.
+  de: PR-Beschreibung listet Boni, die Sie nicht wollten; Ticket-Abnahme braucht plötzlich Product Review.
 why:
-  en: Agents generalize and anticipate needs. agent-review's canonical AR028 example is a "fix login bug" PR that also adds metrics middleware and a feature-flag client. The dev.to diff-budget author fixed it with a parking lot, a file where ideas go instead of the diff.
+  en: >-
+    Agents generalize and anticipate needs. agent-review's canonical AR028 example is a "fix login bug" PR that also
+    adds metrics middleware and a feature-flag client. The dev.to diff-budget author fixed it with a parking lot, a file
+    where ideas go instead of the diff.
   zh: 智能体喜欢泛化和预判需求。agent-review 对 AR028 的经典举例：一个“修复登录 bug”的 PR 顺带加了监控中间件和功能开关客户端。dev.to 那位作者的解法是“停车场”：想法写进一个文件，而不是写进 diff。
+  pt: Feature creep parece iniciativa. Review skills devem marcar escopo além do pedido.
+  ko: 기능 크리프는 주도성처럼 보입니다. Review skill이 요청 밖 범위를 표시해야 합니다.
+  vi: Feature creep trông như chủ động. Review skill nên gắn cờ scope ngoài yêu cầu.
+  de: Feature Creep wirkt wie Initiative. Review-Skills sollten Scope jenseits der Anfrage markieren.
 example:
   caption:
     en: From the agent-review taxonomy (AR028).
     zh: 摘自 agent-review 分类（AR028）。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     PR title: "Fix login bug"
@@ -33,19 +69,21 @@ rule: |
 extras:
   - kind: spec
     title:
-      en: "FOLLOWUPS.md parking lot"
-      zh: "FOLLOWUPS.md“停车场”"
+      en: FOLLOWUPS.md parking lot
+      zh: FOLLOWUPS.md“停车场”
     file: FOLLOWUPS.md
     lang: markdown
     note:
-      en: "The parking-lot idea is from the dev.to diff-budget post: blocked ideas get written down, not lost and not shipped."
-      zh: "“停车场”思路来自 dev.to 的 diff budget 文章：被拦下的想法要记下来，既不丢，也不偷偷上线。"
+      en: >-
+        The parking-lot idea is from the dev.to diff-budget post: blocked ideas get written down, not lost and not
+        shipped.
+      zh: “停车场”思路来自 dev.to 的 diff budget 文章：被拦下的想法要记下来，既不丢，也不偷偷上线。
     code: |
       ## Parking lot: <task id>
       - <file or area>: <what you noticed>. Suggested task: <bug fix | feature | refactor>, <priority>.
   - ref: review-skill
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR028 Unrequested feature added"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR028 Unrequested feature added'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar028-unrequested-feature-added
-  - title: "dev.to (yureki_lab): diff budget and parking lot"
+  - title: 'dev.to (yureki_lab): diff budget and parking lot'
     url: https://dev.to/yureki_lab/how-i-stopped-my-ai-coding-agents-scope-creep-with-a-diff-budget-47lj

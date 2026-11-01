@@ -1,23 +1,95 @@
 slug: backcompat-for-nothing
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [backwards compatibility, shims, greenfield, deprecation, memory file, YAGNI]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - backwards compatibility
+  - shims
+  - greenfield
+  - deprecation
+  - memory file
+  - YAGNI
 title:
   en: Backwards compatibility for code that has no users
   zh: 给没有用户的代码做向后兼容
+  pt: Compatibilidade com código que não tem usuários
+  ko: 사용자 없는 코드를 위한 하위 호환
+  vi: Tương thích ngược cho code không có user
+  de: Abwärtskompatibilität für Code ohne Nutzer
 summary:
-  en: The agent keeps old names, fallbacks and migration shims "for compatibility" in a greenfield project, or for code written the day before, where nothing depends on the old behavior.
+  en: >-
+    The agent keeps old names, fallbacks and migration shims "for compatibility" in a greenfield project, or for code
+    written the day before, where nothing depends on the old behavior.
   zh: 在全新项目里，或者对昨天才写的代码，智能体保留旧名字、回退逻辑和迁移垫片，说是“为了兼容”，但根本没有东西依赖旧行为。
+  pt: >-
+    O agente mantém nomes antigos, fallbacks e shims de migração "por compatibilidade" num projeto greenfield, ou para
+    código de ontem, onde nada depende do comportamento antigo.
+  ko: 에이전트가 그린필드 프로젝트나 어제 쓴 코드에 "호환을 위해" 옛 이름·fallback·마이그레이션 심을 남기지만, 옛 동작에 의존하는 것이 없습니다.
+  vi: >-
+    Agent giữ tên cũ, fallback và shim migration "cho tương thích" trong dự án greenfield, hoặc code viết hôm qua, nơi
+    chẳng ai phụ thuộc hành vi cũ.
+  de: >-
+    Der Agent behält alte Namen, Fallbacks und Migrations-Shims „für Kompatibilität“ in einem Greenfield-Projekt oder
+    für Code von gestern, wo nichts vom alten Verhalten abhängt.
 symptom:
-  en: Aliases like `oldName = newName`, "legacy" branches, dual-read code paths and deprecation warnings appear in a project with no external consumers. Asked why, the agent cites a rule it wrote into its own memory or notes earlier in the same session.
+  en: >-
+    Aliases like `oldName = newName`, "legacy" branches, dual-read code paths and deprecation warnings appear in a
+    project with no external consumers. Asked why, the agent cites a rule it wrote into its own memory or notes earlier
+    in the same session.
   zh: 一个没有外部使用者的项目里出现了 `oldName = newName` 之类的别名、“legacy” 分支、双读代码路径和弃用警告。问它为什么，它会引用同一会话早些时候自己写进记忆或笔记里的规则。
+  pt: >-
+    Aliases como `oldName = newName`, branches "legacy", caminhos dual-read e avisos de depreciação num projeto sem
+    consumidores externos. Perguntado por quê, o agente cita uma regra que ele mesmo escreveu na memória/notas da mesma
+    sessão.
+  ko: >-
+    외부 소비자가 없는 프로젝트에 `oldName = newName` 별칭, "legacy" 분기, dual-read, deprecation 경고가 생깁니다. 이유를 물으면 같은 세션에서 스스로 메모리/노트에 쓴
+    규칙을 인용합니다.
+  vi: >-
+    Alias kiểu `oldName = newName`, nhánh "legacy", dual-read và cảnh báo deprecate xuất hiện ở project không có
+    consumer ngoài. Hỏi vì sao, agent trích rule nó tự viết vào memory/ghi chú cùng phiên.
+  de: >-
+    Aliase wie `oldName = newName`, „legacy“-Zweige, Dual-Read-Pfade und Deprecation-Warnungen in einem Projekt ohne
+    externe Konsumenten. Gefragt warum, zitiert der Agent eine Regel, die er selbst in Memory/Notizen derselben Session
+    schrieb.
 why:
-  en: In replies to @RhysSullivan's post about agents over-building, @LKRBuilds calls the worst case adding backwards compatibility to a greenfield project with no users, then justifying it with a rule the agent wrote in its own memory file in the same session. @olafurns describes it adding backwards compatibility for something it did yesterday. Compatibility is a safe-sounding default when the agent doesn't know who depends on the code, and a self-written note then turns that guess into a "rule".
-  zh: 在 @RhysSullivan 关于智能体过度构建的帖子下，@LKRBuilds 说最糟的是：在一个没有用户的全新项目里加“向后兼容”，还引用它在同一会话里自己写进记忆文件的规则来为自己辩护。@olafurns 说它会为昨天才做的东西加向后兼容。智能体不知道谁依赖这段代码时，“兼容”听起来是个稳妥的默认值；一条它自己写的笔记又把这个猜测变成了“规则”。
+  en: >-
+    In replies to @RhysSullivan's post about agents over-building, @LKRBuilds calls the worst case adding backwards
+    compatibility to a greenfield project with no users, then justifying it with a rule the agent wrote in its own
+    memory file in the same session. @olafurns describes it adding backwards compatibility for something it did
+    yesterday. Compatibility is a safe-sounding default when the agent doesn't know who depends on the code, and a
+    self-written note then turns that guess into a "rule".
+  zh: >-
+    在 @RhysSullivan 关于智能体过度构建的帖子下，@LKRBuilds 说最糟的是：在一个没有用户的全新项目里加“向后兼容”，还引用它在同一会话里自己写进记忆文件的规则来为自己辩护。@olafurns
+    说它会为昨天才做的东西加向后兼容。智能体不知道谁依赖这段代码时，“兼容”听起来是个稳妥的默认值；一条它自己写的笔记又把这个猜测变成了“规则”。
+  pt: >-
+    Nas respostas ao post de @RhysSullivan sobre agentes over-building, @LKRBuilds chama o pior caso de adicionar
+    backwards compatibility a um greenfield sem usuários e justificar com uma regra escrita no próprio memory file na
+    mesma sessão. @olafurns descreve adicionar compatibilidade para algo de ontem. Compatibilidade soa segura quando o
+    agente não sabe quem depende do código, e uma nota autoescrita transforma o chute em "regra".
+  ko: >-
+    @RhysSullivan의 에이전트 과구축 포스트 댓글에서 @LKRBuilds는 최악이 사용자 없는 그린필드에 하위 호환을 넣고 같은 세션 메모리 파일에 쓴 규칙으로 정당화하는 것이라고 합니다.
+    @olafurns는 어제 한 일에 하위 호환을 붙인다고 합니다. 누가 의존하는지 모를 때 호환은 안전한 기본값처럼 들리고, 스스로 쓴 노트가 추측을 "규칙"으로 만듭니다.
+  vi: >-
+    Trong reply bài @RhysSullivan về agent over-build, @LKRBuilds gọi trường hợp tệ nhất là thêm backwards compatibility
+    cho greenfield không user rồi biện minh bằng rule viết vào memory file cùng phiên. @olafurns mô tả việc thêm tương
+    thích cho thứ làm hôm qua. Compatibility nghe an toàn khi agent không biết ai phụ thuộc code, và note tự viết biến
+    đoán thành "rule".
+  de: >-
+    In Antworten auf @RhysSullivans Post über Over-Building nennt @LKRBuilds den Worst Case: Backwards Compatibility in
+    ein Greenfield ohne Nutzer, gerechtfertigt mit einer Regel im eigenen Memory-File derselben Session. @olafurns
+    beschreibt Compatibility für etwas von gestern. Compatibility klingt sicher, wenn der Agent nicht weiß, wer abhängt
+    — und eine selbst geschriebene Notiz macht die Vermutung zur „Regel“.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: ts
   code: |
     // Renamed yesterday, project not released, no external callers
@@ -37,9 +109,9 @@ rule: |
 extras:
   - ref: review-skill
 sources:
-  - title: "@LKRBuilds on X: backwards compatibility in a greenfield project, justified by its own memory file"
+  - title: '@LKRBuilds on X: backwards compatibility in a greenfield project, justified by its own memory file'
     url: https://x.com/LKRBuilds/status/2111338011938185708
-  - title: "@olafurns on X: backwards compatibility for something it did yesterday"
+  - title: '@olafurns on X: backwards compatibility for something it did yesterday'
     url: https://x.com/olafurns/status/2111406592771985589
-  - title: "@RhysSullivan on X: the post these replies answer"
+  - title: '@RhysSullivan on X: the post these replies answer'
     url: https://x.com/RhysSullivan/status/2111168428883235002

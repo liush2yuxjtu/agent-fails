@@ -1,16 +1,41 @@
 # Shared, reusable fix snippets. Patterns reference these with `- ref: <id>`.
 # Each snippet: title (en/zh), file (where it goes), lang, code, optional note (en/zh).
 
+
 scope-guard-hook:
   kind: hook
   title:
-    en: "Claude Code PreToolUse hook: block edits outside the declared scope"
-    zh: "Claude Code PreToolUse 钩子：拦截声明范围之外的编辑"
+    en: 'Claude Code PreToolUse hook: block edits outside the declared scope'
+    zh: Claude Code PreToolUse 钩子：拦截声明范围之外的编辑
+    pt: 'Hook PreToolUse do Claude Code: bloquear edits fora do escopo declarado'
+    ko: 'Claude Code PreToolUse 훅: 선언된 범위 밖 편집 차단'
+    vi: 'Hook PreToolUse Claude Code: chặn edit ngoài scope khai báo'
+    de: 'Claude-Code-PreToolUse-Hook: Edits außerhalb des deklarierten Scopes blocken'
   file: .claude/hooks/scope_guard.py
   lang: python
   note:
-    en: "Adapted from the diff-budget design on dev.to (yureki_lab). Put allowed globs, one per line, in .agent-scope at the repo root. Exit code 2 blocks the tool call and feeds stderr back to the agent. It only covers file-edit tools; shell writes still need the diff check."
-    zh: "改编自 dev.to（yureki_lab）的 diff budget 设计。在仓库根目录的 .agent-scope 中每行写一个允许的 glob。退出码 2 会阻止该工具调用，并把 stderr 反馈给智能体。它只覆盖文件编辑工具，shell 写入仍需靠 diff 检查兜底。"
+    en: >-
+      Adapted from the diff-budget design on dev.to (yureki_lab). Put allowed globs, one per line, in .agent-scope at
+      the repo root. Exit code 2 blocks the tool call and feeds stderr back to the agent. It only covers file-edit
+      tools; shell writes still need the diff check.
+    zh: >-
+      改编自 dev.to（yureki_lab）的 diff budget 设计。在仓库根目录的 .agent-scope 中每行写一个允许的 glob。退出码 2 会阻止该工具调用，并把 stderr
+      反馈给智能体。它只覆盖文件编辑工具，shell 写入仍需靠 diff 检查兜底。
+    pt: >-
+      Adaptado do design de diff-budget no dev.to (yureki_lab). Coloque globs permitidos, um por linha, em .agent-scope
+      na raiz. Exit code 2 bloqueia a tool call e devolve stderr ao agente. Só cobre ferramentas de edit de arquivo;
+      writes via shell ainda precisam do diff check.
+    ko: >-
+      dev.to(yureki_lab) diff-budget 설계에서 옮김. 저장소 루트 .agent-scope에 허용 glob을 한 줄에 하나씩. 종료 코드 2는 tool call을 막고 stderr를
+      에이전트에 돌려줍니다. 파일 편집 도구만 다루며, 셸 write는 여전히 diff check가 필요합니다.
+    vi: >-
+      Chuyển từ thiết kế diff-budget trên dev.to (yureki_lab). Đặt glob được phép, mỗi dòng một, trong .agent-scope ở
+      root. Exit code 2 chặn tool call và trả stderr cho agent. Chỉ phủ tool edit file; write qua shell vẫn cần diff
+      check.
+    de: >-
+      Angepasst vom Diff-Budget-Design auf dev.to (yureki_lab). Erlaubte Globs, eine pro Zeile, in .agent-scope an der
+      Repo-Wurzel. Exit-Code 2 blockt den Tool-Call und gibt stderr an den Agenten. Deckt nur File-Edit-Tools;
+      Shell-Writes brauchen weiter den Diff-Check.
   code: |
     #!/usr/bin/env python3
     """PreToolUse hook: block Edit/Write/MultiEdit outside the globs in .agent-scope."""
@@ -38,12 +63,15 @@ scope-guard-hook:
         file=sys.stderr,
     )
     sys.exit(2)
-
 scope-guard-settings:
   kind: settings
   title:
-    en: "Register the scope guard in .claude/settings.json"
-    zh: "在 .claude/settings.json 中注册范围守卫"
+    en: Register the scope guard in .claude/settings.json
+    zh: 在 .claude/settings.json 中注册范围守卫
+    pt: Registrar o scope guard em .claude/settings.json
+    ko: .claude/settings.json에 scope guard 등록
+    vi: Đăng ký scope guard trong .claude/settings.json
+    de: Scope-Guard in .claude/settings.json registrieren
   file: .claude/settings.json
   lang: json
   code: |
@@ -59,17 +87,36 @@ scope-guard-settings:
         ]
       }
     }
-
 diff-budget-check:
   kind: ci
   title:
-    en: "Diff budget check (run before commit or in CI)"
-    zh: "Diff 预算检查（提交前或在 CI 中运行）"
+    en: Diff budget check (run before commit or in CI)
+    zh: Diff 预算检查（提交前或在 CI 中运行）
+    pt: Checagem de orçamento de diff (antes do commit ou no CI)
+    ko: Diff 예산 검사 (커밋 전 또는 CI)
+    vi: Kiểm ngân sách diff (trước commit hoặc trong CI)
+    de: Diff-Budget-Check (vor Commit oder in CI)
   file: scripts/diff_budget.py
   lang: python
   note:
-    en: "Adapted from the diff-budget post on dev.to (yureki_lab). Reads the real git diff, so it also catches edits made through the shell. Usage: python3 scripts/diff_budget.py origin/main 6 150"
-    zh: "改编自 dev.to（yureki_lab）的 diff budget 文章。读取真实的 git diff，所以通过 shell 做的修改也逃不掉。用法：python3 scripts/diff_budget.py origin/main 6 150"
+    en: >-
+      Adapted from the diff-budget post on dev.to (yureki_lab). Reads the real git diff, so it also catches edits made
+      through the shell. Usage: python3 scripts/diff_budget.py origin/main 6 150
+    zh: >-
+      改编自 dev.to（yureki_lab）的 diff budget 文章。读取真实的 git diff，所以通过 shell 做的修改也逃不掉。用法：python3 scripts/diff_budget.py
+      origin/main 6 150
+    pt: >-
+      Adaptado do post de diff-budget no dev.to (yureki_lab). Lê o git diff real, então também pega edits via shell.
+      Uso: python3 scripts/diff_budget.py origin/main 6 150
+    ko: >-
+      dev.to(yureki_lab) diff-budget 글에서 옮김. 실제 git diff를 읽어 셸 편집도 잡습니다. 사용법: python3 scripts/diff_budget.py origin/main
+      6 150
+    vi: >-
+      Chuyển từ bài diff-budget trên dev.to (yureki_lab). Đọc git diff thật nên cũng bắt edit qua shell. Cách dùng:
+      python3 scripts/diff_budget.py origin/main 6 150
+    de: >-
+      Angepasst vom Diff-Budget-Post auf dev.to (yureki_lab). Liest den echten Git-Diff und fängt so auch Shell-Edits.
+      Nutzung: python3 scripts/diff_budget.py origin/main 6 150
   code: |
     #!/usr/bin/env python3
     """Fail if the diff vs BASE touches files outside .agent-scope or exceeds the budget."""
@@ -108,17 +155,22 @@ diff-budget-check:
         print("OVER BUDGET: " + "; ".join(problems))
         sys.exit(1)
     print(f"within budget: {files} files, {lines} lines")
-
 verify-skill:
   kind: skill
   title:
-    en: "Shared /verify skill for Claude Code"
-    zh: "团队共享的 /verify 技能（Claude Code）"
+    en: Shared /verify skill for Claude Code
+    zh: 团队共享的 /verify 技能（Claude Code）
+    pt: 'Skill /verify: exigir evidência, não alegações'
+    ko: '/verify 스킬: 주장 대신 증거 요구'
+    vi: 'Skill /verify: đòi bằng chứng, không lời khẳng định'
+    de: 'Skill /verify: Evidenz fordern, keine Behauptungen'
   file: .claude/skills/verify/SKILL.md
   lang: markdown
   note:
-    en: "Commit it to the repo so the whole team (and every agent session) runs the same checks. Replace the commands with your project's real ones."
-    zh: "把它提交进仓库，让整个团队（以及每个智能体会话）跑同一套检查。把命令换成你项目里真实的命令。"
+    en: >-
+      Commit it to the repo so the whole team (and every agent session) runs the same checks. Replace the commands with
+      your project's real ones.
+    zh: 把它提交进仓库，让整个团队（以及每个智能体会话）跑同一套检查。把命令换成你项目里真实的命令。
   code: |
     ---
     name: verify
@@ -142,17 +194,22 @@ verify-skill:
        - Changed files: <list, each with its reason>
        - Checks run: <command -> result>
        - Not done / unsure: <list, or "none">
-
 stop-hook-tests:
   kind: hook
   title:
-    en: "Claude Code Stop hook: don't let the agent finish while tests fail"
-    zh: "Claude Code Stop 钩子：测试不过就不让智能体收工"
+    en: 'Claude Code Stop hook: don''t let the agent finish while tests fail'
+    zh: Claude Code Stop 钩子：测试不过就不让智能体收工
+    pt: 'Hook Stop: rodar testes antes de declarar done'
+    ko: 'Stop 훅: done 선언 전 테스트 실행'
+    vi: 'Hook Stop: chạy test trước khi tuyên bố done'
+    de: 'Stop-Hook: Tests laufen vor „done“'
   file: .claude/settings.json
   lang: json
   note:
-    en: "A Stop hook that exits with code 2 keeps Claude working and shows it stderr. The stop_hook_active check stops it from looping forever. Swap `npm test` for your test command."
-    zh: "Stop 钩子以退出码 2 结束时，Claude 会继续工作并看到 stderr。检查 stop_hook_active 可避免无限循环。把 `npm test` 换成你的测试命令。"
+    en: >-
+      A Stop hook that exits with code 2 keeps Claude working and shows it stderr. The stop_hook_active check stops it
+      from looping forever. Swap `npm test` for your test command.
+    zh: Stop 钩子以退出码 2 结束时，Claude 会继续工作并看到 stderr。检查 stop_hook_active 可避免无限循环。把 `npm test` 换成你的测试命令。
   code: |
     {
       "hooks": {
@@ -168,44 +225,61 @@ stop-hook-tests:
         ]
       }
     }
-
 protect-tests-hook:
   kind: hook
   title:
-    en: "Claude Code PreToolUse hook: tests are read-only unless you say so"
-    zh: "Claude Code PreToolUse 钩子：除非你明确允许，测试文件只读"
+    en: 'Claude Code PreToolUse hook: tests are read-only unless you say so'
+    zh: Claude Code PreToolUse 钩子：除非你明确允许，测试文件只读
+    pt: 'Hook PreToolUse: proteger arquivos de teste de edits'
+    ko: 'PreToolUse 훅: 테스트 파일 편집 보호'
+    vi: 'Hook PreToolUse: bảo vệ file test khỏi edit'
+    de: 'PreToolUse-Hook: Test-Dateien vor Edits schützen'
   file: .claude/hooks/protect_tests.py
   lang: python
   note:
-    en: "Register it like the scope guard (matcher Edit|Write|MultiEdit). Run `ALLOW_TEST_EDITS=1 claude` for sessions where changing tests is the task."
-    zh: "像范围守卫一样注册（matcher 为 Edit|Write|MultiEdit）。如果这次任务本身就是改测试，用 `ALLOW_TEST_EDITS=1 claude` 启动。"
-  code: |
+    en: >-
+      Register it like the scope guard (matcher Edit|Write|MultiEdit). Run `ALLOW_TEST_EDITS=1 claude` for sessions
+      where changing tests is the task.
+    zh: 像范围守卫一样注册（matcher 为 Edit|Write|MultiEdit）。如果这次任务本身就是改测试，用 `ALLOW_TEST_EDITS=1 claude` 启动。
+  code: >
     #!/usr/bin/env python3
+
     """Block edits to test files and CI config unless ALLOW_TEST_EDITS=1."""
+
     import json, os, re, sys
 
+
     call = json.load(sys.stdin)
+
     if call.get("tool_name") not in ("Edit", "Write", "MultiEdit") or os.environ.get("ALLOW_TEST_EDITS") == "1":
         sys.exit(0)
 
     path = call["tool_input"].get("file_path", "")
-    protected = re.compile(r"(^|/)(tests?|__tests__|spec)/|\.(test|spec)\.[jt]sx?$|_test\.(go|py)$|(^|/)test_[^/]+\.py$|\.github/workflows/")
+
+    protected =
+    re.compile(r"(^|/)(tests?|__tests__|spec)/|\.(test|spec)\.[jt]sx?$|_test\.(go|py)$|(^|/)test_[^/]+\.py$|\.github/workflows/")
+
     if protected.search(path):
         print(f"BLOCKED: {path} is a test/CI file. Make the code pass the existing test. "
               "If you believe the test itself is wrong, stop and explain why to the user.", file=sys.stderr)
         sys.exit(2)
     sys.exit(0)
-
 destructive-bash-hook:
   kind: hook
   title:
-    en: "Claude Code PreToolUse hook: stop destructive shell commands"
-    zh: "Claude Code PreToolUse 钩子：拦截破坏性 shell 命令"
+    en: 'Claude Code PreToolUse hook: stop destructive shell commands'
+    zh: Claude Code PreToolUse 钩子：拦截破坏性 shell 命令
+    pt: 'Hook PreToolUse: bloquear bash destrutivo'
+    ko: 'PreToolUse 훅: 파괴적 bash 차단'
+    vi: 'Hook PreToolUse: chặn bash phá hủy'
+    de: 'PreToolUse-Hook: destruktives Bash blocken'
   file: .claude/hooks/block_destructive.py
   lang: python
   note:
-    en: "Register with matcher \"Bash\". A pattern list is a seatbelt, not a sandbox; keep real backups and least-privilege credentials too."
-    zh: "用 matcher \"Bash\" 注册。正则清单是安全带，不是沙箱；备份和最小权限凭据同样要有。"
+    en: >-
+      Register with matcher "Bash". A pattern list is a seatbelt, not a sandbox; keep real backups and least-privilege
+      credentials too.
+    zh: 用 matcher "Bash" 注册。正则清单是安全带，不是沙箱；备份和最小权限凭据同样要有。
   code: |
     #!/usr/bin/env python3
     """Block high-blast-radius shell commands; the agent must ask the user instead."""
@@ -233,17 +307,20 @@ destructive-bash-hook:
                   "Explain what you want to run and why, and let the user run it or approve it.", file=sys.stderr)
             sys.exit(2)
     sys.exit(0)
-
 deny-permissions:
   kind: settings
   title:
-    en: "Claude Code permissions: hard-deny sensitive paths, ask before installs"
-    zh: "Claude Code 权限：硬性禁止敏感路径，安装依赖前先询问"
+    en: 'Claude Code permissions: hard-deny sensitive paths, ask before installs'
+    zh: Claude Code 权限：硬性禁止敏感路径，安装依赖前先询问
+    pt: Negar ferramentas perigosas nas permissões do Claude Code
+    ko: Claude Code 권한에서 위험한 도구 거부
+    vi: Từ chối tool nguy hiểm trong quyền Claude Code
+    de: Gefährliche Tools in Claude-Code-Permissions verweigern
   file: .claude/settings.json
   lang: json
   note:
-    en: "Rules in CLAUDE.md are context; permission rules are enforced by the tool. Adjust the paths to your repo."
-    zh: "CLAUDE.md 里的规则只是上下文；权限规则由工具强制执行。按你的仓库调整路径。"
+    en: Rules in CLAUDE.md are context; permission rules are enforced by the tool. Adjust the paths to your repo.
+    zh: CLAUDE.md 里的规则只是上下文；权限规则由工具强制执行。按你的仓库调整路径。
   code: |
     {
       "permissions": {
@@ -263,17 +340,22 @@ deny-permissions:
         ]
       }
     }
-
 review-skill:
   kind: skill
   title:
-    en: "Fresh-context review skill (subagent reviews the diff, not the chat)"
-    zh: "全新上下文的审查技能（子智能体只看 diff，不看聊天记录）"
+    en: Fresh-context review skill (subagent reviews the diff, not the chat)
+    zh: 全新上下文的审查技能（子智能体只看 diff，不看聊天记录）
+    pt: 'Skill /code-review: revisão com contexto limpo'
+    ko: '/code-review 스킬: 깨끗한 컨텍스트 리뷰'
+    vi: 'Skill /code-review: review với ngữ cảnh sạch'
+    de: 'Skill /code-review: Review mit frischem Kontext'
   file: .claude/skills/review-diff/SKILL.md
   lang: markdown
   note:
-    en: "Follows the habit Anthropic describes in its code-review post: verify first, then have a subagent review the diff with fresh context. Named review-diff to avoid clashing with built-in or popular /code-review skills."
-    zh: "沿用 Anthropic 代码审查文章里的做法：先验证，再让一个上下文干净的子智能体审 diff。命名为 review-diff，避免和内置或流行的 /code-review 技能重名。"
+    en: >-
+      Follows the habit Anthropic describes in its code-review post: verify first, then have a subagent review the diff
+      with fresh context. Named review-diff to avoid clashing with built-in or popular /code-review skills.
+    zh: 沿用 Anthropic 代码审查文章里的做法：先验证，再让一个上下文干净的子智能体审 diff。命名为 review-diff，避免和内置或流行的 /code-review 技能重名。
   code: |
     ---
     name: review-diff
@@ -297,17 +379,22 @@ review-skill:
 
     Then fix real findings, or list them under "Known issues" in the PR. Do not argue with the reviewer
     in the PR text; either fix or explain in one line.
-
 acceptance-spec:
   kind: spec
   title:
-    en: "SPEC.md acceptance checks (written and approved before code)"
-    zh: "SPEC.md 验收标准（先写、先确认，再写代码）"
+    en: SPEC.md acceptance checks (written and approved before code)
+    zh: SPEC.md 验收标准（先写、先确认，再写代码）
+    pt: Template de aceite que exclui a leitura errada
+    ko: 잘못된 해석을 배제하는 수락 템플릿
+    vi: Mẫu chấp nhận loại trừ cách đọc sai
+    de: Abnahme-Vorlage, die die falsche Lesart ausschließt
   file: SPEC.md
   lang: markdown
   note:
-    en: "Teammates annotate this file (or the mockup/artifact) instead of reviewing a big PR. Each check should separate the reading you mean from the reading you don't."
-    zh: "队友直接在这个文件（或设计稿/产物）上批注，而不是事后审一个大 PR。每条验收标准都要能区分“你要的理解”和“你不要的理解”。"
+    en: >-
+      Teammates annotate this file (or the mockup/artifact) instead of reviewing a big PR. Each check should separate
+      the reading you mean from the reading you don't.
+    zh: 队友直接在这个文件（或设计稿/产物）上批注，而不是事后审一个大 PR。每条验收标准都要能区分“你要的理解”和“你不要的理解”。
   code: |
     # Spec: <feature name>
 
