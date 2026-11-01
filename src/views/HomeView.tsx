@@ -1,7 +1,7 @@
 import { t } from "@/lib/i18n";
 import { getPatterns, toCards } from "@/lib/patterns";
 import { HOME_SEO } from "@/lib/meta";
-import { absolute, href, SITE_NAME, SITE_NAME_ZH, type Lang } from "@/lib/site";
+import { absolute, href, LANG_HTML, lx, SITE_NAME, SITE_NAME_ZH, type Lang } from "@/lib/site";
 import { PatternExplorer } from "@/components/PatternExplorer";
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { RecorderPlane } from "@/components/RecorderPlane";
@@ -30,7 +30,7 @@ export function HomeView({ lang }: { lang: Lang }) {
         alternateName: lang === "zh" ? SITE_NAME : SITE_NAME_ZH,
         url: pageUrl,
         description: copy.description,
-        inLanguage: lang === "zh" ? "zh-CN" : "en",
+        inLanguage: LANG_HTML[lang],
       },
       {
         "@type": "ItemList",
@@ -38,12 +38,12 @@ export function HomeView({ lang }: { lang: Lang }) {
         name: copy.title,
         description: copy.description,
         numberOfItems: patterns.length,
-        inLanguage: lang === "zh" ? "zh-CN" : "en",
+        inLanguage: LANG_HTML[lang],
         isPartOf: { "@id": `${pageUrl}#website` },
         itemListElement: patterns.map((p, i) => ({
           "@type": "ListItem",
           position: i + 1,
-          name: p.title[lang],
+          name: lx(p.title, lang),
           url: absolute(href(lang, `/patterns/${p.slug}`)),
         })),
       },
@@ -72,7 +72,7 @@ export function HomeView({ lang }: { lang: Lang }) {
             <RecorderPlane
               lang={lang}
               frameId={spot ? (frames.get(spot.slug) ?? "") : ""}
-              title={spot ? spot.title[lang] : ""}
+              title={spot ? lx(spot.title, lang) : ""}
               slug={spot?.slug}
             />
           </>

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { load as yamlLoad } from "js-yaml";
 import { AGENTS, CATEGORIES, type Fix, type Pattern, type PatternCard } from "./types";
-import type { Lang } from "./site";
+import { hasLx, lx, type Lang } from "./site";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -87,16 +87,19 @@ export function getPattern(slug: string): Pattern | undefined {
 }
 
 export function toCards(lang: Lang): PatternCard[] {
-  const other: Lang = lang === "en" ? "zh" : "en";
-  return getPatterns().map((p) => ({
-    slug: p.slug,
-    category: p.category,
-    agents: p.agents,
-    title: p.title[lang],
-    altTitle: p.title[other],
-    summary: p.summary[lang],
-    search: [p.slug, p.title.en, p.title.zh, p.summary.en, p.summary.zh, p.symptom.en, p.symptom.zh, p.tags.join(" "), p.category]
-      .join(" ")
-      .toLowerCase(),
-  }));
+  return getPatterns().map((p) => {
+    const fallback = lang !== "en" && (!hasLx(p.title, lang) || !hasLx(p.summary, lang));
+    return {
+      slug: p.slug,
+      category: p.category,
+      agents: p.agents,
+      title: lx(p.title, lang),
+      altTitle: lang === "en" ? p.title.zh : p.title.en,
+      summary: lx(p.summary, lang),
+      search: [p.slug, p.title.en, p.title.zh, p.summary.en, p.summary.zh, p.symptom.en, p.symptom.zh, p.tags.join(" "), p.category]
+        .join(" ")
+        .toLowerCase(),
+      fallback,
+    };
+  });
 }

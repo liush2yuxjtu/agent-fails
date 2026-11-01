@@ -1,4 +1,4 @@
-import type { Lang } from "./site";
+import { LANG_PREFIX, LANGS, pathLang, stripLangPrefix, type Lang, href } from "./site";
 
 /** Cookie that remembers the visitor's last chosen / detected UI language. */
 export const LANG_COOKIE = "af_lang";
@@ -7,33 +7,37 @@ export const LANG_COOKIE = "af_lang";
 export const LANG_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 export function isLang(value: string | undefined | null): value is Lang {
-  return value === "en" || value === "zh";
+  return (LANGS as readonly string[]).includes(value ?? "");
 }
 
-/** Path is the Chinese route tree (`/zh` or `/zh/...`). */
+/** @deprecated use pathLang — kept for call-site clarity in older comments */
 export function isZhPath(pathname: string): boolean {
-  return pathname === "/zh" || pathname.startsWith("/zh/");
+  return pathLang(pathname) === "zh";
 }
 
-/** Strip the `/zh` prefix; `/zh` → `/`. */
 export function stripZhPrefix(pathname: string): string {
-  if (pathname === "/zh") return "/";
-  if (pathname.startsWith("/zh/")) return pathname.slice(3);
-  return pathname;
+  return stripLangPrefix(pathname);
 }
 
-/** Add the `/zh` prefix; `/` → `/zh`. */
 export function withZhPrefix(pathname: string): string {
-  if (pathname === "/") return "/zh";
-  return `/zh${pathname}`;
+  return href("zh", pathname);
 }
+
+const TAG_TO_LANG: Array<{ test: (tag: string) => boolean; lang: Lang }> = [
+  { test: (t) => t === "zh" || t.startsWith("zh-"), lang: "zh" },
+  { test: (t) => t === "pt" || t.startsWith("pt-"), lang: "pt" },
+  { test: (t) => t === "ko" || t.startsWith("ko-"), lang: "ko" },
+  { test: (t) => t === "vi" || t.startsWith("vi-"), lang: "vi" },
+  { test: (t) => t === "de" || t.startsWith("de-"), lang: "de" },
+  { test: (t) => t === "en" || t.startsWith("en-"), lang: "en" },
+];
 
 /**
- * True when Accept-Language prefers a zh* tag over en* (highest-q first).
- * Other languages are skipped until zh or en appears.
+ * Pick the first supported locale from Accept-Language (highest-q first).
+ * Returns undefined when the header is empty or only lists unsupported tags.
  */
-export function acceptsChineseFirst(header: string | null | undefined): boolean {
-  if (!header) return false;
+export function preferLocale(header: string | null | undefined): Lang | undefined {
+  if (!header) return undefined;
   const tags = header
     .split(",")
     .map((part) => {
@@ -54,8 +58,20 @@ export function acceptsChineseFirst(header: string | null | undefined): boolean 
 
   for (const { tag } of tags) {
     if (tag === "*") continue;
-    if (tag === "zh" || tag.startsWith("zh-")) return true;
-    if (tag === "en" || tag.startsWith("en-")) return false;
+    for (const rule of TAG_TO_LANG) {
+      if (rule.test(tag)) return rule.lang;
+    }
   }
-  return false;
+  return undefined;
 }
+
+/** True when Accept-Language prefers a zh* tag over en* (legacy helper). */
+export function acceptsChineseFirst(header: string | null | undefined): boolean {
+  return preferLocale(header) === "zh";
+}
+
+export function withLangPath(lang: Lang, pathname: string): string {
+  return href(lang, stripLangPrefix(pathname));
+}
+
+export { LANG_PREFIX, pathLang, stripLangPrefix };

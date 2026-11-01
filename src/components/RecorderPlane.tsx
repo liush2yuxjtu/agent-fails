@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { t } from "@/lib/i18n";
 import { href, type Lang } from "@/lib/site";
 
 /**
@@ -17,6 +18,7 @@ export function RecorderPlane({
   title: string;
   slug?: string;
 }) {
+  const d = t(lang);
   const inner = (
     <>
       <div className="af-glass">
@@ -24,11 +26,7 @@ export function RecorderPlane({
         <span className="af-mk af-mk-tr" aria-hidden />
         <span className="af-mk af-mk-bl" aria-hidden />
         <span className="af-mk af-mk-br" aria-hidden />
-        <span className="sr-only">
-          {lang === "zh"
-            ? "三类通道：做错了功能、有 Bug、越界。"
-            : "Three channels: Wrong feature, Bug, Overreach."}
-        </span>
+        <span className="sr-only">{d.channelsAria}</span>
         <svg viewBox="0 0 760 460" aria-hidden>
           <g className="af-gridline">
             <line x1="150" y1="36" x2="150" y2="392" />
@@ -47,14 +45,14 @@ export function RecorderPlane({
             WF
           </text>
           <text className="af-ch-name" x="16" y="104">
-            {lang === "zh" ? "做错了功能" : "WRONG FEATURE"}
+            {d.channelWf}
           </text>
 
           <text className="af-ch-code" x="16" y="182">
             BUG
           </text>
           <text className="af-ch-name" x="16" y="200">
-            {lang === "zh" ? "有 Bug" : "Bug"}
+            {d.channelBug}
           </text>
 
           <rect x="16" y="300" width="4" height="16" fill="#e8a317" />
@@ -63,7 +61,7 @@ export function RecorderPlane({
             OVR
           </text>
           <text className="af-ch-name" x="16" y="338">
-            {lang === "zh" ? "越界" : "OVERREACH"}
+            {d.channelOvr}
           </text>
 
           <path className="af-tr af-tr-wf af-draw-dash" pathLength={100} d="M150 92 H280 L320 74 H450 L490 92 H736" />
