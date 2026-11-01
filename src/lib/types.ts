@@ -1,6 +1,15 @@
 export type Category = "wrong-feature" | "bug" | "overreach";
 export type AgentId = "claude-code" | "cursor" | "codex" | "copilot";
-export type L10n = { en: string; zh: string };
+
+/** Required en+zh in YAML; optional pt/ko/vi/de — UI falls back to en when missing. */
+export type L10n = {
+  en: string;
+  zh: string;
+  pt?: string;
+  ko?: string;
+  vi?: string;
+  de?: string;
+};
 
 export type Fix = {
   kind: "rules" | "cursor" | "hook" | "skill" | "settings" | "ci" | "spec";
@@ -36,6 +45,8 @@ export type PatternCard = {
   altTitle: string;
   summary: string;
   search: string;
+  /** True when title/summary fell back to English for the active UI lang. */
+  fallback: boolean;
 };
 
 export const CATEGORIES: Category[] = ["wrong-feature", "bug", "overreach"];

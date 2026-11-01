@@ -42,7 +42,7 @@ export function SiteShell({ lang, path, children }: { lang: Lang; path: string; 
             </Link>
           ))}
         </nav>
-        <LangSwitch current={lang} path={path} label={d.langSwitch} />
+        <LangSwitch current={lang} path={path} />
       </header>
       <main className="af-main">{children}</main>
       <footer className="af-foot">

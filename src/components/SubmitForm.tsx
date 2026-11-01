@@ -6,7 +6,9 @@ import { AGENTS, CATEGORIES } from "@/lib/types";
 import { issueUrl } from "@/lib/submit";
 import type { Lang } from "@/lib/site";
 
-const L = {
+const L: Record<Lang, {
+  title: string; titlePh: string; agent: string; category: string; unsure: string; what: string; whatPh: string; open: string; hint: string;
+}> = {
   en: {
     title: "One-line title",
     titlePh: "e.g. Asked to rename a button, Cursor rewrote the API client",
@@ -29,7 +31,52 @@ const L = {
     open: "打开预填好的 GitHub Issue",
     hint: "会在新标签页打开 github.com。在那边点提交之前，不会发送任何内容。",
   },
+  pt: {
+    title: "Título em uma linha",
+    titlePh: "ex.: Pedi para renomear um botão, o Cursor reescreveu o cliente da API",
+    agent: "Agente",
+    category: "Tipo",
+    unsure: "Não sei",
+    what: "O que aconteceu? (pode adicionar o diff no GitHub)",
+    whatPh: "O que pediu, o que o agente fez, por que estava errado…",
+    open: "Abrir issue pré-preenchida no GitHub",
+    hint: "Abre github.com numa nova aba. Nada é enviado até você clicar em Submit lá.",
+  },
+  ko: {
+    title: "한 줄 제목",
+    titlePh: "예: 버튼 이름만 바꾸라 했더니 Cursor가 API 클라이언트를 다시 씀",
+    agent: "에이전트",
+    category: "유형",
+    unsure: "잘 모르겠음",
+    what: "무슨 일이었나요? (diff는 GitHub에서 추가 가능)",
+    whatPh: "무엇을 시켰는지, 에이전트가 무엇을 했는지, 왜 틀렸는지…",
+    open: "미리 채운 GitHub 이슈 열기",
+    hint: "새 탭에서 github.com을 엽니다. 거기에서 Submit 누르기 전에는 아무것도 전송되지 않습니다.",
+  },
+  vi: {
+    title: "Tiêu đề một dòng",
+    titlePh: "vd: Chỉ nhờ đổi tên nút, Cursor viết lại API client",
+    agent: "Agent",
+    category: "Loại",
+    unsure: "Không chắc",
+    what: "Chuyện gì đã xảy ra? (có thể thêm diff trên GitHub)",
+    whatPh: "Bạn hỏi gì, agent làm gì, vì sao sai…",
+    open: "Mở issue GitHub đã điền sẵn",
+    hint: "Mở github.com tab mới. Chưa gửi gì cho đến khi bạn bấm Submit ở đó.",
+  },
+  de: {
+    title: "Einzeiliger Titel",
+    titlePh: "z. B. Button umbenennen lassen, Cursor hat den API-Client neu geschrieben",
+    agent: "Agent",
+    category: "Typ",
+    unsure: "Unsicher",
+    what: "Was ist passiert? (Diff können Sie auf GitHub ergänzen)",
+    whatPh: "Was Sie wollten, was der Agent tat, warum es falsch war…",
+    open: "Vorausgefülltes GitHub-Issue öffnen",
+    hint: "Öffnet github.com in einem neuen Tab. Nichts wird gesendet, bis Sie dort Submit drücken.",
+  },
 };
+
 
 /**
  * Render localized fields that build a prefilled GitHub issue link.
