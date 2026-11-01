@@ -1,4 +1,4 @@
-import { Big_Shoulders, IBM_Plex_Mono, IBM_Plex_Sans, Noto_Sans_SC } from "next/font/google";
+import { Big_Shoulders, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 
 // next/font 16.4 has Big_Shoulders, the variable-font successor of Big Shoulders Display.
 export const display = Big_Shoulders({
@@ -24,12 +24,9 @@ export const mono = IBM_Plex_Mono({
   display: "swap",
 });
 
-export const sc = Noto_Sans_SC({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-sc-loaded",
-  display: "swap",
-  preload: false,
-});
+// CJK uses the system stack in globals.css (PingFang SC / Microsoft YaHei / Noto Sans CJK).
+// Shipping Noto Sans SC via next/font injected ~280KB of @font-face CSS and ~1MB of
+// subset woff2 downloads on every locale, including English pages that only show a
+// few Chinese characters in the bilingual chrome.
 
-export const fontVariableClass = [display.variable, body.variable, mono.variable, sc.variable].join(" ");
+export const fontVariableClass = [display.variable, body.variable, mono.variable].join(" ");

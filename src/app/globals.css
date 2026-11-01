@@ -16,9 +16,10 @@
   --ink-on-amber: #1a1204;
 
   --font-display: var(--font-display-loaded), "Arial Narrow", Impact, sans-serif;
-  --font-body: var(--font-body-loaded), var(--font-sc-loaded), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-    "Noto Sans CJK SC", sans-serif;
-  --font-mono: var(--font-mono-loaded), var(--font-sc-loaded), ui-monospace, monospace;
+  --font-body: var(--font-body-loaded), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",
+    sans-serif;
+  --font-mono: var(--font-mono-loaded), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",
+    ui-monospace, monospace;
 
   --bezel: 48px;
   --page: 1240px;
@@ -357,7 +358,7 @@ pre code {
 }
 
 .af-plane text {
-  font-family: var(--font-mono), "Noto Sans SC", monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.06em;
 }
 
@@ -1404,6 +1405,11 @@ pre code {
   left: 0;
 }
 
+.af-chan {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
+}
+
 @keyframes af-draw {
   to {
     stroke-dashoffset: 0;
@@ -1431,11 +1437,9 @@ pre code {
   0%,
   100% {
     opacity: 1;
-    box-shadow: 0 0 0 3px rgba(232, 163, 23, 0.16);
   }
   50% {
     opacity: 0.45;
-    box-shadow: 0 0 8px 1px rgba(232, 163, 23, 0.45);
   }
 }
 
