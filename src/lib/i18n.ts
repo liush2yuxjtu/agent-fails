@@ -35,12 +35,12 @@ export const AGENT_LABEL: Record<AgentId, string> = {
 const en = {
   tagline: "How AI coding agents go wrong, each with a copy-paste fix.",
   heroTitle: "Every way your coding agent goes wrong, with the fix.",
-  heroSub:
-    "A searchable, community-built database of failure patterns for Claude Code, Cursor, Codex and Copilot agent. Each one comes with rules for CLAUDE.md, AGENTS.md and .cursor/rules, plus a hook or /verify skill you can paste in today.",
+  heroSub: "Copy-paste fixes for Claude Code, Cursor, Codex and Copilot.",
   nav: { patterns: "Patterns", submit: "Submit", about: "About", sponsor: "Sponsor" },
   langSwitch: "中文",
   searchPlaceholder: "Search: changed unrelated files, skipped tests, invented package…",
   searchLabel: "Search patterns",
+  searchButton: "Search",
   allCategories: "All",
   allAgents: "All agents",
   category: "Type",
@@ -85,12 +85,12 @@ export type Dict = typeof en;
 const zh: Dict = {
   tagline: "AI 编程智能体的各种翻车方式，每一种都附可直接复制的修复。",
   heroTitle: "你的编程智能体会怎么翻车，这里都有，还附修复。",
-  heroSub:
-    "一个可搜索、由社区共建的翻车模式数据库，覆盖 Claude Code、Cursor、Codex 和 Copilot 智能体。每条都附带可以直接粘贴进 CLAUDE.md、AGENTS.md、.cursor/rules 的规则，以及钩子或 /verify 技能。",
+  heroSub: "可直接粘贴的修复，适用于 Claude Code、Cursor、Codex 与 Copilot。",
   nav: { patterns: "翻车库", submit: "投稿", about: "关于", sponsor: "赞助" },
   langSwitch: "English",
   searchPlaceholder: "搜索：改了无关文件、跳过测试、编造的包……",
   searchLabel: "搜索翻车模式",
+  searchButton: "搜索",
   allCategories: "全部",
   allAgents: "全部智能体",
   category: "类型",

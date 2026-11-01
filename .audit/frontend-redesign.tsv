@@ -1,0 +1,14 @@
+ts	phase	decision	why	evidence	result
+2026-10-27T17:38:46Z	frame	frontend redesign framed as layout-led catalog rewrite	user asked max-power redesign with no page notes layout must self-explain	user_query	open
+2026-10-27T17:39:11Z	frame	DoD set: layout-led redesign, no page notes, EN/ZH shared views, lint+build green, preserve explorer behavior and sponsor prices	ambitious UI rewrite needs falsifiable gate before spend	.audit/frontend-redesign.tsv	framed
+2026-10-27T17:40:30Z	arena	switched arena runners to grok/gemini/muse after Claude and GPT weekly limits blocked fable/sol/opus	max power still needs diverse runners; available set is Grok Gemini Muse Composer	Task spawn errors	fallback
+2026-10-27T17:52:29Z	pick	base = candidate-1 flight recorder three-rail console	layout encodes taxonomy as rails; fullest mock; distinctive without purple/cream/broadsheet	/tmp/arena-agentfails-ui/candidate-1/RATIONALE.md	provisional
+2026-10-27T17:52:29Z	graft	graft c4 wordmark Agent+Fails split and fix hunks; graft c5 mobile severity bands; drop c1 hero lede tutorial sentence	hero budget and layout-self-explains; keep brand signal from editor candidate	candidate-4/5 rationales	planned
+2026-10-27T18:03:41Z	pick	confirmed BASE candidate-1 via SYNTHESIS.md totals 29 vs 27/19/19	cross-judge agreed with provisional pick; layout self-explains taxonomy best	/tmp/arena-agentfails-ui/SYNTHESIS.md	confirmed
+2026-10-27T18:03:41Z	graft	apply C2 compact rows + first-viewport channels + C4 slash-cmdk focus; reject hero meta and full-svh poster	synthesis grafts/rejects	/tmp/arena-agentfails-ui/SYNTHESIS.md#GRAFTS	in_progress
+2026-10-27T18:18:59Z	verify	lint build green; sponsor prices present; browser confirms dark chassis amber rails three channels brand hero	prove-it-works against real pages	/opt/cursor/artifacts/redesign/home-desktop.png	VERIFIED
+2026-10-27T18:19:39Z	ship	commit presentation redesign; trail kept in .audit for PR	figure-it-out phase D commits trail for ambitious UI rewrite	.audit/frontend-redesign.tsv	open
+2026-10-27T18:23:10Z	graft	shipped C2 compact rows + slash-cmdk; dropped C4 hunks and C5 bands	C4 hunks need YAML diffs; C5 bands duplicate rails; C2 row density wins	/tmp/arena-agentfails-ui/SYNTHESIS.md	done
+2026-10-27T18:23:11Z	verify	lint clean; build OK; sponsor HTML has 49/99/29; screenshots home mobile zh pattern sponsor	prove-it-works multi-artifact	/opt/cursor/artifacts/redesign/;.next/server/app/sponsor.html	VERIFIED
+2026-10-27T18:23:11Z	ship	PR 6 opened on cursor/frontend-redesign-bda1	opening-a-pr	https://github.com/liush2yuxjtu/agent-fails/pull/6	open
+2026-10-27T18:23:32Z	fix	removed channel fix-hint lines; added sr-only taxonomy on recorder plane	user asked layout not page notes; a11y for aria-hidden SVG	PatternExplorer.tsx;RecorderPlane.tsx	done
