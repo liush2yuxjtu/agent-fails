@@ -8,10 +8,11 @@ import { NEWSLETTER_FORM_ACTION, REPO_URL, type Lang } from "@/lib/site";
 /**
  * "翻车 of the week" signup.
  *
- * Configure with NEXT_PUBLIC_NEWSLETTER_FORM_ACTION (a public embed/subscribe URL, e.g.
- * https://buttondown.com/api/emails/embed-subscribe/<your-newsletter>). It is read at build time.
- * The form posts natively with a field named "email", which Buttondown, Loops and most providers accept.
- * When unset, the form is a graceful stub: nothing is stored or sent anywhere.
+ * NEXT_PUBLIC_NEWSLETTER_FORM_ACTION is a public embed URL, inlined at build time.
+ * Production and Preview use https://buttondown.com/api/emails/embed-subscribe/agentfails
+ * (the list at https://buttondown.com/agentfails). The form POSTs `email` and a hidden `tag`
+ * of `en` or `zh`; Buttondown's response opens in a new tab.
+ * When the variable is empty, the form is a stub: nothing is stored or sent.
  */
 export function NewsletterForm({ lang }: { lang: Lang }) {
   const d = t(lang);
