@@ -1,23 +1,68 @@
 slug: phantom-success
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [tests pass, verification, claims, did not run, lying]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - tests pass
+  - verification
+  - claims
+  - did not run
+  - lying
 title:
   en: '"All tests pass" (nothing was run)'
-  zh: "“测试全部通过”（其实一个都没跑）"
+  zh: “测试全部通过”（其实一个都没跑）
+  pt: '"Todos os testes passam" (nada foi rodado)'
+  ko: '"테스트 전부 통과" (아무것도 안 돌림)'
+  vi: '"All tests pass" (chẳng chạy gì)'
+  de: „Alle Tests grün“ (nichts wurde ausgeführt)
 summary:
   en: The agent says the work is done or passing without having executed the check that would prove it.
   zh: 智能体说已经完成或测试通过，但根本没有执行能证明这一点的检查。
+  pt: >-
+    O agente afirma verde sem rodar a suite, ou roda o comando errado / no diretório errado / com filtro que seleciona
+    zero testes.
+  ko: 에이전트가 스위트를 안 돌리거나, 잘못된 명령/디렉터리/0개 테스트를 고르는 필터로 돌리고도 초록이라고 주장합니다.
+  vi: Agent khẳng định xanh mà không chạy suite, hoặc chạy sai lệnh / sai thư mục / filter chọn zero test.
+  de: >-
+    Der Agent behauptet Grün, ohne die Suite zu laufen — oder läuft den falschen Befehl / Ordner / Filter mit null
+    Tests.
 symptom:
-  en: The final message claims green tests or a working build. The transcript has no test or build command, or the command errored and the error was skipped over.
+  en: >-
+    The final message claims green tests or a working build. The transcript has no test or build command, or the command
+    errored and the error was skipped over.
   zh: 最后的消息声称测试全绿或构建成功，但记录里没有测试/构建命令，或者命令报错了却被略过。
+  pt: '"All tests pass" no chat; CI falha; ou o log local mostra 0 tests.'
+  ko: 채팅에는 "All tests pass"; CI는 실패; 또는 로컬 로그에 테스트 0개.
+  vi: Chat bảo "All tests pass"; CI fail; hoặc log local hiện 0 tests.
+  de: „All tests pass“ im Chat; CI rot; oder lokales Log zeigt 0 Tests.
 why:
-  en: Agents are rewarded for finishing and for sounding finished. Writing "tests pass" is cheaper than running them. agent-failure-modes grades AFM-1 Phantom Success as Replicated (reproducible on demand). Anthropic's code-review post describes the counter-habit, giving Claude something it can run and asking it to show the output instead of saying it's done.
-  zh: 智能体被激励去“完成”，也被激励去“听起来像完成了”。写一句“测试通过”比真去跑便宜。agent-failure-modes 把 AFM-1 幻影成功评为“可复现”。Anthropic 的代码审查文章给出的对策是：给 Claude 一个能运行的东西，并要求它展示输出，而不是只说“做完了”。
+  en: >-
+    Agents are rewarded for finishing and for sounding finished. Writing "tests pass" is cheaper than running them.
+    agent-failure-modes grades AFM-1 Phantom Success as Replicated (reproducible on demand). Anthropic's code-review
+    post describes the counter-habit, giving Claude something it can run and asking it to show the output instead of
+    saying it's done.
+  zh: >-
+    智能体被激励去“完成”，也被激励去“听起来像完成了”。写一句“测试通过”比真去跑便宜。agent-failure-modes 把 AFM-1 幻影成功评为“可复现”。Anthropic 的代码审查文章给出的对策是：给 Claude
+    一个能运行的东西，并要求它展示输出，而不是只说“做完了”。
+  pt: >-
+    Afirmar é mais barato que evidenciar. Stop hooks que rodam testes e verify skills que exigem output de comando
+    fecham a lacuna.
+  ko: 주장이 증거보다 쌉니다. 테스트를 돌리는 stop hook과 명령 출력을 요구하는 verify 스킬이 빈틈을 막습니다.
+  vi: Khẳng định rẻ hơn bằng chứng. Stop hook chạy test và verify skill đòi output lệnh vá lỗ hổng.
+  de: >-
+    Behaupten ist billiger als Belegen. Stop-Hooks die Tests laufen und Verify-Skills die Command-Output verlangen
+    schließen die Lücke.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     Agent: "Implemented the parser and all tests pass ✅"
@@ -33,9 +78,9 @@ extras:
   - ref: stop-hook-tests
   - ref: verify-skill
 sources:
-  - title: "agent-failure-modes: AFM-1 Phantom Success"
+  - title: 'agent-failure-modes: AFM-1 Phantom Success'
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-001-phantom-success.md
-  - title: "Anthropic: Solving code review at Anthropic"
+  - title: 'Anthropic: Solving code review at Anthropic'
     url: https://claude.dev/blog/solving-code-review-at-anthropic/
-  - title: "@Lehidev on X: the LLM doesn't always run the CI jobs before pushing"
+  - title: '@Lehidev on X: the LLM doesn''t always run the CI jobs before pushing'
     url: https://x.com/Lehidev/status/2111162462418411778

@@ -1,23 +1,76 @@
 slug: coverage-overclaim
 category: wrong-feature
-agents: [claude-code, cursor, codex, copilot]
-tags: [migration, partial, truncation, all usages, rename]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - migration
+  - partial
+  - truncation
+  - all usages
+  - rename
 title:
   en: '"Fully migrated" (it wasn''t)'
-  zh: "“全部迁移完了”（其实没有）"
+  zh: “全部迁移完了”（其实没有）
+  pt: '"Totalmente migrado" (não estava)'
+  ko: '"전부 마이그레이션됨" (아니었습니다)'
+  vi: '"Đã migrate hết" (thực ra chưa)'
+  de: „Vollständig migriert“ (war es nicht)
 summary:
-  en: The agent reports a sweep (rename, migration, API swap) as complete when it only covered the occurrences it happened to see.
+  en: >-
+    The agent reports a sweep (rename, migration, API swap) as complete when it only covered the occurrences it happened
+    to see.
   zh: 智能体声称一次全局改动（重命名、迁移、换 API）已经全部完成，实际上只改了它碰巧看到的那些地方。
+  pt: >-
+    O agente reporta um sweep (rename, migration, troca de API) como completo quando só cobriu as ocorrências que
+    aconteceu de ver.
+  ko: 에이전트가 rename·마이그레이션·API 교체 스윕을 완료라고 보고하지만, 우연히 본 등장만 덮었습니다.
+  vi: Agent báo một sweep (rename, migration, đổi API) là xong trong khi chỉ phủ các chỗ nó tình cờ thấy.
+  de: >-
+    Der Agent meldet einen Sweep (Rename, Migration, API-Tausch) als fertig, obwohl er nur die Vorkommen abdeckte, die
+    er zufällig sah.
 symptom:
-  en: '"Updated all 8 call sites." There were 9; the ninth lives in a shell string, a config file, or a file past a search-result cutoff, untouched and unmentioned.'
-  zh: "“已更新全部 8 处调用。”其实有 9 处；第 9 处藏在 shell 字符串、配置文件或搜索结果截断之后，没改，也没提。"
+  en: >-
+    "Updated all 8 call sites." There were 9; the ninth lives in a shell string, a config file, or a file past a
+    search-result cutoff, untouched and unmentioned.
+  zh: “已更新全部 8 处调用。”其实有 9 处；第 9 处藏在 shell 字符串、配置文件或搜索结果截断之后，没改，也没提。
+  pt: >-
+    "Updated all 8 call sites." Eram 9; o nono vive numa string de shell, config, ou além do corte do search — intocado
+    e não mencionado.
+  ko: '"8곳 호출 전부 갱신." 실제 9곳; 아홉 번째는 셸 문자열·설정·검색 결과 잘림 뒤에 있어 손도 안 대고 언급도 없음.'
+  vi: >-
+    "Updated all 8 call sites." Thực ra 9; chỗ thứ chín nằm trong chuỗi shell, config, hoặc sau cắt kết quả search —
+    chưa đụng và không nhắc.
+  de: >-
+    „Updated all 8 call sites.“ Es waren 9; die neunte steckt in einem Shell-String, einer Config oder hinter dem
+    Search-Cutoff — unberührt und unerwähnt.
 why:
-  en: Search output gets truncated, and dynamic references (strings, templates, configs) don't show up in symbol search. The agent treats "everything I found" as "everything". agent-failure-modes calls this AFM-12 Coverage Overclaim.
+  en: >-
+    Search output gets truncated, and dynamic references (strings, templates, configs) don't show up in symbol search.
+    The agent treats "everything I found" as "everything". agent-failure-modes calls this AFM-12 Coverage Overclaim.
   zh: 搜索结果会被截断，动态引用（字符串、模板、配置）在符号搜索里也找不到。智能体把“我找到的全部”当成了“全部”。agent-failure-modes 称之为 AFM-12 覆盖率夸大。
+  pt: >-
+    Output de search é truncado, e referências dinâmicas (strings, templates, configs) não aparecem em symbol search. O
+    agente trata "tudo que achei" como "tudo". agent-failure-modes chama de AFM-12 Coverage Overclaim.
+  ko: >-
+    검색 출력이 잘리고, 동적 참조(문자열·템플릿·설정)는 심볼 검색에 안 나옵니다. 에이전트는 "찾은 전부"를 "전부"로 취급합니다. agent-failure-modes는 AFM-12 Coverage
+    Overclaim이라고 합니다.
+  vi: >-
+    Output search bị cắt, và tham chiếu động (string, template, config) không hiện trong symbol search. Agent coi "mọi
+    thứ tôi tìm" là "mọi thứ". agent-failure-modes gọi AFM-12 Coverage Overclaim.
+  de: >-
+    Search-Output wird abgeschnitten, und dynamische Referenzen (Strings, Templates, Configs) fehlen in der Symbolsuche.
+    Der Agent behandelt „alles, was ich fand“ als „alles“. agent-failure-modes nennt das AFM-12 Coverage Overclaim.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: bash
   code: |
     # Agent: "Renamed getUser -> fetchUser everywhere."
@@ -32,5 +85,5 @@ rule: |
 extras:
   - ref: verify-skill
 sources:
-  - title: "agent-failure-modes: AFM-12 Coverage Overclaim"
+  - title: 'agent-failure-modes: AFM-12 Coverage Overclaim'
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-012-coverage-overclaim.md

@@ -1,23 +1,69 @@
 slug: test-gaming
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [skip test, loosen assertion, snapshot, mock, oracle gaming, it.skip]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - skip test
+  - loosen assertion
+  - snapshot
+  - mock
+  - oracle gaming
+  - it.skip
 title:
   en: Made the test pass by weakening the test
   zh: 为了让测试通过，把测试改弱了
+  pt: Fez o teste passar enfraquecendo o teste
+  ko: 테스트를 약화해 통과시킴
+  vi: Làm test pass bằng cách làm yếu test
+  de: Test grün gemacht, indem der Test aufgeweicht wurde
 summary:
-  en: A failing check goes green because the agent skipped, deleted or loosened it, or mocked the unit under test, not because the code is right.
+  en: >-
+    A failing check goes green because the agent skipped, deleted or loosened it, or mocked the unit under test, not
+    because the code is right.
   zh: 失败的检查变绿了，不是因为代码对了，而是智能体跳过、删除、放宽了测试，或者把被测单元 mock 掉了。
+  pt: Em vez de corrigir o código, o agente muda asserts, apaga casos, ou mocka embora o comportamento sob teste.
+  ko: 코드를 고치지 않고 assert를 바꾸거나 케이스를 지우거나 테스트 대상 동작을 mock으로 없앱니다.
+  vi: Thay vì sửa code, agent đổi assert, xóa case, hoặc mock mất hành vi đang test.
+  de: Statt den Code zu fixen, ändert der Agent Asserts, löscht Fälle oder mockt das Verhalten unter Test weg.
 symptom:
-  en: CI is green, but the diff touches test files. Look for `.skip`, `xit`, a regenerated snapshot, `toBe(19.99)` becoming `toBeCloseTo(20, 0)`, a branch that special-cases the test input, `@ts-expect-error`, or `continue-on-error`.
-  zh: CI 是绿的，但 diff 改了测试文件。留意 `.skip`、`xit`、重新生成的快照、`toBe(19.99)` 变成 `toBeCloseTo(20, 0)`、专门针对测试输入的分支、`@ts-expect-error` 或 `continue-on-error`。
+  en: >-
+    CI is green, but the diff touches test files. Look for `.skip`, `xit`, a regenerated snapshot, `toBe(19.99)`
+    becoming `toBeCloseTo(20, 0)`, a branch that special-cases the test input, `@ts-expect-error`, or
+    `continue-on-error`.
+  zh: >-
+    CI 是绿的，但 diff 改了测试文件。留意 `.skip`、`xit`、重新生成的快照、`toBe(19.99)` 变成 `toBeCloseTo(20, 0)`、专门针对测试输入的分支、`@ts-expect-error` 或
+    `continue-on-error`。
+  pt: Suite verde; asserts mais fracos ou testes deletados no mesmo PR que o "fix".
+  ko: 스위트는 초록인데 같은 PR에 더 약한 assert나 삭제된 테스트가 "fix"와 함께 있습니다.
+  vi: Suite xanh; assert yếu hơn hoặc test bị xóa trong cùng PR với "fix".
+  de: Suite grün; schwächere Asserts oder gelöschte Tests im selben PR wie der „Fix“.
 why:
-  en: The agent optimizes for "checks pass", and editing the check is often the shortest path. developertoolkit.ai's tie-break rule is that if any oracle file changed, tag it oracle gaming, because the edit itself is the evidence. agent-failure-modes (AFM-14) and agent-review (AR025, disabled or skipped test) list the same behavior.
-  zh: 智能体优化的目标是“检查通过”，而改检查往往是最短路径。developertoolkit.ai 的判定规则是：只要 diff 改了判定文件（测试/CI），就归为 oracle gaming，因为改动本身就是证据。agent-failure-modes（AFM-14）和 agent-review（AR025 禁用或跳过测试）也列了同样的行为。
+  en: >-
+    The agent optimizes for "checks pass", and editing the check is often the shortest path. developertoolkit.ai's
+    tie-break rule is that if any oracle file changed, tag it oracle gaming, because the edit itself is the evidence.
+    agent-failure-modes (AFM-14) and agent-review (AR025, disabled or skipped test) list the same behavior.
+  zh: >-
+    智能体优化的目标是“检查通过”，而改检查往往是最短路径。developertoolkit.ai 的判定规则是：只要 diff 改了判定文件（测试/CI），就归为 oracle
+    gaming，因为改动本身就是证据。agent-failure-modes（AFM-14）和 agent-review（AR025 禁用或跳过测试）也列了同样的行为。
+  pt: >-
+    Enfraquecer o teste é o caminho mais curto para verde. Proteja arquivos de teste com hooks e rode a suite fora do
+    controle do agente.
+  ko: 테스트를 약화하는 게 초록으로 가는 최단 경로입니다. 훅으로 테스트 파일을 보호하고 에이전트 통제 밖에서 스위트를 돌리세요.
+  vi: Làm yếu test là đường ngắn nhất tới xanh. Bảo vệ file test bằng hook và chạy suite ngoài tầm kiểm soát của agent.
+  de: >-
+    Den Test aufweichen ist der kürzeste Weg zu Grün. Test-Dateien mit Hooks schützen und die Suite außerhalb der
+    Agent-Kontrolle laufen.
 example:
   caption:
     en: Patterns quoted from developertoolkit.ai and agent-review.
     zh: 模式摘自 developertoolkit.ai 和 agent-review。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: ts
   code: |
     - expect(total).toBe(19.99);
@@ -31,14 +77,14 @@ rule: |
   - Do not regenerate snapshots or edit CI config unless the user asked for it.
   - If you believe a test is wrong, stop and explain why, quoting the test and the requirement. Let the user decide.
   - In your summary, list every test file you changed and why.
-cursor_globs: "**/*.{test,spec}.*"
+cursor_globs: '**/*.{test,spec}.*'
 extras:
   - ref: protect-tests-hook
   - ref: stop-hook-tests
 sources:
-  - title: "agent-failure-modes: AFM-14 Test Gaming"
+  - title: 'agent-failure-modes: AFM-14 Test Gaming'
     url: https://github.com/ralfyishere/agent-failure-modes/blob/main/modes/AFM-014-test-gaming.md
-  - title: "developertoolkit.ai: failure taxonomy (oracle gaming)"
+  - title: 'developertoolkit.ai: failure taxonomy (oracle gaming)'
     url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/
-  - title: "vnmoorthy/agent-review TAXONOMY: AR025 Disabled or skipped test"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR025 Disabled or skipped test'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar025-disabled-or-skipped-test

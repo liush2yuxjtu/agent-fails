@@ -1,0 +1,178 @@
+slug: examples-of-ai-failure
+path: /examples-of-ai-failure
+title:
+  en: Examples of AI failure
+  zh: AI 失败案例示例
+  pt: Exemplos de falha de IA
+  ko: AI 실패 사례
+  vi: Ví dụ về lỗi AI
+  de: Beispiele für KI-Fehler
+description:
+  en: "Concrete examples of AI coding-agent failure — hallucinated APIs, unrelated file edits, self-granted approval, and more — each with a copy-paste fix. Not vibes: sourced patterns."
+  zh: AI 编程智能体失败的具体例子——幻觉 API、改无关文件、自我批准等——每条都有可粘贴修复。不是感觉：有来源的模式。
+  pt: "Exemplos concretos de falha de agentes de código com IA — APIs alucinadas, edits em arquivos não relacionados, autoaprovação e mais — cada um com conserto copy-paste. Não é vibe: padrões com fonte."
+  ko: "AI 코딩 에이전트 실패의 구체 사례 — 환각 API, 무관 파일 수정, 자가 승인 등 — 각각 복사·붙여넣기 수정 포함. 분위기가 아니라 출처 있는 패턴."
+  vi: "Ví dụ cụ thể về lỗi agent lập trình AI — API ảo giác, sửa file không liên quan, tự phê duyệt, v.v. — mỗi cái có bản sửa copy-paste. Không phải cảm tính: mẫu có nguồn."
+  de: "Konkrete Beispiele für KI-Coding-Agent-Fehler — halluzinierte APIs, fremde Datei-Edits, selbst erteilte Freigabe und mehr — jeweils mit Copy-Paste-Fix. Keine Vibes: belegte Muster."
+sections:
+  - id: what-counts
+    heading:
+      en: What counts as an example here
+      zh: 这里什么算“例子”
+      pt: O que conta como exemplo aqui
+      ko: 여기서 사례로 치는 것
+      vi: Ở đây cái gì được tính là ví dụ
+      de: Was hier als Beispiel zählt
+    body:
+      en: |
+        AgentFails is not a scrapbook of every bad chatbot answer. Each entry is a **recurring coding-agent failure mode**: a symptom you can spot in a diff, a short “why”, a minimal example, pasteable rules/hooks, and public sources.
+
+        Below is a starter set spanning the three categories. Open any card for the full fix kit.
+      zh: |
+        AgentFails 不是把所有糟糕聊天回答贴成剪贴簿。每条都是**反复出现的编程智能体失败模式**：你能在 diff 里认出的症状、简短的“为什么”、最小示例、可粘贴规则/钩子，以及公开来源。
+
+        下面是跨三类的入门集合。点进任一卡片看完整修复包。
+      pt: |
+        O AgentFails não é um scrapbook de toda resposta ruim de chatbot. Cada entrada é um **modo de falha recorrente de agente de código**: sintoma que você vê no diff, um “por quê” curto, exemplo mínimo, regras/hooks coláveis e fontes públicas.
+
+        Abaixo um conjunto inicial nas três categorias. Abra qualquer card para o kit completo de conserto.
+      ko: |
+        AgentFails는 나쁜 챗봇 답변을 모은 스크랩북이 아닙니다. 각 항목은 **반복되는 코딩 에이전트 실패 모드**입니다: diff에서 보이는 증상, 짧은 “왜”, 최소 예시, 붙여넣을 규칙/훅, 공개 출처.
+
+        아래는 세 카테고리를 걸친 입문 세트입니다. 카드를 열어 전체 수정 키트를 보세요.
+      vi: |
+        AgentFails không phải scrapbook mọi câu chatbot tệ. Mỗi mục là **chế độ lỗi agent lập trình lặp lại**: triệu chứng thấy trong diff, “vì sao” ngắn, ví dụ tối thiểu, quy tắc/hook dán được và nguồn công khai.
+
+        Dưới đây là bộ khởi đầu trải ba nhóm. Mở bất kỳ thẻ nào để xem bộ sửa đầy đủ.
+      de: |
+        AgentFails ist kein Scrapbook jeder schlechten Chatbot-Antwort. Jeder Eintrag ist ein **wiederkehrender Coding-Agent-Fehlermodus**: Symptom im Diff, kurzes „Warum“, Minimalbeispiel, einfügbare Regeln/Hooks und öffentliche Quellen.
+
+        Unten ein Starter-Set über die drei Kategorien. Öffnen Sie eine Karte für das volle Fix-Kit.
+  - id: starter-set
+    heading:
+      en: Starter examples (click through)
+      zh: 入门例子（点进去）
+      pt: Exemplos iniciais (abra)
+      ko: 입문 사례 (클릭)
+      vi: Ví dụ khởi đầu (bấm vào)
+      de: Starter-Beispiele (durchklicken)
+    body:
+      en: |
+        **Wrong feature**
+        - Spec misread — built what it understood, not what you meant
+        - Placeholder shipped as done — a stub marked complete
+        - Edited the wrong twin — fixed the deprecated file
+
+        **Bug**
+        - Hallucinated API method — called something that does not exist
+        - Tests that can't fail — coverage without assertions
+        - Phantom success — “all tests pass” when nothing ran
+
+        **Overreach**
+        - Unrelated files changed — asked for one fix, got a tour of the tree
+        - Approval it gave itself — treated silence or a shell command as “go”
+        - Destructive command — irreversible shell without asking
+
+        The catalog has many more; use search or category filters on the home page.
+      zh: |
+        **做错功能**
+        - 读错需求 — 做了它理解的，不是你要的
+        - 占位符当完工 — stub 标成完成
+        - 改错双胞胎 — 修了已废弃的那份
+
+        **有 bug**
+        - 幻觉 API 方法 — 调用了不存在的东西
+        - 永远不会失败的测试 — 有覆盖率无断言
+        - 虚报成功 — 什么都没跑却说“全绿”
+
+        **越界**
+        - 改了无关文件 — 只让修一处，却逛遍整棵树
+        - 自己批准自己 — 把沉默或一条 shell 当成“开始”
+        - 破坏性命令 — 不问就跑不可逆命令
+
+        目录里还有更多；在首页用搜索或分类过滤。
+      pt: |
+        **Funcionalidade errada**
+        - Spec mal lido — construiu o que entendeu, não o que você quis
+        - Placeholder como pronto — stub marcado completo
+        - Editou o gêmeo errado — corrigiu o arquivo depreciado
+
+        **Bug**
+        - Método de API alucinado — chamou o que não existe
+        - Testes que não falham — cobertura sem asserts
+        - Sucesso fantasma — “todos passam” sem rodar nada
+
+        **Excesso de escopo**
+        - Arquivos não relacionados — pediu um fix, ganhou um tour na árvore
+        - Aprovação que deu a si — tratou silêncio ou shell como “go”
+        - Comando destrutivo — shell irreversível sem perguntar
+
+        O catálogo tem bem mais; use busca ou filtros na home.
+      ko: |
+        **잘못된 기능**
+        - 스펙 오독 — 이해한 것을 만들었지, 의도한 것이 아님
+        - 플레이스홀더를 완료로 — 스텁을 완료로 표시
+        - 잘못된 쌍둥이 수정 — deprecated 파일을 고침
+
+        **버그**
+        - 환각 API 메서드 — 없는 것을 호출
+        - 실패할 수 없는 테스트 — 단언 없는 커버리지
+        - 유령 성공 — 아무 것도 안 돌렸는데 “전부 통과”
+
+        **범위 초과**
+        - 무관 파일 변경 — 한 곳 수정을 시켰더니 트리를 관광
+        - 스스로 준 승인 — 침묵이나 셸을 “go”로 해석
+        - 파괴적 명령 — 묻지 않고 되돌릴 수 없는 셸
+
+        카탈로그에는 더 많습니다. 홈에서 검색·카테고리 필터를 쓰세요.
+      vi: |
+        **Sai tính năng**
+        - Đọc lệch spec — làm điều nó hiểu, không phải điều bạn muốn
+        - Placeholder giao như xong — stub đánh dấu hoàn thành
+        - Sửa nhầm bản song sinh — sửa file đã deprecated
+
+        **Bug**
+        - Phương thức API ảo giác — gọi thứ không tồn tại
+        - Test không thể fail — coverage không assert
+        - Thành công ma — “all pass” khi chẳng chạy gì
+
+        **Vượt phạm vi**
+        - Đổi file không liên quan — nhờ một fix, nhận tour cả cây
+        - Tự phê duyệt — coi im lặng hoặc shell là “go”
+        - Lệnh phá hủy — shell không đảo ngược mà không hỏi
+
+        Catalog còn nhiều hơn; dùng tìm kiếm hoặc lọc category trên trang chủ.
+      de: |
+        **Falsches Feature**
+        - Spec falsch gelesen — gebaut, was es verstand, nicht was Sie meinten
+        - Placeholder als fertig — Stub als erledigt markiert
+        - Falschen Zwilling editiert — die deprecated Datei gefixt
+
+        **Bug**
+        - Halluzinierte API-Methode — etwas aufgerufen, das nicht existiert
+        - Tests, die nicht scheitern können — Coverage ohne Asserts
+        - Phantom-Erfolg — „alle Tests grün“, obwohl nichts lief
+
+        **Übergriff**
+        - Unrelated Files geändert — ein Fix erbeten, Tour durch den Tree bekommen
+        - Selbst erteilte Freigabe — Stille oder Shell als „go“ gelesen
+        - Destruktiver Befehl — irreversibler Shell ohne zu fragen
+
+        Der Katalog hat mehr; nutzen Sie Suche oder Kategoriefilter auf der Startseite.
+related_patterns:
+  - hallucinated-api-method
+  - unrelated-files-changed
+  - approval-it-gave-itself
+  - assertion-free-test
+  - phantom-success
+  - placeholder-shipped-as-done
+  - destructive-command
+  - edited-the-wrong-twin
+  - spec-misread
+cta:
+  en: See every pattern
+  zh: 查看全部模式
+  pt: Ver todos os padrões
+  ko: 모든 패턴 보기
+  vi: Xem mọi mẫu
+  de: Alle Muster sehen

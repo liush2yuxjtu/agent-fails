@@ -1,23 +1,74 @@
 slug: cascading-refactor
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [type error, interface, architecture, multi-file, cascade]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - type error
+  - interface
+  - architecture
+  - multi-file
+  - cascade
 title:
   en: One type error became an architecture change
   zh: 一个类型错误演变成了架构改动
+  pt: Um erro de tipo virou mudança de arquitetura
+  ko: 타입 에러 하나가 아키텍처 변경이 됨
+  vi: Một lỗi type thành đổi kiến trúc
+  de: Ein Typfehler wurde zur Architekturänderung
 summary:
-  en: To fix a single type error, the agent changes an interface, then updates every implementer, and a one-file request becomes a multi-file redesign.
+  en: >-
+    To fix a single type error, the agent changes an interface, then updates every implementer, and a one-file request
+    becomes a multi-file redesign.
   zh: 为了修一个类型错误，智能体改了接口，接着改了所有实现类，一个只涉及单文件的需求变成了多文件的重新设计。
+  pt: >-
+    Para corrigir um único type error, o agente muda uma interface, depois atualiza todo implementer, e um pedido de um
+    arquivo vira redesign multi-arquivo.
+  ko: 타입 에러 하나를 고치려 인터페이스를 바꾸고 모든 구현체를 갱신해, 한 파일 요청이 멀티파일 재설계가 됩니다.
+  vi: >-
+    Để sửa một type error, agent đổi interface rồi cập nhật mọi implementer, và yêu cầu một file thành redesign nhiều
+    file.
+  de: >-
+    Um einen einzelnen Typfehler zu fixen, ändert der Agent ein Interface, aktualisiert jeden Implementierer, und aus
+    einer Ein-Datei-Anfrage wird ein Multi-Datei-Redesign.
 symptom:
-  en: The diff's center of gravity is an interface or type file you didn't mention, with mechanical edits rippling across many modules.
+  en: >-
+    The diff's center of gravity is an interface or type file you didn't mention, with mechanical edits rippling across
+    many modules.
   zh: diff 的重心是一个你没提过的接口或类型文件，机械性的改动波及了很多模块。
+  pt: >-
+    O centro de gravidade do diff é um arquivo de interface/tipo que você não mencionou, com edits mecânicos em muitos
+    módulos.
+  ko: diff의 무게중심이 언급하지 않은 인터페이스/타입 파일이고, 여러 모듈에 기계적 편집이 퍼집니다.
+  vi: Trọng tâm diff là file interface/type bạn không nhắc, với edit máy móc lan nhiều module.
+  de: >-
+    Der Schwerpunkt des Diffs ist eine Interface-/Typdatei, die Sie nicht nannten, mit mechanischen Edits über viele
+    Module.
 why:
-  en: Changing the type at the root is the most "complete" fix from the compiler's point of view. Night Forge lists this cascading refactor as one of three recurring wrong-file patterns.
+  en: >-
+    Changing the type at the root is the most "complete" fix from the compiler's point of view. Night Forge lists this
+    cascading refactor as one of three recurring wrong-file patterns.
   zh: 从编译器的角度看，在根部改类型是最“彻底”的修法。Night Forge 把这种连锁重构列为三种常见错误编辑模式之一。
+  pt: >-
+    Mudar o tipo na raiz é o fix mais "completo" do ponto de vista do compilador. Night Forge lista este cascading
+    refactor como um dos três padrões recorrentes de arquivo errado.
+  ko: 컴파일러 관점에서 루트 타입을 바꾸는 게 가장 "완전한" 수정입니다. Night Forge는 이 cascading refactor를 세 가지 반복 wrong-file 패턴 중 하나로 둡니다.
+  vi: >-
+    Đổi type ở gốc là fix "đầy đủ" nhất theo compiler. Night Forge liệt cascading refactor là một trong ba pattern
+    wrong-file lặp lại.
+  de: >-
+    Den Typ an der Wurzel zu ändern ist aus Compilersicht der „vollständigste“ Fix. Night Forge listet dieses
+    Cascading-Refactor als eines von drei wiederkehrenden Wrong-File-Mustern.
 example:
   caption:
     en: From the Night Forge write-up.
     zh: 摘自 Night Forge 的文章。
+    pt: Do write-up da Night Forge.
+    ko: Night Forge 글에서.
+    vi: Từ bài Night Forge.
+    de: Aus dem Night-Forge-Text.
   lang: text
   code: |
     Asked: fix a type error in OrderService.ts
@@ -32,5 +83,5 @@ extras:
   - ref: diff-budget-check
   - ref: scope-guard-hook
 sources:
-  - title: "Night Forge: Stop your AI agent editing the wrong files"
+  - title: 'Night Forge: Stop your AI agent editing the wrong files'
     url: https://night-forge.com/blog/stop-ai-agent-editing-wrong-files

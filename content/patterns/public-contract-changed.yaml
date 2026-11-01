@@ -1,23 +1,60 @@
 slug: public-contract-changed
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [api, breaking change, signature, exported type, semver]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - api
+  - breaking change
+  - signature
+  - exported type
+  - semver
 title:
   en: Changed a public API you didn't ask to change
   zh: 改了你没要求改的公共 API
+  pt: Mudou uma API pública que você não pediu para mudar
+  ko: 바꾸라고 하지 않은 공개 API를 변경
+  vi: Đổi API công khai bạn không nhờ đổi
+  de: Öffentliche API geändert, die Sie nicht ändern wollten
 summary:
-  en: The agent modifies an exported function signature, a public type or an API response shape, breaking consumers outside the diff.
+  en: >-
+    The agent modifies an exported function signature, a public type or an API response shape, breaking consumers
+    outside the diff.
   zh: 智能体改了导出函数的签名、公共类型或 API 返回结构，破坏了 diff 之外的调用方。
+  pt: O agente renomeia exports, muda signatures ou remove campos para "limpar", quebrando callers fora do escopo.
+  ko: 에이전트가 "정리"하려 exports 이름을 바꾸고 시그니처를 바꾸거나 필드를 제거해 범위 밖 호출자를 깨뜨립니다.
+  vi: Agent rename export, đổi signature hoặc xóa field để "dọn", phá caller ngoài scope.
+  de: >-
+    Der Agent benennt Exports um, ändert Signatures oder entfernt Felder zum „Aufräumen“ und bricht Caller außerhalb des
+    Scopes.
 symptom:
   en: Everything in the repo compiles and passes, then a downstream service, SDK user or mobile client breaks.
   zh: 仓库里一切都能编译、测试也通过，然后下游服务、SDK 用户或移动端坏了。
+  pt: Diff toca `index.ts` público, OpenAPI, ou pacotes compartilhados sem pedido; consumidores externos quebram.
+  ko: 요청 없이 공개 `index.ts`·OpenAPI·공유 패키지가 diff에 들어가고 외부 소비자가 깨집니다.
+  vi: Diff chạm `index.ts` public, OpenAPI, hoặc package dùng chung không được nhờ; consumer ngoài gãy.
+  de: Diff trifft öffentliche `index.ts`, OpenAPI oder geteilte Pakete ohne Auftrag; externe Konsumenten brechen.
 why:
-  en: The agent only sees in-repo callers and treats the signature as free to change. agent-review lists AR032 "Changed public contract" (High severity).
+  en: >-
+    The agent only sees in-repo callers and treats the signature as free to change. agent-review lists AR032 "Changed
+    public contract" (High severity).
   zh: 智能体只看得到仓库内的调用方，就以为签名可以随意改。agent-review 列为 AR032“修改了公共契约”（高严重度）。
+  pt: Contratos públicos parecem código interno para o agente. Escopo explícito e review de surface area publicam o risco.
+  ko: 에이전트에게 공개 계약은 내부 코드처럼 보입니다. 명시적 범위와 공개 표면 리뷰가 위험을 드러냅니다.
+  vi: Hợp đồng public trông như code nội bộ với agent. Scope rõ và review bề mặt public làm lộ rủi ro.
+  de: >-
+    Öffentliche Verträge wirken für den Agenten wie interner Code. Expliziter Scope und Review der Public Surface machen
+    das Risiko sichtbar.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: diff
   code: |
     - export function getUser(id: string): Promise<User>
@@ -31,13 +68,13 @@ rule: |
 extras:
   - kind: ci
     title:
-      en: "Catch API surface changes in CI (TypeScript, api-extractor)"
-      zh: "在 CI 中发现 API 表面变化（TypeScript，api-extractor）"
+      en: Catch API surface changes in CI (TypeScript, api-extractor)
+      zh: 在 CI 中发现 API 表面变化（TypeScript，api-extractor）
     file: .github/workflows/api-surface.yml
     lang: yaml
     note:
-      en: "Commit the generated API report; any PR that changes the public surface shows up as a diff to that file."
-      zh: "把生成的 API 报告提交进仓库；任何改了公共接口的 PR 都会体现为这个文件的 diff。"
+      en: Commit the generated API report; any PR that changes the public surface shows up as a diff to that file.
+      zh: 把生成的 API 报告提交进仓库；任何改了公共接口的 PR 都会体现为这个文件的 diff。
     code: |
       name: api-surface
       on: pull_request
@@ -51,5 +88,5 @@ extras:
             - run: npm ci && npm run build
             - run: npx api-extractor run   # fails if etc/*.api.md changed and isn't committed
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR032 Changed public contract"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR032 Changed public contract'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar032-changed-public-contract

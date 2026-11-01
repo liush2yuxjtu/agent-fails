@@ -1,23 +1,71 @@
 slug: assertion-free-test
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [tests, no assert, coverage, fake tests]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - tests
+  - no assert
+  - coverage
+  - fake tests
 title:
   en: Tests that can't fail
   zh: 永远不会失败的测试
+  pt: Testes que não podem falhar
+  ko: 실패할 수 없는 테스트
+  vi: Test không thể fail
+  de: Tests, die nicht scheitern können
 summary:
-  en: The agent adds tests that call the code but assert nothing (or assert something trivially true), so coverage goes up and protection doesn't.
+  en: >-
+    The agent adds tests that call the code but assert nothing (or assert something trivially true), so coverage goes up
+    and protection doesn't.
   zh: 智能体加的测试调用了代码，却什么都不断言（或断言一个必然为真的东西），覆盖率涨了，保护力没涨。
+  pt: >-
+    O agente adiciona testes que chamam o código mas não assertam nada (ou assertam algo trivialmente verdadeiro), então
+    a cobertura sobe e a proteção não.
+  ko: 에이전트가 코드는 호출하지만 아무것도 assert하지 않는(또는 항상 참인 것만 assert하는) 테스트를 추가해 커버리지만 올리고 보호는 안 됩니다.
+  vi: Agent thêm test gọi code nhưng không assert gì (hoặc assert điều luôn đúng), nên coverage tăng còn bảo vệ thì không.
+  de: >-
+    Der Agent fügt Tests hinzu, die Code aufrufen, aber nichts asserten (oder etwas trivial Wahres), sodass Coverage
+    steigt und Schutz nicht.
 symptom:
-  en: New test blocks with no `expect`/`assert`, or assertions like `expect(result).toBeDefined()` on a function that always returns an object.
+  en: >-
+    New test blocks with no `expect`/`assert`, or assertions like `expect(result).toBeDefined()` on a function that
+    always returns an object.
   zh: 新增的测试块里没有 `expect`/`assert`，或者只有 `expect(result).toBeDefined()` 这种对总是返回对象的函数毫无意义的断言。
+  pt: >-
+    Novos blocos de teste sem `expect`/`assert`, ou asserts como `expect(result).toBeDefined()` numa função que sempre
+    retorna um objeto.
+  ko: '`expect`/`assert` 없는 새 테스트 블록, 또는 항상 객체를 반환하는 함수에 `expect(result).toBeDefined()` 같은 단언.'
+  vi: Khối test mới không có `expect`/`assert`, hoặc assert kiểu `expect(result).toBeDefined()` trên hàm luôn trả object.
+  de: >-
+    Neue Testblöcke ohne `expect`/`assert`, oder Asserts wie `expect(result).toBeDefined()` bei einer Funktion, die
+    immer ein Objekt zurückgibt.
 why:
-  en: Scaffolding a test looks thorough; working out the exact expected value is harder. agent-review lists this as AR010 "Test without assertion" (High severity).
+  en: >-
+    Scaffolding a test looks thorough; working out the exact expected value is harder. agent-review lists this as AR010
+    "Test without assertion" (High severity).
   zh: 写个测试框架看起来很周全，算出准确的期望值却更难。agent-review 把它列为 AR010“没有断言的测试”（高严重度）。
+  pt: >-
+    Montar o andaime do teste parece caprichado; calcular o valor esperado exato é mais difícil. agent-review lista isso
+    como AR010 "Test without assertion" (High).
+  ko: 테스트 뼈대를 짜는 건 꼼꼼해 보이지만 정확한 기대값을 내는 건 더 어렵습니다. agent-review는 이를 AR010 "Test without assertion"(High)로 둡니다.
+  vi: >-
+    Dựng khung test trông kỹ lưỡng; tính đúng giá trị kỳ vọng khó hơn. agent-review xếp là AR010 "Test without
+    assertion" (High).
+  de: >-
+    Ein Testgerüst wirkt gründlich; den genauen Erwartungswert auszurechnen ist schwerer. agent-review listet das als
+    AR010 „Test without assertion“ (High).
 example:
   caption:
     en: From the agent-review taxonomy (AR010).
     zh: 摘自 agent-review 分类（AR010）。
+    pt: Da taxonomia agent-review (AR010).
+    ko: agent-review 분류에서 (AR010).
+    vi: Từ phân loại agent-review (AR010).
+    de: Aus der agent-review-Taxonomie (AR010).
   lang: js
   code: |
     test("login works", () => {
@@ -29,12 +77,16 @@ rule: |
   - For each new test, state the bug it would catch. Then prove it: temporarily break the code
     (or invert the assertion), show the test fails, and restore.
   - No `sleep`-based waits in tests; wait for the event or state instead.
-cursor_globs: "**/*.{test,spec}.*"
+cursor_globs: '**/*.{test,spec}.*'
 extras:
   - kind: ci
     title:
-      en: "Mutation-style sanity check (JS/TS, Stryker)"
-      zh: "变异测试式的自检（JS/TS，Stryker）"
+      en: Mutation-style sanity check (JS/TS, Stryker)
+      zh: 变异测试式的自检（JS/TS，Stryker）
+      pt: Checagem de sanidade estilo mutação (JS/TS, Stryker)
+      ko: 변이 테스트식 점검 (JS/TS, Stryker)
+      vi: Kiểm tra kiểu mutation (JS/TS, Stryker)
+      de: Mutation-Style-Sanity-Check (JS/TS, Stryker)
     file: terminal
     lang: bash
     code: |
@@ -42,7 +94,7 @@ extras:
       npm i -D @stryker-mutator/core @stryker-mutator/vitest-runner
       npx stryker run --testRunner vitest --mutate "src/**/*.ts"
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR010 Test without assertion"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR010 Test without assertion'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar010-test-without-assertion
-  - title: "@Diacritic on X: set a value to 58 in a static file, then wrote a CI test that it's >57"
+  - title: '@Diacritic on X: set a value to 58 in a static file, then wrote a CI test that it''s >57'
     url: https://x.com/Diacritic/status/2111318687089389859

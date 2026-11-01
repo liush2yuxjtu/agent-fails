@@ -1,23 +1,123 @@
 slug: agent-review-rubber-stamp
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [code review, AI review, LGTM, false positives, correlated errors, review bots]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - code review
+  - AI review
+  - LGTM
+  - false positives
+  - correlated errors
+  - review bots
 title:
-  en: 'Agent review said "good to go" (and missed it)'
-  zh: "智能体审查说“可以合并”（却漏掉了问题）"
+  en: Agent review said "good to go" (and missed it)
+  zh: 智能体审查说“可以合并”（却漏掉了问题）
+  pt: A revisão do agente disse "pode seguir" (e deixou passar)
+  ko: 에이전트 리뷰가 "문제없음"이라고 함 (정작 놓침)
+  vi: Review của agent bảo "ổn để merge" (nhưng bỏ sót)
+  de: Agent-Review sagte „kann weiter“ (und hat es verpasst)
 summary:
-  en: Several agent review passes approve a change that a human then finds broken, unnecessary or architecturally wrong. More passes from similar models don't add independent checks.
+  en: >-
+    Several agent review passes approve a change that a human then finds broken, unnecessary or architecturally wrong.
+    More passes from similar models don't add independent checks.
   zh: 多轮智能体审查都批准了一个改动，结果人一看就发现它有问题、多余或架构不对。同类模型多审几遍，并不等于多了几次独立检查。
+  pt: >-
+    Várias passadas de revisão por agente aprovam uma mudança que um humano depois acha quebrada, desnecessária ou
+    arquiteturalmente errada. Mais passadas de modelos parecidos não acrescentam checagens independentes.
+  ko: 에이전트 리뷰를 여러 번 돌려도 통과한 변경을, 사람이 보면 깨졌거나 불필요하거나 아키텍처가 틀린 경우가 있습니다. 비슷한 모델을 더 돌린다고 독립 검증이 늘지는 않습니다.
+  vi: >-
+    Nhiều vòng review bằng agent vẫn duyệt một thay đổi mà người sau đó thấy hỏng, thừa hoặc sai kiến trúc. Thêm vòng từ
+    model cùng họ không tạo thêm kiểm tra độc lập.
+  de: >-
+    Mehrere Agent-Review-Durchläufe genehmigen eine Änderung, die ein Mensch danach als kaputt, überflüssig oder
+    architektonisch falsch findet. Mehr Durchläufe ähnlicher Modelle sind keine unabhängigen Checks.
 symptom:
-  en: 'Every bot left comments or approved, yet a human finds a breaking change, a duplicated subsystem or thousands of lines that shouldn''t exist. Reviews mix real bugs with false positives, find something new on every run, or comment on an empty diff.'
+  en: >-
+    Every bot left comments or approved, yet a human finds a breaking change, a duplicated subsystem or thousands of
+    lines that shouldn't exist. Reviews mix real bugs with false positives, find something new on every run, or comment
+    on an empty diff.
   zh: 每个机器人都留了评论或批准了，结果人还是发现了破坏性改动、重复的子系统，或者成千上万行本不该存在的代码。审查把真 bug 和误报混在一起，每次运行都能找出新东西，甚至会对空 diff 发表意见。
+  pt: >-
+    Todo bot comentou ou aprovou, mas um humano acha uma mudança breaking, um subsistema duplicado ou milhares de linhas
+    que não deveriam existir. Reviews misturam bugs reais com falsos positivos, acham algo novo a cada run, ou comentam
+    em diff vazio.
+  ko: 봇마다 코멘트하거나 승인했는데, 사람은 breaking 변경·중복 서브시스템·없어야 할 수천 줄을 찾습니다. 리뷰는 진짜 버그와 오탐을 섞고, 돌릴 때마다 새 이슈를 내거나 빈 diff에도 코멘트합니다.
+  vi: >-
+    Mọi bot đều comment hoặc approve, nhưng người vẫn thấy thay đổi breaking, subsystem trùng, hoặc hàng nghìn dòng
+    không nên tồn tại. Review trộn bug thật với false positive, mỗi lần chạy lại tìm thứ mới, hoặc comment trên diff
+    trống.
+  de: >-
+    Jeder Bot hat kommentiert oder approved, doch ein Mensch findet eine Breaking Change, ein dupliziertes Subsystem
+    oder Tausende Zeilen, die nicht existieren sollten. Reviews mischen echte Bugs mit False Positives, finden bei jedem
+    Lauf Neues oder kommentieren einen leeren Diff.
 why:
-  en: 'Thorsten Ball''s post asked whether humans really catch what three models checking four times each would miss, and many replies gave concrete counterexamples. @MilesDigitek had agents miss the same architectural mistake four times in a row: same-family reviewers are "one review sampled four times". @joshmanders has colleagues finding issues all the AI bots had stamped "Good to go". @BradleySkuse ran several Claude, Codex, Cursor, Copilot and Bugbot review cycles, then a doc-only update made Bugbot report a critical issue, and a colleague''s AI review found a dozen things, two of them breaking. @paolocargnin stopped about 6k lines of useless code that had passed many review cycles, including agents. @octavianslash asked Claude to review a PR that duplicated his framework''s middleware system, and it waved it through. @DonutsWithData sees bugs on every run mixed with many false positives, and higher-level issues missed. @michalkuncio notes self-review never converges. @danfarrdotcom: "my agents reviewed an empty PR once. one suggested a better title".'
-  zh: 'Thorsten Ball 在帖子里问：三个模型各审四遍都发现不了的问题，人真能发现吗？很多回复给出了具体反例。@MilesDigitek 的智能体连续四次漏掉同一个架构错误：同一家族的审查者是“同一次审查采样了四遍”。@joshmanders 的同事发现过所有 AI 机器人都标了“Good to go”的问题。@BradleySkuse 跑了好几轮 Claude、Codex、Cursor、Copilot 和 Bugbot 的审查，后来只改了文档，Bugbot 却报出一个严重问题；同事用 AI 再审一遍，又找出十几处，其中两处是破坏性改动。@paolocargnin 拦下了大约 6k 行无用代码，它们已经通过了包括智能体在内的多轮审查。@octavianslash 让 Claude 审查一个重复实现了框架中间件系统的 PR，Claude 直接放行。@DonutsWithData 说 AI 审查每次都能找到 bug，但混着大量误报，还会漏掉更高层的问题。@michalkuncio 指出自我审查永远不会收敛。@danfarrdotcom：“我的智能体审查过一个空 PR，其中一个还建议换个更好的标题。”'
+  en: >-
+    Thorsten Ball's post asked whether humans really catch what three models checking four times each would miss, and
+    many replies gave concrete counterexamples. @MilesDigitek had agents miss the same architectural mistake four times
+    in a row: same-family reviewers are "one review sampled four times". @joshmanders has colleagues finding issues all
+    the AI bots had stamped "Good to go". @BradleySkuse ran several Claude, Codex, Cursor, Copilot and Bugbot review
+    cycles, then a doc-only update made Bugbot report a critical issue, and a colleague's AI review found a dozen
+    things, two of them breaking. @paolocargnin stopped about 6k lines of useless code that had passed many review
+    cycles, including agents. @octavianslash asked Claude to review a PR that duplicated his framework's middleware
+    system, and it waved it through. @DonutsWithData sees bugs on every run mixed with many false positives, and
+    higher-level issues missed. @michalkuncio notes self-review never converges. @danfarrdotcom: "my agents reviewed an
+    empty PR once. one suggested a better title".
+  zh: >-
+    Thorsten Ball 在帖子里问：三个模型各审四遍都发现不了的问题，人真能发现吗？很多回复给出了具体反例。@MilesDigitek
+    的智能体连续四次漏掉同一个架构错误：同一家族的审查者是“同一次审查采样了四遍”。@joshmanders 的同事发现过所有 AI 机器人都标了“Good to go”的问题。@BradleySkuse 跑了好几轮
+    Claude、Codex、Cursor、Copilot 和 Bugbot 的审查，后来只改了文档，Bugbot 却报出一个严重问题；同事用 AI 再审一遍，又找出十几处，其中两处是破坏性改动。@paolocargnin 拦下了大约
+    6k 行无用代码，它们已经通过了包括智能体在内的多轮审查。@octavianslash 让 Claude 审查一个重复实现了框架中间件系统的 PR，Claude 直接放行。@DonutsWithData 说 AI 审查每次都能找到
+    bug，但混着大量误报，还会漏掉更高层的问题。@michalkuncio 指出自我审查永远不会收敛。@danfarrdotcom：“我的智能体审查过一个空 PR，其中一个还建议换个更好的标题。”
+  pt: >-
+    O post de Thorsten Ball perguntou se humanos realmente pegam o que três modelos checando quatro vezes cada um
+    deixariam passar — e muitas respostas deram contraexemplos concretos. @MilesDigitek viu agentes errarem o mesmo erro
+    arquitetural quatro vezes seguidas: revisores da mesma família são "uma review amostrada quatro vezes". @joshmanders
+    tem colegas achando issues que todos os bots AI carimbaram "Good to go". @BradleySkuse rodou vários ciclos Claude,
+    Codex, Cursor, Copilot e Bugbot; depois um update só de docs fez o Bugbot reportar um critical, e a AI review de um
+    colega achou uma dúzia de coisas, duas breaking. @paolocargnin parou ~6k linhas inúteis que passaram por muitos
+    ciclos, inclusive agentes. @octavianslash pediu ao Claude para revisar um PR que duplicava o middleware do framework
+    dele — e passou. @DonutsWithData vê bugs a cada run misturados com muitos falsos positivos, e issues de nível mais
+    alto perdidas. @michalkuncio nota que self-review nunca converge. @danfarrdotcom: "meus agentes revisaram um PR
+    vazio uma vez. um sugeriu um título melhor".
+  ko: >-
+    Thorsten Ball 포스트는 세 모델이 각 네 번씩 검사해도 놓치는 것을 사람이 정말 잡느냐고 물었고, 많은 답글이 구체 반례를 냈습니다. @MilesDigitek은 같은 아키텍처 실수를 에이전트가 네
+    번 연속 놓치는 걸 봤습니다: 같은 계열 리뷰어는 "한 리뷰를 네 번 샘플링"한 것입니다. @joshmanders의 동료는 모든 AI 봇이 "Good to go" 찍은 이슈를 찾았습니다.
+    @BradleySkuse는 Claude·Codex·Cursor·Copilot·Bugbot 리뷰를 여러 번 돌린 뒤, 문서만 바꾼 업데이트에서 Bugbot이 critical을 보고했고, 동료 AI 리뷰는 열여
+    개를 찾았는데 둘은 breaking이었습니다. @paolocargnin은 에이전트를 포함한 여러 리뷰를 통과한 약 6k줄 쓸모없는 코드를 막았습니다. @octavianslash는 프레임워크 미들웨어를 중복한
+    PR을 Claude에 리뷰시켰더니 통과했습니다. @DonutsWithData는 매 실행마다 버그와 많은 오탐이 섞이고 상위 이슈는 놓친다고 합니다. @michalkuncio는 self-review가 수렴하지
+    않는다고 합니다. @danfarrdotcom: "에이전트가 빈 PR을 리뷰한 적 있음. 하나가 더 나은 제목을 제안".
+  vi: >-
+    Bài của Thorsten Ball hỏi liệu người có thật bắt được điều ba model, mỗi cái kiểm bốn lần, sẽ bỏ sót — và nhiều trả
+    lời đưa phản ví dụ cụ thể. @MilesDigitek thấy agent bỏ cùng một lỗi kiến trúc bốn lần liên tiếp: reviewer cùng họ là
+    "một review lấy mẫu bốn lần". @joshmanders có đồng nghiệp tìm issue mà mọi bot AI đã đóng dấu "Good to go".
+    @BradleySkuse chạy nhiều vòng Claude, Codex, Cursor, Copilot và Bugbot; rồi chỉ sửa docs mà Bugbot báo critical, và
+    AI review của đồng nghiệp tìm hơn mười chỗ, hai chỗ breaking. @paolocargnin chặn ~6k dòng vô dụng đã qua nhiều vòng
+    review kể cả agent. @octavianslash nhờ Claude review PR nhân bản middleware framework của anh — và nó cho qua.
+    @DonutsWithData thấy bug mỗi lần chạy lẫn nhiều false positive, và bỏ sót vấn đề tầng cao hơn. @michalkuncio nói
+    self-review không bao giờ hội tụ. @danfarrdotcom: "agent của tôi từng review một PR trống. một cái đề xuất tiêu đề
+    hay hơn".
+  de: >-
+    Thorsten Balls Post fragte, ob Menschen wirklich fangen, was drei Modelle mit je vier Checks verpassen würden — und
+    viele Antworten lieferten konkrete Gegenbeispiele. @MilesDigitek sah Agenten denselben Architekturfehler vier Mal in
+    Folge verpassen: Reviewer derselben Familie sind „ein Review, viermal gesampelt“. @joshmanders’ Kollegen finden
+    Issues, die alle AI-Bots mit „Good to go“ abstempelt hatten. @BradleySkuse lief mehrere Claude-, Codex-, Cursor-,
+    Copilot- und Bugbot-Zyklen; danach meldete Bugbot bei einem reinen Doc-Update ein Critical, und die AI-Review eines
+    Kollegen fand ein Dutzend Punkte, zwei davon Breaking. @paolocargnin stoppte ~6k nutzlose Zeilen, die viele
+    Review-Zyklen inkl. Agenten passiert hatten. @octavianslash ließ Claude einen PR reviewen, der das Middleware-System
+    seines Frameworks duplizierte — und es winkte durch. @DonutsWithData sieht bei jedem Lauf Bugs gemischt mit vielen
+    False Positives und verpasste höhere Issues. @michalkuncio: Self-Review konvergiert nie. @danfarrdotcom: „meine
+    Agenten haben einmal einen leeren PR reviewt. einer schlug einen besseren Titel vor“.
 example:
   caption:
     en: Illustrative, combining reports from the thread.
     zh: 示意，综合了串里的几条报告。
+    pt: Ilustrativo, combinando relatos do fio.
+    ko: 스레드 보고를 합친 예시.
+    vi: Minh họa, kết hợp báo cáo từ thread.
+    de: Illustrativ, kombiniert aus Berichten im Thread.
   lang: text
   code: |
     reviewer-1 (model A): LGTM, 2 nits
@@ -38,21 +138,21 @@ extras:
   - ref: review-skill
   - ref: verify-skill
 sources:
-  - title: "@MilesDigitek on X: the same architectural mistake missed four times; \"one review sampled four times\""
+  - title: '@MilesDigitek on X: the same architectural mistake missed four times; "one review sampled four times"'
     url: https://x.com/MilesDigitek/status/2111133274231779446
-  - title: "@joshmanders on X: issues that every AI bot stamped \"Good to go\""
+  - title: '@joshmanders on X: issues that every AI bot stamped "Good to go"'
     url: https://x.com/joshmanders/status/2111161009956381161
-  - title: "@BradleySkuse on X: many AI review cycles, then a critical issue and two breaking changes found later"
+  - title: '@BradleySkuse on X: many AI review cycles, then a critical issue and two breaking changes found later'
     url: https://x.com/BradleySkuse/status/2111444437620728060
-  - title: "@paolocargnin on X: ~6k lines of useless code that passed review cycles, including agents"
+  - title: '@paolocargnin on X: ~6k lines of useless code that passed review cycles, including agents'
     url: https://x.com/paolocargnin/status/2111366371430777164
-  - title: "@octavianslash on X: Claude review waved through a duplicate middleware dispatch layer"
+  - title: '@octavianslash on X: Claude review waved through a duplicate middleware dispatch layer'
     url: https://x.com/octavianslash/status/2111145412191232452
-  - title: "@DonutsWithData on X: bugs on every run, mixed with false positives, higher-level issues missed"
+  - title: '@DonutsWithData on X: bugs on every run, mixed with false positives, higher-level issues missed'
     url: https://x.com/DonutsWithData/status/2111149389997838655
-  - title: "@michalkuncio on X: self-review finds new issues every time you ask"
+  - title: '@michalkuncio on X: self-review finds new issues every time you ask'
     url: https://x.com/michalkuncio/status/2111454172952302075
-  - title: "@danfarrdotcom on X: agents reviewed an empty PR; one suggested a better title"
+  - title: '@danfarrdotcom on X: agents reviewed an empty PR; one suggested a better title'
     url: https://x.com/danfarrdotcom/status/2111386854746702216
-  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+  - title: '@thorstenball on X: "Why are you still using pull requests?" (the thread)'
     url: https://x.com/thorstenball/status/2111130129355481240

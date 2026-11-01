@@ -1,0 +1,166 @@
+slug: agent-failure-taxonomy
+path: /agent-failure-taxonomy
+title:
+  en: Agent failure taxonomy
+  zh: 智能体失败分类法
+  pt: Taxonomia de falhas de agentes
+  ko: 에이전트 실패 분류
+  vi: Phân loại lỗi agent
+  de: Taxonomie von Agent-Fehlern
+description:
+  en: "A practical agent failure taxonomy for coding agents: wrong feature, bug, and overreach — with copy-paste fixes. Built for Claude Code, Cursor, Codex, and Copilot reviews."
+  zh: 面向编程智能体的实用失败分类：做错功能、有 bug、越界——每条带可粘贴修复。适用于 Claude Code、Cursor、Codex、Copilot 的审查。
+  pt: "Taxonomia prática de falhas de agentes de código: funcionalidade errada, bug e excesso de escopo — com consertos copy-paste. Para Claude Code, Cursor, Codex e Copilot."
+  ko: "코딩 에이전트를 위한 실무 실패 분류: 잘못된 기능, 버그, 범위 초과 — 복사·붙여넣기 수정 포함. Claude Code, Cursor, Codex, Copilot 리뷰용."
+  vi: "Phân loại lỗi agent lập trình thực dụng: sai tính năng, bug và vượt phạm vi — kèm bản sửa copy-paste. Cho Claude Code, Cursor, Codex và Copilot."
+  de: "Praktische Fehlertaxonomie für Coding-Agenten: falsches Feature, Bug und Übergriff — mit Copy-Paste-Fixes. Für Claude Code, Cursor, Codex und Copilot."
+sections:
+  - id: why-taxonomy
+    heading:
+      en: Why a taxonomy beats a vibes list
+      zh: 为什么分类法比“感觉清单”有用
+      pt: Por que uma taxonomia vence uma lista de vibes
+      ko: 왜 분위기 목록보다 분류가 나은가
+      vi: Vì sao phân loại hơn danh sách cảm tính
+      de: Warum eine Taxonomie besser ist als eine Vibes-Liste
+    body:
+      en: |
+        Public lists of “AI went wrong” posts are useful as anecdotes. A taxonomy is useful as a checklist: same bucket → same questions → same class of fix.
+
+        AgentFails is deliberately small on the top level (three buckets) and deep on the leaves (dozens of named patterns with sources and pasteable rules). That matches how you actually review: first classify, then dig.
+      zh: |
+        网上“AI 又翻车了”的帖子适合当轶事。分类法适合当清单：同一桶 → 同一组问题 → 同一类修复。
+
+        AgentFails 顶层刻意只有三类，叶子很深（几十条有来源、可粘贴规则的命名模式）。这正符合真实审查：先归类，再下钻。
+      pt: |
+        Listas públicas de “IA deu ruim” servem como anedota. Uma taxonomia serve como checklist: mesmo balde → mesmas perguntas → mesma classe de conserto.
+
+        O AgentFails é deliberadamente pequeno no topo (três baldes) e fundo nas folhas (dezenas de padrões nomeados com fontes e regras coláveis). É como se revisa de verdade: classificar, depois cavar.
+      ko: |
+        “AI가 또 망했다” 공개 목록은 일화로 유용합니다. 분류는 체크리스트로 유용합니다: 같은 통 → 같은 질문 → 같은 종류의 수정.
+
+        AgentFails는 의도적으로 최상위는 작고(세 갈래), 잎은 깊습니다(출처와 붙여넣을 규칙이 있는 수십 개 명명 패턴). 실제 리뷰와 같습니다: 먼저 분류, 그다음 파고들기.
+      vi: |
+        Danh sách công khai “AI lại sai” hữu như giai thoại. Phân loại hữu như checklist: cùng thùng → cùng câu hỏi → cùng lớp bản sửa.
+
+        AgentFails cố ý mỏng ở đỉnh (ba nhóm) và sâu ở lá (hàng chục mẫu có tên, nguồn và quy tắc dán được). Đúng cách review thật: phân loại trước, đào sau.
+      de: |
+        Öffentliche „KI ist schiefgelaufen“-Listen sind als Anekdoten nützlich. Eine Taxonomie ist als Checkliste nützlich: gleicher Eimer → gleiche Fragen → gleiche Fix-Klasse.
+
+        AgentFails ist oben absichtlich klein (drei Eimer) und in den Blättern tief (Dutzende benannte Muster mit Quellen und einfügbaren Regeln). So reviewen Sie wirklich: erst klassifizieren, dann graben.
+  - id: three-buckets
+    heading:
+      en: The three buckets
+      zh: 三个桶
+      pt: Os três baldes
+      ko: 세 갈래
+      vi: Ba nhóm
+      de: Die drei Eimer
+    body:
+      en: |
+        **Wrong feature** — the agent built the wrong thing (spec misread, zombie requirement, stub shipped as done). Catch it before code with annotated specs and acceptance checks.
+
+        **Bug** — right feature, wrong or hollow implementation (hallucinated APIs, assertion-free tests, phantom “all green”). Catch it with real tests, typechecks in the loop, and evidence over claims.
+
+        **Overreach** — right feature and no bug, but too much blast radius (unrelated files, drive-by reformat, approval it gave itself). Catch it with scope files, diff budgets, hooks, and deny lists.
+
+        Every pattern page on this site maps to exactly one bucket.
+      zh: |
+        **做错功能** — 智能体做了错的事（读错需求、复活已取消需求、占位符当完工）。用批注过的规格和验收检查，在写代码前抓住。
+
+        **有 bug** — 功能方向对，实现错或空心（幻觉 API、无断言测试、虚报全绿）。用真测试、循环内类型检查、证据代替口头声明来抓。
+
+        **越界** — 功能对、也没 bug，但杀伤半径太大（无关文件、顺手格式化、自己批准自己）。用范围文件、diff 预算、钩子和拒绝列表来抓。
+
+        本站每条模式都只映射到其中一个桶。
+      pt: |
+        **Funcionalidade errada** — o agente fez a coisa errada (spec mal lido, requisito zumbi, stub como “pronto”). Pegue antes do código com specs anotados e checagens de aceite.
+
+        **Bug** — funcionalidade certa, implementação errada ou oca (APIs alucinadas, testes sem assert, “tudo verde” fantasma). Pegue com testes reais, typecheck no loop e evidência em vez de alegação.
+
+        **Excesso de escopo** — funcionalidade certa e sem bug, mas raio de blast grande demais (arquivos não relacionados, reformat de passagem, aprovação que ele deu a si). Pegue com arquivos de escopo, orçamento de diff, hooks e deny lists.
+
+        Cada página de padrão neste site mapeia para exatamente um balde.
+      ko: |
+        **잘못된 기능** — 에이전트가 틀린 일을 함(스펙 오독, 좀비 요구사항, 스텁을 완료로 출하). 주석 달린 스펙과 수락 검사로 코드 전에 잡으세요.
+
+        **버그** — 방향은 맞지만 구현이 틀리거나 텅 빔(환각 API, 단언 없는 테스트, 유령 “전부 통과”). 실제 테스트, 루프 안 타입체크, 주장 대신 근거로 잡으세요.
+
+        **범위 초과** — 기능도 맞고 버그도 없지만 영향 반경이 큼(무관 파일, 드라이브바이 포맷, 스스로 준 승인). 범위 파일, diff 예산, 훅, deny list로 잡으세요.
+
+        이 사이트의 모든 패턴 페이지는 정확히 한 갈래에 매핑됩니다.
+      vi: |
+        **Sai tính năng** — agent làm việc sai (đọc lệch spec, yêu cầu zombie, stub giao như xong). Bắt trước khi code bằng spec có chú thích và kiểm tra chấp nhận.
+
+        **Bug** — hướng đúng nhưng hiện thực sai hoặc rỗng (API ảo giác, test không assert, “all green” ma). Bắt bằng test thật, typecheck trong vòng lặp, và bằng chứng thay lời khẳng định.
+
+        **Vượt phạm vi** — đúng tính năng, không bug, nhưng bán kính ảnh hưởng quá lớn (file không liên quan, reformat tiện tay, tự phê duyệt). Bắt bằng file phạm vi, ngân sách diff, hook và deny list.
+
+        Mỗi trang mẫu trên site này map đúng một nhóm.
+      de: |
+        **Falsches Feature** — der Agent hat das Falsche gebaut (Spec falsch gelesen, Zombie-Requirement, Stub als fertig geliefert). Fangen Sie es vor dem Code mit annotierten Specs und Abnahmechecks.
+
+        **Bug** — richtiges Feature, falsche oder hohle Umsetzung (halluzinierte APIs, Tests ohne Assert, Phantom-„alles grün“). Fangen Sie es mit echten Tests, Typechecks in der Schleife und Belegen statt Behauptungen.
+
+        **Übergriff** — richtiges Feature und kein Bug, aber zu großer Blast-Radius (fremde Dateien, Drive-by-Reformat, selbst erteilte Freigabe). Fangen Sie es mit Scope-Dateien, Diff-Budgets, Hooks und Deny-Listen.
+
+        Jede Musterseite auf dieser Site gehört genau zu einem Eimer.
+  - id: how-to-use
+    heading:
+      en: How to use this taxonomy in a PR review
+      zh: 在 PR 审查里怎么用
+      pt: Como usar esta taxonomia num review de PR
+      ko: PR 리뷰에서 이 분류를 쓰는 법
+      vi: Cách dùng phân loại này khi review PR
+      de: So nutzen Sie die Taxonomie im PR-Review
+    body:
+      en: |
+        1. Skim the diff and pick a bucket in under a minute.
+        2. Open the matching patterns (or filter the catalog by category).
+        3. Paste the CLAUDE.md / AGENTS.md / Cursor rule that matches before the next agent turn — advice in context files, enforcement in hooks and CI.
+
+        Credits for the seed taxonomies we build on live on the About page.
+      zh: |
+        1. 扫一眼 diff，一分钟内选定一个桶。
+        2. 打开对应模式（或按类别过滤目录）。
+        3. 在下一轮智能体动手前，粘贴匹配的 CLAUDE.md / AGENTS.md / Cursor 规则——上下文文件里是建议，钩子和 CI 才是强制。
+
+        我们借鉴的种子分类致谢见 About 页。
+      pt: |
+        1. Olhe o diff e escolha um balde em menos de um minuto.
+        2. Abra os padrões batendo (ou filtre o catálogo por categoria).
+        3. Cole a regra CLAUDE.md / AGENTS.md / Cursor correspondente antes do próximo turno do agente — conselho em arquivos de contexto, enforcement em hooks e CI.
+
+        Créditos das taxonomias-semente estão na página About.
+      ko: |
+        1. Diff를 훑고 1분 안에 갈래를 고르세요.
+        2. 맞는 패턴을 열거나 카탈로그를 카테고리로 필터하세요.
+        3. 다음 에이전트 턴 전에 맞는 CLAUDE.md / AGENTS.md / Cursor 규칙을 붙이세요 — 컨텍스트 파일은 조언, 훅·CI는 강제.
+
+        시드 분류 크레딧은 About 페이지에 있습니다.
+      vi: |
+        1. Lướt diff và chọn một nhóm trong dưới một phút.
+        2. Mở các mẫu khớp (hoặc lọc catalog theo category).
+        3. Dán quy tắc CLAUDE.md / AGENTS.md / Cursor khớp trước lượt agent tiếp — lời khuyên trong file ngữ cảnh, cưỡng chế bằng hook và CI.
+
+        Ghi công phân loại hạt giống nằm ở trang About.
+      de: |
+        1. Diff überfliegen und in unter einer Minute einen Eimer wählen.
+        2. Passende Muster öffnen (oder Katalog nach Kategorie filtern).
+        3. Vor dem nächsten Agent-Turn die passende CLAUDE.md- / AGENTS.md- / Cursor-Regel einfügen — Rat in Kontextdateien, Enforcement in Hooks und CI.
+
+        Credits der Seed-Taxonomien stehen auf der About-Seite.
+related_patterns:
+  - spec-misread
+  - hallucinated-api-method
+  - test-gaming
+  - unrelated-files-changed
+  - cascading-refactor
+  - agent-review-rubber-stamp
+cta:
+  en: Open the full catalog
+  zh: 打开完整目录
+  pt: Abrir o catálogo completo
+  ko: 전체 카탈로그 열기
+  vi: Mở toàn bộ catalog
+  de: Gesamten Katalog öffnen

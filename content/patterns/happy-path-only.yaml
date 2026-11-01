@@ -1,23 +1,56 @@
 slug: happy-path-only
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [edge case, empty input, null, error path, boundary]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - edge case
+  - empty input
+  - null
+  - error path
+  - boundary
 title:
   en: Works on the example, breaks on the edges
   zh: 示例能跑，边界就崩
+  pt: Funciona no exemplo, quebra nas bordas
+  ko: 예제에서는 되고 가장자리에서 깨짐
+  vi: Chạy được trên ví dụ, gãy ở biên
+  de: Funktioniert am Beispiel, bricht an den Rändern
 summary:
-  en: The agent implements what passes the example and stops. Empty input, null, boundaries and failure paths are not handled.
+  en: >-
+    The agent implements what passes the example and stops. Empty input, null, boundaries and failure paths are not
+    handled.
   zh: 智能体实现到示例能通过就停了。空输入、null、边界值和失败路径都没处理。
+  pt: O agente implementa o caminho feliz do prompt e pula empty, null, erro de rede, permissão e inputs parciais.
+  ko: 에이전트가 프롬프트의 해피 패스만 구현하고 empty·null·네트워크 오류·권한·부분 입력을 건너뜁니다.
+  vi: Agent chỉ làm happy path trong prompt và bỏ empty, null, lỗi mạng, quyền và input thiếu.
+  de: Der Agent implementiert den Happy Path des Prompts und überspringt Empty, Null, Netzfehler, Rechte und Teil-Inputs.
 symptom:
   en: Crashes on an empty list, a missing file, invalid JSON, or the first or last element. The demo worked.
   zh: 遇到空列表、文件不存在、JSON 不合法、首尾元素就崩。演示时明明是好的。
+  pt: Demo passa; produção vê 500s, estados vazios ou dados parciais silenciosamente errados.
+  ko: 데모는 통과하고 프로덕션은 500·빈 상태·부분 데이터가 조용히 틀어집니다.
+  vi: Demo pass; production thấy 500, trạng thái trống hoặc dữ liệu thiếu sai im lặng.
+  de: Demo ist grün; Produktion sieht 500er, leere Zustände oder still falsche Teil-Daten.
 why:
-  en: '"Agents focus on the happy path. They implement what passes the example, then stop." (agent-review). It lists AR029 (missing edge case) and AR030 (unhandled error path).'
+  en: >-
+    "Agents focus on the happy path. They implement what passes the example, then stop." (agent-review). It lists AR029
+    (missing edge case) and AR030 (unhandled error path).
   zh: “智能体只关注顺利路径。它们实现到示例通过就停了。”（agent-review）。该分类列了 AR029（缺少边界情况）和 AR030（未处理的错误路径）。
+  pt: Exemplos no prompt ancoram o happy path. agent-review AR029/AR030 (missing edge case / unhandled error path).
+  ko: 프롬프트 예제가 해피 패스를 고정합니다. agent-review AR029/AR030(누락된 엣지 케이스 / 미처리 에러 경로).
+  vi: Ví dụ trong prompt neo happy path. agent-review AR029/AR030 (missing edge case / unhandled error path).
+  de: Beispiele im Prompt verankern den Happy Path. agent-review AR029/AR030 (missing edge case / unhandled error path).
 example:
   caption:
     en: From the agent-review taxonomy (AR029, AR030).
     zh: 摘自 agent-review 分类（AR029、AR030）。
+    pt: Da taxonomia agent-review (AR029, AR030).
+    ko: agent-review 분류에서 (AR029, AR030).
+    vi: Từ phân loại agent-review (AR029, AR030).
+    de: Aus der agent-review-Taxonomie (AR029, AR030).
   lang: ts
   code: |
     function median(xs: number[]): number {
@@ -35,7 +68,7 @@ rule: |
 extras:
   - ref: review-skill
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR029 Missing edge case"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR029 Missing edge case'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar029-missing-edge-case
-  - title: "vnmoorthy/agent-review TAXONOMY: AR030 Unhandled error path"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR030 Unhandled error path'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar030-unhandled-error-path

@@ -1,23 +1,60 @@
 slug: drive-by-reformat
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [formatting, prettier, whitespace, noise, reformat]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - formatting
+  - prettier
+  - whitespace
+  - noise
+  - reformat
 title:
   en: Reformatted files it only opened to read
   zh: 只是打开看看的文件，也被它格式化了
+  pt: Reformatou arquivos que só abriu para ler
+  ko: 읽으려고만 연 파일을 포맷해 버림
+  vi: Reformat file chỉ mở để đọc
+  de: Dateien umformatiert, die nur zum Lesen geöffnet wurden
 summary:
-  en: The agent reformats, re-wraps or restyles files orthogonal to the task, and the real change disappears in whitespace noise.
+  en: >-
+    The agent reformats, re-wraps or restyles files orthogonal to the task, and the real change disappears in whitespace
+    noise.
   zh: 智能体对与任务无关的文件做了格式化、换行或风格调整，真正的改动淹没在空白噪音里。
+  pt: O agente "limpa" estilo/import/whitespace em arquivos fora do pedido, inchando o diff e escondendo a mudança real.
+  ko: 요청 밖 파일의 스타일·import·공백을 "정리"해 diff를 부풀리고 실제 변경을 가립니다.
+  vi: Agent "dọn" style/import/whitespace ở file ngoài yêu cầu, phình diff và che thay đổi thật.
+  de: >-
+    Der Agent „räumt“ Style/Import/Whitespace in Dateien außerhalb der Anfrage auf, bläht den Diff auf und versteckt die
+    echte Änderung.
 symptom:
-  en: Hundreds of changed lines, almost none of them functional. Quote styles, trailing commas or import order changed in files the task never needed.
+  en: >-
+    Hundreds of changed lines, almost none of them functional. Quote styles, trailing commas or import order changed in
+    files the task never needed.
   zh: 改了几百行，几乎没有一行是功能性的。任务根本不需要的文件里，引号风格、尾逗号或 import 顺序都变了。
+  pt: Diff cheio de churn cosmético em arquivos não pedidos; a mudança funcional some no barulho.
+  ko: 요청하지 않은 파일의 화장품성 churn으로 diff가 가득하고, 기능 변경이 소음에 묻힙니다.
+  vi: Diff đầy churn thẩm mỹ ở file không được nhờ; thay đổi chức năng chìm trong nhiễu.
+  de: Diff voller kosmetischem Churn in nicht angefragten Dateien; die funktionale Änderung geht im Rauschen unter.
 why:
-  en: Agents "run formatters or tidy up while they're there" (agent-review AR004). claudecodeguides.com calls it the reformatting impulse, cleaning up files Claude opens only to check an import.
+  en: >-
+    Agents "run formatters or tidy up while they're there" (agent-review AR004). claudecodeguides.com calls it the
+    reformatting impulse, cleaning up files Claude opens only to check an import.
   zh: 智能体会“顺手跑格式化或整理一下”（agent-review AR004）。claudecodeguides.com 称之为“格式化冲动”：Claude 只是打开文件看个 import，也会顺手清理。
+  pt: Formatters e "organize imports" são baratos e parecem prestativos. Diff budgets e scope guards pegam cedo.
+  ko: 포매터와 "organize imports"는 싸고 친절해 보입니다. Diff budget과 scope guard가 일찍 잡습니다.
+  vi: Formatter và "organize imports" rẻ và trông hữu ích. Diff budget và scope guard bắt sớm.
+  de: Formatter und „organize imports“ sind billig und wirken hilfreich. Diff-Budgets und Scope-Guards fangen früh.
 example:
   caption:
     en: From the agent-review taxonomy (AR004).
     zh: 摘自 agent-review 分类（AR004）。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: diff
   code: |
     - const x = 1; const y = 2; const z = 3
@@ -33,13 +70,15 @@ rule: |
 extras:
   - kind: hook
     title:
-      en: "Format only changed files (pre-commit)"
-      zh: "只格式化改动过的文件（pre-commit）"
+      en: Format only changed files (pre-commit)
+      zh: 只格式化改动过的文件（pre-commit）
     file: package.json
     lang: json
     note:
-      en: "lint-staged runs the formatter on staged files only, so a session can't reformat the repo through the commit hook."
-      zh: "lint-staged 只格式化暂存区的文件，提交钩子就不会把整个仓库重新格式化一遍。"
+      en: >-
+        lint-staged runs the formatter on staged files only, so a session can't reformat the repo through the commit
+        hook.
+      zh: lint-staged 只格式化暂存区的文件，提交钩子就不会把整个仓库重新格式化一遍。
     code: |
       {
         "lint-staged": {
@@ -48,7 +87,7 @@ extras:
       }
   - ref: diff-budget-check
 sources:
-  - title: "vnmoorthy/agent-review TAXONOMY: AR004 Drive-by refactor"
+  - title: 'vnmoorthy/agent-review TAXONOMY: AR004 Drive-by refactor'
     url: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#ar004-drive-by-refactor
-  - title: "claudecodeguides.com: Stop Claude Code from modifying unrelated files"
+  - title: 'claudecodeguides.com: Stop Claude Code from modifying unrelated files'
     url: https://claudecodeguides.com/claude-code-stop-modifying-unrelated-files/

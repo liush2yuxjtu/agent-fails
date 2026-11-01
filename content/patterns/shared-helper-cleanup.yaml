@@ -1,23 +1,60 @@
 slug: shared-helper-cleanup
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [shared utils, helpers, blast radius, refactor, watering hole]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - shared utils
+  - helpers
+  - blast radius
+  - refactor
+  - watering hole
 title:
   en: '"Small cleanup" of a helper twenty features use'
   zh: 对二十个功能共用的工具函数做了“小清理”
+  pt: '"Limpeza pequena" num helper que vinte features usam'
+  ko: 스무 기능이 쓰는 헬퍼의 "작은 정리"
+  vi: '"Dọn nhỏ" helper mà hai mươi feature dùng'
+  de: „Kleine Aufräumung“ an einem Helper, den zwanzig Features nutzen
 summary:
-  en: While working in one feature, the agent follows an import into a shared utility and refactors it, changing behavior for every caller.
+  en: >-
+    While working in one feature, the agent follows an import into a shared utility and refactors it, changing behavior
+    for every caller.
   zh: 智能体在改某个功能时，顺着 import 进了共享工具文件并重构了它，所有调用方的行为都跟着变了。
+  pt: Um refactor "inofensivo" num util compartilhado muda comportamento em callers que você não estava tocando.
+  ko: 공유 유틸의 "무해한" 리팩터가 건드리지 않던 호출자의 동작을 바꿉니다.
+  vi: Refactor "vô hại" trên util dùng chung đổi hành vi ở caller bạn không đụng.
+  de: Ein „harmloses“ Refactor an einem geteilten Util ändert Verhalten bei Callern, die Sie nicht anfassen wollten.
 symptom:
-  en: The task touched `login.ts`; the diff also rewrote `utils/helpers.ts`. Unrelated features start misbehaving after merge.
+  en: >-
+    The task touched `login.ts`; the diff also rewrote `utils/helpers.ts`. Unrelated features start misbehaving after
+    merge.
   zh: 任务只涉及 `login.ts`，diff 却重写了 `utils/helpers.ts`。合并后，不相关的功能开始出问题。
+  pt: Diff pequeno no helper; falhas em features distantes no CI.
+  ko: 헬퍼 diff는 작은데 CI에서 먼 기능들이 실패합니다.
+  vi: Diff nhỏ ở helper; CI fail ở feature xa.
+  de: Kleiner Diff am Helper; CI-Fails in entfernten Features.
 why:
-  en: Night Forge describes "helpful clean-up on shared utilities" as a recurring pattern from Cursor forum reports. The agent sees old style in a "watering-hole" file and has no sense of its blast radius.
+  en: >-
+    Night Forge describes "helpful clean-up on shared utilities" as a recurring pattern from Cursor forum reports. The
+    agent sees old style in a "watering-hole" file and has no sense of its blast radius.
   zh: Night Forge 根据 Cursor 论坛的反馈，把“对共享工具的热心清理”列为反复出现的模式。智能体看到“水源地”文件里的旧写法就想改，却意识不到它的影响范围。
+  pt: Helpers compartilhados têm blast radius oculto. Scope guards devem exigir confirmação explícita antes de tocá-los.
+  ko: 공유 헬퍼는 숨은 영향 반경이 있습니다. Scope guard는 만지기 전 명시적 확인을 요구해야 합니다.
+  vi: Helper dùng chung có bán kính ảnh hưởng ẩn. Scope guard nên đòi xác nhận rõ trước khi đụng.
+  de: >-
+    Geteilte Helper haben versteckten Blast-Radius. Scope-Guards sollten vor dem Anfassen explizite Bestätigung
+    verlangen.
 example:
   caption:
     en: From the Night Forge write-up.
     zh: 摘自 Night Forge 的文章。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     Asked: change src/features/auth/login.ts
@@ -31,8 +68,8 @@ rule: |
 extras:
   - kind: settings
     title:
-      en: "Require review on shared code (CODEOWNERS)"
-      zh: "共享代码需审批（CODEOWNERS）"
+      en: Require review on shared code (CODEOWNERS)
+      zh: 共享代码需审批（CODEOWNERS）
     file: .github/CODEOWNERS
     lang: text
     code: |
@@ -42,5 +79,5 @@ extras:
       /src/shared/  @your-org/maintainers
   - ref: scope-guard-hook
 sources:
-  - title: "Night Forge: Stop your AI agent editing the wrong files"
+  - title: 'Night Forge: Stop your AI agent editing the wrong files'
     url: https://night-forge.com/blog/stop-ai-agent-editing-wrong-files

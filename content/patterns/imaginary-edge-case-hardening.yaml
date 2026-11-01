@@ -1,23 +1,82 @@
 slug: imaginary-edge-case-hardening
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [defensive code, edge cases, over-engineering, overbuilding, review noise, YAGNI]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - defensive code
+  - edge cases
+  - over-engineering
+  - overbuilding
+  - review noise
+  - YAGNI
 title:
   en: Hardened the code against cases no user will hit
   zh: 为没有用户会遇到的情况加固代码
+  pt: Endureceu o código contra casos que ninguém vai bater
+  ko: 아무도 안 칠 케이스에 대비해 코드를 굳힘
+  vi: Cứng hóa code chống case chẳng user nào gặp
+  de: Code gegen Fälle gehärtet, die niemand trifft
 summary:
-  en: The agent (or its reviewer) piles on branches, guards and tests for states no real user can reach, while the obvious problems in the same diff go unnoticed.
+  en: >-
+    The agent (or its reviewer) piles on branches, guards and tests for states no real user can reach, while the obvious
+    problems in the same diff go unnoticed.
   zh: 智能体（或它的审查者）为真实用户根本到不了的状态堆上分支、守卫和测试，同一个 diff 里明显的问题却没人发现。
+  pt: O agente adiciona branches, tipos e validações para cenários hipotéticos, inchando o diff além do pedido.
+  ko: 에이전트가 가설 시나리오용 분기·타입·검증을 추가해 요청 이상으로 diff를 부풀립니다.
+  vi: Agent thêm nhánh, type và validation cho kịch bản giả định, phình diff quá yêu cầu.
+  de: >-
+    Der Agent fügt Branches, Typen und Validierungen für hypothetische Szenarien hinzu und bläht den Diff über die
+    Anfrage auf.
 symptom:
-  en: Long handlers for impossible combinations of events, "just in case" checks, extra e2e tests for a throwaway change, and review comments that always find another theoretical case. The diff grows; the real issue a few lines away (an N+1 query, a design problem) stays.
+  en: >-
+    Long handlers for impossible combinations of events, "just in case" checks, extra e2e tests for a throwaway change,
+    and review comments that always find another theoretical case. The diff grows; the real issue a few lines away (an
+    N+1 query, a design problem) stays.
   zh: 为不可能同时发生的事件组合写的长处理逻辑、“以防万一”的检查、给一次性改动加的 e2e 测试，以及永远能再找出一个理论情况的审查意见。diff 越来越大，几行之外真正的问题（N+1 查询、设计问题）却原封不动。
+  pt: Metade do PR é "just in case"; reviewers gastam tempo em código que não serve o ticket.
+  ko: PR 절반이 "만약을 위해"이고, 리뷰어가 티켓과 무관한 코드에 시간을 씁니다.
+  vi: Một nửa PR là "just in case"; reviewer tốn thời gian vào code không phục vụ ticket.
+  de: Die Hälfte des PRs ist „just in case“; Reviewer verbringen Zeit mit Code, der das Ticket nicht bedient.
 why:
-  en: 'Quoting Thorsten Ball''s PR post, @RhysSullivan wrote that models "love to add so much extra code for cases that will never happen". His example of what review "caught": "changing a setting while being demoted from admin in the same request". Replies add more: a 40-line handler for an unreachable state next to a missed N+1 query (@giskyexplorer), "useless machinery that will pass tests" (@Gabezor), e2e tests and a full test review proposed for a goodbye page on a project being shut down (@NapVeg), agents writing too many heavy, slow tests (@kopseng), and review bots that "always find something" users would never hit (@kenryu42). @leothecurious lists "paranoid defensive coding patterns" among the habits that keep him steering. Thoroughness is rewarded and nothing tells the agent how likely a case is, so every case looks worth handling.'
-  zh: '@RhysSullivan 引用 Thorsten Ball 的 PR 帖说，模型“喜欢为永远不会发生的情况加一大堆代码”。他举的审查“发现”是：“在同一个请求里一边被取消管理员身份一边改设置”。回复里还有更多：为不可达状态写了 40 行处理逻辑，却漏掉旁边的 N+1 查询（@giskyexplorer）；“能通过测试的无用机制”（@Gabezor）；给一个即将关停的项目加告别页，智能体却想先写 e2e 测试再做全量测试审查（@NapVeg）；智能体写了太多又重又慢的测试（@kopseng）；审查机器人“总能找到点什么”，修的是用户永远碰不到的问题（@kenryu42）。@leothecurious 把“偏执的防御式编码”列为他不得不一直纠偏的习惯之一。“周全”会得到奖励，而没有任何信息告诉智能体某个情况有多大可能发生，于是每个情况看起来都值得处理。'
+  en: >-
+    Quoting Thorsten Ball's PR post, @RhysSullivan wrote that models "love to add so much extra code for cases that will
+    never happen". His example of what review "caught": "changing a setting while being demoted from admin in the same
+    request". Replies add more: a 40-line handler for an unreachable state next to a missed N+1 query (@giskyexplorer),
+    "useless machinery that will pass tests" (@Gabezor), e2e tests and a full test review proposed for a goodbye page on
+    a project being shut down (@NapVeg), agents writing too many heavy, slow tests (@kopseng), and review bots that
+    "always find something" users would never hit (@kenryu42). @leothecurious lists "paranoid defensive coding patterns"
+    among the habits that keep him steering. Thoroughness is rewarded and nothing tells the agent how likely a case is,
+    so every case looks worth handling.
+  zh: >-
+    @RhysSullivan 引用 Thorsten Ball 的 PR 帖说，模型“喜欢为永远不会发生的情况加一大堆代码”。他举的审查“发现”是：“在同一个请求里一边被取消管理员身份一边改设置”。回复里还有更多：为不可达状态写了
+    40 行处理逻辑，却漏掉旁边的 N+1 查询（@giskyexplorer）；“能通过测试的无用机制”（@Gabezor）；给一个即将关停的项目加告别页，智能体却想先写 e2e
+    测试再做全量测试审查（@NapVeg）；智能体写了太多又重又慢的测试（@kopseng）；审查机器人“总能找到点什么”，修的是用户永远碰不到的问题（@kenryu42）。@leothecurious
+    把“偏执的防御式编码”列为他不得不一直纠偏的习惯之一。“周全”会得到奖励，而没有任何信息告诉智能体某个情况有多大可能发生，于是每个情况看起来都值得处理。
+  pt: >-
+    Modelos são recompensados por parecerem thorough. Diff budgets e review skills que perguntam "isso atende o pedido?"
+    cortam o excesso. Relatos descrevem agentes inventando requisitos de resiliência que ninguém pediu e depois
+    defendendo o volume.
+  ko: >-
+    모델은 thorough해 보이는 쪽으로 보상받습니다. Diff budget과 "이게 요청을 충족하나?"를 묻는 review skill이 과잉을 자릅니다. 아무도 안 시킨 복원력 요구를 만들고 분량을 옹호하는
+    보고가 있습니다.
+  vi: >-
+    Model được thưởng vì trông thorough. Diff budget và review skill hỏi "cái này đáp yêu cầu?" cắt phần thừa. Có báo
+    cáo agent bịa yêu cầu resilience chẳng ai nhờ rồi biện minh khối lượng.
+  de: >-
+    Modelle werden für Thoroughness belohnt. Diff-Budgets und Review-Skills, die „erfüllt das die Anfrage?“ fragen,
+    schneiden den Überschuss. Berichte: Agenten erfinden Resilienz-Anforderungen, die niemand wollte, und verteidigen
+    dann den Umfang.
 example:
   caption:
     en: Illustrative, based on @RhysSullivan's example.
     zh: 示意，基于 @RhysSullivan 的例子。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: ts
   code: |
     async function updateSetting(user, key, value) {
@@ -43,19 +102,19 @@ extras:
   - ref: diff-budget-check
   - ref: review-skill
 sources:
-  - title: "@RhysSullivan on X: models add extra code for cases that will never happen (admin demoted mid-request)"
+  - title: '@RhysSullivan on X: models add extra code for cases that will never happen (admin demoted mid-request)'
     url: https://x.com/RhysSullivan/status/2111168428883235002
-  - title: "@giskyexplorer on X: a 40-line handler for an unreachable state, the N+1 query missed"
+  - title: '@giskyexplorer on X: a 40-line handler for an unreachable state, the N+1 query missed'
     url: https://x.com/giskyexplorer/status/2111319507079741905
-  - title: "@Gabezor on X: overbuilding useless machinery that passes tests"
+  - title: '@Gabezor on X: overbuilding useless machinery that passes tests'
     url: https://x.com/Gabezor/status/2111363635276918949
-  - title: "@NapVeg on X: e2e tests and a full test review proposed for a goodbye route"
+  - title: '@NapVeg on X: e2e tests and a full test review proposed for a goodbye route'
     url: https://x.com/NapVeg/status/2111353429780320319
-  - title: "@kopseng on X: agents create too many heavy and slow tests"
+  - title: '@kopseng on X: agents create too many heavy and slow tests'
     url: https://x.com/kopseng/status/2111340624700129371
-  - title: "@kenryu42 on X: review bots always find something users would never hit"
+  - title: '@kenryu42 on X: review bots always find something users would never hit'
     url: https://x.com/kenryu42/status/2111144965346844858
-  - title: "@leothecurious on X: \"paranoid defensive coding patterns\" among recurring agent habits"
+  - title: '@leothecurious on X: "paranoid defensive coding patterns" among recurring agent habits'
     url: https://x.com/leothecurious/status/2111013236413714757
-  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+  - title: '@thorstenball on X: "Why are you still using pull requests?" (the thread)'
     url: https://x.com/thorstenball/status/2111130129355481240

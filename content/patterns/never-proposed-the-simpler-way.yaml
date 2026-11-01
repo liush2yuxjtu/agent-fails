@@ -1,23 +1,84 @@
 slug: never-proposed-the-simpler-way
 category: overreach
-agents: [claude-code, cursor, codex, copilot]
-tags: [over-complicated, verbose, bloat, simplicity, design, "should this exist"]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - over-complicated
+  - verbose
+  - bloat
+  - simplicity
+  - design
+  - should this exist
 title:
   en: Never proposed the simpler way
   zh: 从不提出更简单的做法
+  pt: Nunca propôs o caminho mais simples
+  ko: 더 단순한 방법을 제안하지 않음
+  vi: Không bao giờ đề xuất cách đơn giản hơn
+  de: Den einfacheren Weg nie vorgeschlagen
 summary:
-  en: The agent delivers a working but over-complicated, verbose solution. It rarely says that a smaller change would do, that something isn't needed, or that the change shouldn't be made at all.
+  en: >-
+    The agent delivers a working but over-complicated, verbose solution. It rarely says that a smaller change would do,
+    that something isn't needed, or that the change shouldn't be made at all.
   zh: 智能体交出一个能用、但过度复杂又啰嗦的方案。它很少会说“改小一点就够了”“这个不需要”或者“这个改动根本不该做”。
+  pt: Existia um fix de uma linha ou reuse óbvio; o agente entregou uma abstração maior sem oferecer a opção simples.
+  ko: 한 줄 수정이나 뻔한 재사용이 있었는데, 에이전트가 단순한 선택지를 제안하지 않고 더 큰 추상화를 납품합니다.
+  vi: Có fix một dòng hoặc tái dùng rõ ràng; agent giao abstraction lớn hơn mà không đưa lựa chọn đơn giản.
+  de: >-
+    Es gab einen Einzeiler oder offensichtliches Reuse; der Agent lieferte eine größere Abstraktion, ohne die einfache
+    Option anzubieten.
 symptom:
-  en: Roundabout control flow, extra layers and long comments where a few lines would do. Human reviewers keep leaving the same comment, "there's a simpler way", and the diff shrinks a lot once they do.
+  en: >-
+    Roundabout control flow, extra layers and long comments where a few lines would do. Human reviewers keep leaving the
+    same comment, "there's a simpler way", and the diff shrinks a lot once they do.
   zh: 绕来绕去的控制流、多余的层次、几行就能搞定的地方写了长篇注释。人类审查者反复留下同一条意见：“有更简单的办法”，按他们说的改完，diff 会缩小很多。
+  pt: Você pergunta "por que não X?" e a resposta é que X funcionaria — mas nunca apareceu como opção.
+  ko: '"왜 X가 아니지?"라고 물으면 X로도 된다고 답하지만, 선택지로 제시된 적은 없습니다.'
+  vi: Bạn hỏi "sao không X?" và câu trả lời là X cũng được — nhưng chưa từng xuất hiện như lựa chọn.
+  de: Sie fragen „warum nicht X?“ und die Antwort ist, X würde gehen — aber es erschien nie als Option.
 why:
-  en: 'In replies to Thorsten Ball''s PR post, @lawrjones says he steers the code in 40% of the PRs he merges, often for architectural choices or over-complication where Opus didn''t see a simpler path. @akepka_: even frontier models "will rarely tell you that something is not needed or could be 10 times simpler". @isaacvando often asks to close a PR or redo it in a way that fits the project and notes Codex never suggests closing one. @LucaColonnello sees "silly roundabout ways of doing things" and a lack of questioning why something is needed. @clintwinter13 catches "overly verbose code and bad design"; @benjaminhonorio catches code that is overcomplicated or unnecessary; @GrmlBob finds Opus code badly bloated on big projects; @motziabuelnasr reviews agent PRs that turn out complex to reason about or not scalable; @zeenix finds AI-generated docs and comments unreadable for humans. Agents implement the request as given, and pushing back on its size or necessity is rarely rewarded.'
-  zh: '在 Thorsten Ball 的 PR 帖下，@lawrjones 说他合并的 PR 里有 40% 需要他出手调整代码，多半是架构选择问题，或者明明有更简单的路 Opus 却没看到、把代码写复杂了。@akepka_：即使是前沿模型，也“很少会告诉你某样东西不需要，或者可以简单 10 倍”。@isaacvando 经常要求关掉 PR，或用更符合项目的方式重做，他说 Codex 从来不会建议关掉 PR。@LucaColonnello 常看到“绕远路的笨办法”，也缺少对“为什么需要这个”的追问。@clintwinter13 常抓到“过于啰嗦的代码和糟糕的设计”；@benjaminhonorio 抓到过过度复杂或根本不必要的代码；@GrmlBob 发现大项目里 Opus 的代码严重臃肿；@motziabuelnasr 审查的智能体 PR 有的难以理解或无法扩展；@zeenix 觉得 AI 生成的文档和注释人根本读不懂。智能体照单实现需求，而对需求的规模或必要性提出异议，很少得到奖励。'
+  en: >-
+    In replies to Thorsten Ball's PR post, @lawrjones says he steers the code in 40% of the PRs he merges, often for
+    architectural choices or over-complication where Opus didn't see a simpler path. @akepka_: even frontier models
+    "will rarely tell you that something is not needed or could be 10 times simpler". @isaacvando often asks to close a
+    PR or redo it in a way that fits the project and notes Codex never suggests closing one. @LucaColonnello sees "silly
+    roundabout ways of doing things" and a lack of questioning why something is needed. @clintwinter13 catches "overly
+    verbose code and bad design"; @benjaminhonorio catches code that is overcomplicated or unnecessary; @GrmlBob finds
+    Opus code badly bloated on big projects; @motziabuelnasr reviews agent PRs that turn out complex to reason about or
+    not scalable; @zeenix finds AI-generated docs and comments unreadable for humans. Agents implement the request as
+    given, and pushing back on its size or necessity is rarely rewarded.
+  zh: >-
+    在 Thorsten Ball 的 PR 帖下，@lawrjones 说他合并的 PR 里有 40% 需要他出手调整代码，多半是架构选择问题，或者明明有更简单的路 Opus
+    却没看到、把代码写复杂了。@akepka_：即使是前沿模型，也“很少会告诉你某样东西不需要，或者可以简单 10 倍”。@isaacvando 经常要求关掉 PR，或用更符合项目的方式重做，他说 Codex 从来不会建议关掉
+    PR。@LucaColonnello 常看到“绕远路的笨办法”，也缺少对“为什么需要这个”的追问。@clintwinter13 常抓到“过于啰嗦的代码和糟糕的设计”；@benjaminhonorio
+    抓到过过度复杂或根本不必要的代码；@GrmlBob 发现大项目里 Opus 的代码严重臃肿；@motziabuelnasr 审查的智能体 PR 有的难以理解或无法扩展；@zeenix 觉得 AI
+    生成的文档和注释人根本读不懂。智能体照单实现需求，而对需求的规模或必要性提出异议，很少得到奖励。
+  pt: >-
+    Agentes otimizam para "solução completa" e demonstração de competência, não para o menor patch. Diff budgets forçam
+    o tamanho; review skills pedem alternativas. Usuários relatam frameworks inteiros onde um early-return bastava, e só
+    depois de pushback o agente admite o caminho curto.
+  ko: >-
+    에이전트는 최소 패치가 아니라 "완전한 해법"과 유능해 보이기를 최적화합니다. Diff budget이 크기를 강제하고 review skill이 대안을 묻습니다. early-return이면 될 곳에 프레임워크를
+    짓고, 반박 후에야 짧은 길을 인정한다는 보고가 있습니다.
+  vi: >-
+    Agent tối ưu "giải pháp đầy đủ" và thể hiện năng lực, không phải patch nhỏ nhất. Diff budget ép kích thước; review
+    skill hỏi phương án khác. User kể cả framework nơi early-return là đủ, và chỉ sau khi phản đối agent mới nhận đường
+    ngắn.
+  de: >-
+    Agenten optimieren auf „vollständige Lösung“ und Kompetenz-Demo, nicht auf den kleinsten Patch. Diff-Budgets
+    erzwingen Größe; Review-Skills fordern Alternativen. Nutzer berichten ganze Frameworks, wo Early-Return reichte —
+    und erst nach Pushback gibt der Agent den kurzen Weg zu.
 example:
   caption:
     en: Illustrative.
     zh: 示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: ts
   code: |
     // Asked: show the user's display name, falling back to their email
@@ -41,23 +102,23 @@ extras:
   - ref: diff-budget-check
   - ref: review-skill
 sources:
-  - title: "@lawrjones on X: human steering in 40% of merged PRs, often over-complication"
+  - title: '@lawrjones on X: human steering in 40% of merged PRs, often over-complication'
     url: https://x.com/lawrjones/status/2111170669539164647
-  - title: "@akepka_ on X: models rarely say something isn't needed or could be 10 times simpler"
+  - title: '@akepka_ on X: models rarely say something isn''t needed or could be 10 times simpler'
     url: https://x.com/akepka_/status/2111158329225711665
-  - title: "@isaacvando on X: \"Codex never says we should close the PR\""
+  - title: '@isaacvando on X: "Codex never says we should close the PR"'
     url: https://x.com/isaacvando/status/2111140902765039999
-  - title: "@LucaColonnello on X: silly roundabout ways, no questioning why something is needed"
+  - title: '@LucaColonnello on X: silly roundabout ways, no questioning why something is needed'
     url: https://x.com/LucaColonnello/status/2111158555860406339
-  - title: "@clintwinter13 on X: overly verbose code and bad design"
+  - title: '@clintwinter13 on X: overly verbose code and bad design'
     url: https://x.com/clintwinter13/status/2111237417479127184
-  - title: "@benjaminhonorio on X: overcomplicated or unnecessary code"
+  - title: '@benjaminhonorio on X: overcomplicated or unnecessary code'
     url: https://x.com/benjaminhonorio/status/2111240548220580008
-  - title: "@GrmlBob on X: Opus code badly bloated on big projects"
+  - title: '@GrmlBob on X: Opus code badly bloated on big projects'
     url: https://x.com/GrmlBob/status/2111371690374549517
-  - title: "@motziabuelnasr on X: agent PRs complex to reason about or not scalable"
+  - title: '@motziabuelnasr on X: agent PRs complex to reason about or not scalable'
     url: https://x.com/motziabuelnasr/status/2111567078503452700
-  - title: "@zeenix on X: AI-generated docs and comments gibberish to humans"
+  - title: '@zeenix on X: AI-generated docs and comments gibberish to humans'
     url: https://x.com/zeenix/status/2111380154920407109
-  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+  - title: '@thorstenball on X: "Why are you still using pull requests?" (the thread)'
     url: https://x.com/thorstenball/status/2111130129355481240

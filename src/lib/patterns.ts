@@ -46,9 +46,9 @@ export function getPatterns(): Pattern[] {
 
     const rule = raw.rule.trim() + "\n";
     const fixes: Fix[] = [
-      { kind: "rules", title: { en: "Claude Code: add to CLAUDE.md", zh: "Claude Code：加入 CLAUDE.md" }, file: "CLAUDE.md", lang: "markdown", code: rule },
-      { kind: "rules", title: { en: "Codex, Copilot coding agent and others: add to AGENTS.md", zh: "Codex、Copilot 编码智能体等：加入 AGENTS.md" }, file: "AGENTS.md", lang: "markdown", code: rule },
-      { kind: "cursor", title: { en: "Cursor: project rule", zh: "Cursor：项目规则" }, file: `.cursor/rules/${raw.slug}.mdc`, lang: "markdown", code: cursorRule(raw) },
+      { kind: "rules", title: { en: "Claude Code: add to CLAUDE.md", zh: "Claude Code：加入 CLAUDE.md", pt: "Claude Code: adicionar ao CLAUDE.md", ko: "Claude Code: CLAUDE.md에 추가", vi: "Claude Code: thêm vào CLAUDE.md", de: "Claude Code: zu CLAUDE.md hinzufügen" }, file: "CLAUDE.md", lang: "markdown", code: rule },
+      { kind: "rules", title: { en: "Codex, Copilot coding agent and others: add to AGENTS.md", zh: "Codex、Copilot 编码智能体等：加入 AGENTS.md", pt: "Codex, Copilot coding agent e outros: adicionar ao AGENTS.md", ko: "Codex, Copilot 코딩 에이전트 등: AGENTS.md에 추가", vi: "Codex, Copilot coding agent và khác: thêm vào AGENTS.md", de: "Codex, Copilot Coding Agent u. a.: zu AGENTS.md hinzufügen" }, file: "AGENTS.md", lang: "markdown", code: rule },
+      { kind: "cursor", title: { en: "Cursor: project rule", zh: "Cursor：项目规则", pt: "Cursor: regra do projeto", ko: "Cursor: 프로젝트 규칙", vi: "Cursor: quy tắc dự án", de: "Cursor: Projektregel" }, file: `.cursor/rules/${raw.slug}.mdc`, lang: "markdown", code: cursorRule(raw) },
     ];
     for (const extra of raw.extras ?? []) {
       if (extra.ref) {
@@ -96,7 +96,14 @@ export function toCards(lang: Lang): PatternCard[] {
       title: lx(p.title, lang),
       altTitle: lang === "en" ? p.title.zh : p.title.en,
       summary: lx(p.summary, lang),
-      search: [p.slug, p.title.en, p.title.zh, p.summary.en, p.summary.zh, p.symptom.en, p.symptom.zh, p.tags.join(" "), p.category]
+      search: [
+        p.slug,
+        p.title.en, p.title.zh, p.title.pt, p.title.ko, p.title.vi, p.title.de,
+        p.summary.en, p.summary.zh, p.summary.pt, p.summary.ko, p.summary.vi, p.summary.de,
+        p.symptom.en, p.symptom.zh, p.symptom.pt, p.symptom.ko, p.symptom.vi, p.symptom.de,
+        p.tags.join(" "), p.category,
+      ]
+        .filter(Boolean)
         .join(" ")
         .toLowerCase(),
       fallback,

@@ -1,23 +1,68 @@
 slug: fix-without-repro
 category: bug
-agents: [claude-code, cursor, codex, copilot]
-tags: [reproduction, crash, unverified fix, root cause, review]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - reproduction
+  - crash
+  - unverified fix
+  - root cause
+  - review
 title:
   en: A fix for a crash it never reproduced
   zh: 修了一个从没复现过的崩溃
+  pt: Um fix para um crash que nunca reproduziu
+  ko: 재현도 안 한 크래시를 고침
+  vi: Fix cho crash chưa từng tái hiện
+  de: Ein Fix für einen Crash, den es nie reproduziert hat
 summary:
-  en: The agent adds a guard or branch "to prevent" a failure it never managed to trigger, so nobody knows whether the fix addresses the real cause, and reviewers skim past the admission in the description.
+  en: >-
+    The agent adds a guard or branch "to prevent" a failure it never managed to trigger, so nobody knows whether the fix
+    addresses the real cause, and reviewers skim past the admission in the description.
   zh: 智能体为一个自己从没触发过的故障加了守卫或分支，说是“防止”它发生；没人知道这个修复是否对准了真正原因，审查者也没注意到描述里的这句坦白。
+  pt: O agente "corrige" um bug sem reproduzir a falha, então o patch é chute e o sintoma pode voltar.
+  ko: 실패를 재현하지 않고 버그를 "고쳐" 패치가 추측이 되고 증상이 다시 올 수 있습니다.
+  vi: Agent "sửa" bug mà không tái hiện lỗi, nên patch là đoán và triệu chứng có thể quay lại.
+  de: >-
+    Der Agent „fixt“ einen Bug ohne die Failure zu reproduzieren — der Patch ist geraten und das Symptom kann
+    zurückkommen.
 symptom:
-  en: The PR description says something like "could not reproduce, but this should prevent it". There is no failing test or captured input before the change, and no proof after. The new branch has never executed.
+  en: >-
+    The PR description says something like "could not reproduce, but this should prevent it". There is no failing test
+    or captured input before the change, and no proof after. The new branch has never executed.
   zh: PR 描述里写着类似“无法复现，但这样应该能防止”的话。改动前没有失败的测试或捕获到的输入，改动后也没有证明。新加的分支从未执行过。
+  pt: PR diz "fixed crash" sem log, sem teste que falhava antes, sem passos de repro.
+  ko: PR이 "fixed crash"라고 하지만 로그·이전에 실패하던 테스트·재현 단계가 없습니다.
+  vi: PR nói "fixed crash" không log, không test từng fail, không bước tái hiện.
+  de: PR sagt „fixed crash“ ohne Log, ohne vorher failenden Test, ohne Repro-Schritte.
 why:
-  en: '@roulerdelaroute describes a Claude PR that added a code branch to stop a bad packet from causing a crash, while it "hadn''t managed to repro that bad packet". More than eight review agents missed that line in the description and nitpicked code that had never run. Writing a plausible guard is easy; proving the cause takes a reproduction, and without one the fix is a guess that reads like a solution.'
-  zh: '@roulerdelaroute 讲了一个 Claude 提的 PR：它加了一个新分支来防止坏数据包导致崩溃，但“一直没能复现那个坏数据包”。8 个以上的审查智能体都没注意到描述里的这句话，反而在从未运行过的代码上挑小毛病。写一个看似合理的守卫很容易，证明原因却需要复现；没有复现，修复就是一个读起来像答案的猜测。'
+  en: >-
+    @roulerdelaroute describes a Claude PR that added a code branch to stop a bad packet from causing a crash, while it
+    "hadn't managed to repro that bad packet". More than eight review agents missed that line in the description and
+    nitpicked code that had never run. Writing a plausible guard is easy; proving the cause takes a reproduction, and
+    without one the fix is a guess that reads like a solution.
+  zh: >-
+    @roulerdelaroute 讲了一个 Claude 提的 PR：它加了一个新分支来防止坏数据包导致崩溃，但“一直没能复现那个坏数据包”。8
+    个以上的审查智能体都没注意到描述里的这句话，反而在从未运行过的代码上挑小毛病。写一个看似合理的守卫很容易，证明原因却需要复现；没有复现，修复就是一个读起来像答案的猜测。
+  pt: >-
+    Reproduzir é mais lento que editar. Sem falha vermelha, não há prova de que o fix fez algo. Use verify skill +
+    exigir evidência.
+  ko: 재현은 편집보다 느립니다. 빨간 실패 없이 픽스가 뭘 했는지 증거가 없습니다. verify 스킬과 증거를 요구하세요.
+  vi: Tái hiện chậm hơn edit. Không có fail đỏ thì không chứng minh fix làm gì. Dùng verify skill + đòi bằng chứng.
+  de: >-
+    Reproduzieren ist langsamer als Editieren. Ohne roten Fail gibt es keinen Beweis, dass der Fix etwas tat.
+    Verify-Skill + Evidenz verlangen.
 example:
   caption:
     en: Illustrative, based on @roulerdelaroute's description.
     zh: 示意，基于 @roulerdelaroute 的描述。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: diff
   code: |
     PR: "Prevent crash on malformed packet. Note: could not reproduce the bad packet."
@@ -37,7 +82,7 @@ rule: |
 extras:
   - ref: verify-skill
 sources:
-  - title: "@roulerdelaroute on X: a Claude PR guarding against a bad packet it never reproduced; 8+ review agents missed it"
+  - title: '@roulerdelaroute on X: a Claude PR guarding against a bad packet it never reproduced; 8+ review agents missed it'
     url: https://x.com/roulerdelaroute/status/2111262764052394012
-  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+  - title: '@thorstenball on X: "Why are you still using pull requests?" (the thread)'
     url: https://x.com/thorstenball/status/2111130129355481240

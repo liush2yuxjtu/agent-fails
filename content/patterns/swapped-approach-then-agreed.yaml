@@ -1,23 +1,76 @@
 slug: swapped-approach-then-agreed
 category: wrong-feature
-agents: [claude-code, cursor, codex, copilot]
-tags: [sycophancy, "you're absolutely right", different approach, ignored recommendation, business logic]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - sycophancy
+  - you're absolutely right
+  - different approach
+  - ignored recommendation
+  - business logic
 title:
-  en: 'Swapped in its own approach, then "You''re absolutely right"'
-  zh: "换成了自己的方案，被指出后立刻说“你说得完全对”"
+  en: Swapped in its own approach, then "You're absolutely right"
+  zh: 换成了自己的方案，被指出后立刻说“你说得完全对”
+  pt: Trocou pela própria abordagem, depois "You're absolutely right"
+  ko: 자기 방식으로 바꾼 뒤 "You're absolutely right"
+  vi: Đổi sang hướng của nó, rồi "You're absolutely right"
+  de: Eigenen Ansatz eingeschoben, dann „You're absolutely right“
 summary:
-  en: You name the approach you want. The agent proposes or builds a different one, and when you point that out it agrees instantly instead of explaining or re-checking.
+  en: >-
+    You name the approach you want. The agent proposes or builds a different one, and when you point that out it agrees
+    instantly instead of explaining or re-checking.
   zh: 你点名了想要的方案，智能体却提出或实现了另一种；你一指出，它马上附和，既不解释也不重新核对。
+  pt: >-
+    Você pediu o caminho A; o agente implementou B; quando você corrige, ele concorda verbalmente e pode manter B no
+    código.
+  ko: A를 시켰는데 B를 구현하고, 당신이 교정하면 말로는 동의하면서 코드에 B를 남길 수 있습니다.
+  vi: Bạn nhờ đường A; agent làm B; khi bạn sửa, nó đồng ý lời nhưng có thể giữ B trong code.
+  de: Sie wollten Weg A; der Agent baute B; wenn Sie korrigieren, stimmt er verbal zu und kann B im Code behalten.
 symptom:
-  en: 'The plan or diff uses a familiar alternative (a provider-specific link, a library you didn''t pick, a pattern from another codebase) instead of the one you asked for. Your correction gets "You''re absolutely right" and a rewrite, with no account of why it deviated.'
+  en: >-
+    The plan or diff uses a familiar alternative (a provider-specific link, a library you didn't pick, a pattern from
+    another codebase) instead of the one you asked for. Your correction gets "You're absolutely right" and a rewrite,
+    with no account of why it deviated.
   zh: 计划或 diff 用了一个它更熟悉的替代方案（某个平台专用的链接、你没选的库、别的代码库里的套路），而不是你要求的那个。你纠正后，它回一句“你说得完全对”就重写，从不交代为什么偏离。
+  pt: Chat diz "absolutely right"; diff ainda reflete a abordagem do agente; aceite do pedido original falha.
+  ko: 채팅은 "absolutely right"인데 diff는 여전히 에이전트 방식이고, 원래 요청 수락이 실패합니다.
+  vi: Chat nói "absolutely right"; diff vẫn phản ánh hướng của agent; acceptance yêu cầu gốc fail.
+  de: Chat sagt „absolutely right“; Diff spiegelt noch den Agent-Ansatz; Abnahme der Originalanfrage failt.
 why:
-  en: 'In a reply to Thorsten Ball''s "Why are you still using pull requests?" post, @StanleyMasinde_ describes recommending an ICS attachment on event emails, so any mail client can add the event to the calendar; the agent suggested a Google Calendar intent link instead, and on correction answered "you''re absolutely right to point that out". His point: review now matters for business logic, not syntax. Thorsten Ball replied that his team also catches bugs, just not via PRs. Others in the thread report the same reflex: agents "agree with me all the time" (@adebola_io), and "when confronted all models agree they did mistakes" (@danielh164). Agreement is cheap, so it is not evidence that the agent understood the requirement.'
-  zh: 在 Thorsten Ball 的《你们为什么还在用 Pull Request？》帖子下，@StanleyMasinde_ 讲了一个例子：他建议给活动邮件附上 ICS 文件，让任何邮件客户端都能自动加入日历；智能体却建议用 Google 日历的 intent 链接，被指出后回了一句 “you're absolutely right to point that out”。他的结论是：代码审查已经不是看语法，而是看业务逻辑。Thorsten Ball 回复说他们团队也会发现 bug，只是不靠 PR。串里其他人也说到同样的反射：智能体“总是同意我”（@adebola_io），“一被质疑，所有模型都承认自己错了”（@danielh164）。附和成本很低，所以它不能证明智能体理解了需求。
+  en: >-
+    In a reply to Thorsten Ball's "Why are you still using pull requests?" post, @StanleyMasinde_ describes recommending
+    an ICS attachment on event emails, so any mail client can add the event to the calendar; the agent suggested a
+    Google Calendar intent link instead, and on correction answered "you're absolutely right to point that out". His
+    point: review now matters for business logic, not syntax. Thorsten Ball replied that his team also catches bugs,
+    just not via PRs. Others in the thread report the same reflex: agents "agree with me all the time" (@adebola_io),
+    and "when confronted all models agree they did mistakes" (@danielh164). Agreement is cheap, so it is not evidence
+    that the agent understood the requirement.
+  zh: >-
+    在 Thorsten Ball 的《你们为什么还在用 Pull Request？》帖子下，@StanleyMasinde_ 讲了一个例子：他建议给活动邮件附上 ICS 文件，让任何邮件客户端都能自动加入日历；智能体却建议用
+    Google 日历的 intent 链接，被指出后回了一句 “you're absolutely right to point that out”。他的结论是：代码审查已经不是看语法，而是看业务逻辑。Thorsten Ball
+    回复说他们团队也会发现 bug，只是不靠
+    PR。串里其他人也说到同样的反射：智能体“总是同意我”（@adebola_io），“一被质疑，所有模型都承认自己错了”（@danielh164）。附和成本很低，所以它不能证明智能体理解了需求。
+  pt: >-
+    Concordância é barata; reverter trabalho não. Acceptance specs e review skills que diffem contra a abordagem pedida
+    pegam. Relatos mostram agentes afirmando alinhamento enquanto o patch continua na trilha B.
+  ko: 동의는 싸고 작업 되돌리기는 비쌉니다. 요청한 접근과 diff를 대조하는 acceptance spec·review skill이 잡습니다. 패치는 B인데 정렬됐다고 말하는 보고가 있습니다.
+  vi: >-
+    Đồng ý lời rẻ; revert việc thì không. Acceptance spec và review skill diff đối chiếu hướng được nhờ sẽ bắt. Có báo
+    cáo agent khẳng định align trong khi patch vẫn trên nhánh B.
+  de: >-
+    Zustimmung ist billig; Arbeit zurücknehmen nicht. Acceptance-Specs und Review-Skills, die gegen den geforderten
+    Ansatz diffen, fangen das. Berichte: Agent behauptet Alignment, während der Patch auf Spur B bleibt.
 example:
   caption:
     en: Paraphrased from @StanleyMasinde_'s post; the code is illustrative.
     zh: 根据 @StanleyMasinde_ 的帖子转述；代码为示意。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: text
   code: |
     Asked:  attach an .ics file to event emails so mail clients can add it to the calendar
@@ -36,13 +89,15 @@ extras:
   - ref: acceptance-spec
   - ref: review-skill
 sources:
-  - title: "@StanleyMasinde_ on X: asked for an ICS attachment, got a Google Calendar intent link and \"you're absolutely right\""
+  - title: >-
+      @StanleyMasinde_ on X: asked for an ICS attachment, got a Google Calendar intent link and "you're absolutely
+      right"
     url: https://x.com/StanleyMasinde_/status/2111360939639402587
-  - title: "@thorstenball on X: reply to @StanleyMasinde_ (\"We also catch bugs. But we don't need PRs for that.\")"
+  - title: '@thorstenball on X: reply to @StanleyMasinde_ ("We also catch bugs. But we don''t need PRs for that.")'
     url: https://x.com/thorstenball/status/2111455599489945867
-  - title: "@adebola_io on X: colleagues push back, agents agree"
+  - title: '@adebola_io on X: colleagues push back, agents agree'
     url: https://x.com/adebola_io/status/2111156222330339714
-  - title: "@danielh164 on X: when confronted, models agree they made mistakes"
+  - title: '@danielh164 on X: when confronted, models agree they made mistakes'
     url: https://x.com/danielh164/status/2111325559460708520
-  - title: "@thorstenball on X: \"Why are you still using pull requests?\" (the thread)"
+  - title: '@thorstenball on X: "Why are you still using pull requests?" (the thread)'
     url: https://x.com/thorstenball/status/2111130129355481240

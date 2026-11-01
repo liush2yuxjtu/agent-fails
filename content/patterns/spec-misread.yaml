@@ -1,23 +1,70 @@
 slug: spec-misread
 category: wrong-feature
-agents: [claude-code, cursor, codex, copilot]
-tags: [spec, requirements, ambiguity, acceptance criteria]
+agents:
+  - claude-code
+  - cursor
+  - codex
+  - copilot
+tags:
+  - spec
+  - requirements
+  - ambiguity
+  - acceptance criteria
 title:
   en: Built what it understood, not what you meant
   zh: 按自己的理解做了，不是你要的那个
+  pt: Construiu o que entendeu, não o que você quis dizer
+  ko: 당신이 말한 게 아니라 이해한 것을 만듦
+  vi: Xây điều nó hiểu, không phải điều bạn muốn nói
+  de: Gebaut, was es verstand — nicht was Sie meinten
 summary:
-  en: The agent ships a coherent feature that answers a different reading of the request. Every check passes, because the checks test the agent's reading too.
+  en: >-
+    The agent ships a coherent feature that answers a different reading of the request. Every check passes, because the
+    checks test the agent's reading too.
   zh: 智能体交付了一个自洽的功能，但回答的是需求的另一种读法。所有检查都通过了，因为检查测的也是它自己的理解。
+  pt: >-
+    O agente implementa uma leitura plausível mas errada do pedido; o PR parece completo e ainda assim é o produto
+    errado.
+  ko: 요청을 그럴듯하지만 틀리게 읽어 구현합니다. PR은 완전해 보여도 잘못된 제품입니다.
+  vi: Agent hiện thực cách đọc hợp lý nhưng sai của yêu cầu; PR trông đủ mà vẫn là sản phẩm sai.
+  de: >-
+    Der Agent implementiert eine plausible, aber falsche Lesart der Anfrage; der PR wirkt vollständig und ist trotzdem
+    das falsche Produkt.
 symptom:
-  en: You open the result and it is reasonable, tested, and wrong. You can point at the sentence in the ticket that allowed both readings.
+  en: >-
+    You open the result and it is reasonable, tested, and wrong. You can point at the sentence in the ticket that
+    allowed both readings.
   zh: 打开结果一看：合理、有测试，但就是不对。你能在需求里找到那句允许两种理解的话。
+  pt: Aceite falha na intenção; o código faz "outra coisa razoável".
+  ko: 의도 수락이 실패하고, 코드는 "다른 합리적 일"을 합니다.
+  vi: Tiêu chí ý định fail; code làm "việc hợp lý khác".
+  de: Intent-Abnahme failt; der Code tut „etwas anderes Vernünftiges“.
 why:
-  en: Requests are underspecified, and the agent resolves ambiguity silently instead of asking. Tests are usually written by the same agent from the same reading, so they confirm the misread instead of catching it. developertoolkit.ai calls this class "spec misread" and puts its earliest control at the spec stage, before any code.
-  zh: 需求本身信息不足，智能体会默默消化歧义而不是提问。测试通常也是同一个智能体按同一种理解写的，所以只会证实误读，而不是发现误读。developertoolkit.ai 把这类问题称为 "spec misread"，最早的控制点在写代码之前的需求阶段。
+  en: >-
+    Requests are underspecified, and the agent resolves ambiguity silently instead of asking. Tests are usually written
+    by the same agent from the same reading, so they confirm the misread instead of catching it. developertoolkit.ai
+    calls this class "spec misread" and puts its earliest control at the spec stage, before any code.
+  zh: >-
+    需求本身信息不足，智能体会默默消化歧义而不是提问。测试通常也是同一个智能体按同一种理解写的，所以只会证实误读，而不是发现误读。developertoolkit.ai 把这类问题称为 "spec
+    misread"，最早的控制点在写代码之前的需求阶段。
+  pt: >-
+    Specs ambíguas convidam a leitura mais fácil. Anote specs/mockups antes do código; acceptance checks que excluam a
+    leitura errada. Acceptance-spec + verify skill.
+  ko: 모호한 스펙은 쉬운 해석을 부릅니다. 코드 전에 스펙/목업에 주석을 달고, 잘못된 해석을 배제하는 수락 검사를 쓰세요. Acceptance-spec + verify skill.
+  vi: >-
+    Spec mơ hồ mời cách đọc dễ hơn. Chú thích spec/mock trước code; acceptance check loại trừ cách đọc sai.
+    Acceptance-spec + verify skill.
+  de: >-
+    Mehrdeutige Specs laden zur leichteren Lesart ein. Specs/Mocks vor dem Code annotieren; Abnahmechecks die die
+    falsche Lesart ausschließen. Acceptance-Spec + Verify-Skill.
 example:
   caption:
-    en: "Illustrative, based on the developertoolkit.ai example: the ticket says round totals to the cent."
-    zh: "示意，基于 developertoolkit.ai 的例子：需求写的是“总价四舍五入到分”。"
+    en: 'Illustrative, based on the developertoolkit.ai example: the ticket says round totals to the cent.'
+    zh: 示意，基于 developertoolkit.ai 的例子：需求写的是“总价四舍五入到分”。
+    pt: Ilustrativo.
+    ko: 예시.
+    vi: Minh họa.
+    de: Illustrativ.
   lang: ts
   code: |
     // Intended: round the order total once
@@ -36,9 +83,9 @@ extras:
   - ref: acceptance-spec
   - ref: verify-skill
 sources:
-  - title: "developertoolkit.ai: A failure taxonomy for agent-written changes (spec misread)"
+  - title: 'developertoolkit.ai: A failure taxonomy for agent-written changes (spec misread)'
     url: https://developertoolkit.ai/en/workflows/operate/failure-taxonomy/
-  - title: "@liushiyumath on X: part 1, did it build the right thing?"
+  - title: '@liushiyumath on X: part 1, did it build the right thing?'
     url: https://x.com/liushiyumath/status/2111233400346710364
-  - title: "@badbirb on X: approved a mockup, then the agent implemented it badly"
+  - title: '@badbirb on X: approved a mockup, then the agent implemented it badly'
     url: https://x.com/badbirb/status/2111155021442334900
