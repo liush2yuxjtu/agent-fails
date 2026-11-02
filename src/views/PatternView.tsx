@@ -93,7 +93,13 @@ export function PatternView({ slug, lang }: { slug: string; lang: Lang }) {
           <div>
             {p.example.caption && <p className="af-muted">{lx(p.example.caption, lang)}</p>}
             <div className={p.example.caption ? "af-fix" : undefined}>
-              <CopyBlock code={p.example.code} label={p.example.lang} lang={lang} />
+              <CopyBlock
+                code={p.example.code}
+                label={p.example.lang}
+                lang={lang}
+                patternSlug={p.slug}
+                fixType="example"
+              />
             </div>
           </div>
         </section>
