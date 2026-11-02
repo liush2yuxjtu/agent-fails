@@ -13,7 +13,8 @@ function matches(card: PatternCard, q: string): boolean {
 }
 
 /**
- * Render category-grouped pattern search with an optional hero above the controls.
+ * Render category-grouped pattern search with an optional hero above the controls
+ * and an optional featured slot between the search row and the catalog.
  * Cards need lowercase search text; every query term must match a substring.
  * Display IDs follow the full cards array and stay unchanged when filtering.
  *
@@ -23,7 +24,17 @@ function matches(card: PatternCard, q: string): boolean {
  * from any target. Submitting scrolls to results, respecting reduced motion.
  * While a query is active, each row also shows its summary.
  */
-export function PatternExplorer({ cards, lang, hero }: { cards: PatternCard[]; lang: Lang; hero?: ReactNode }) {
+export function PatternExplorer({
+  cards,
+  lang,
+  hero,
+  featured,
+}: {
+  cards: PatternCard[];
+  lang: Lang;
+  hero?: ReactNode;
+  featured?: ReactNode;
+}) {
   const d = t(lang);
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<Category | "">("");
@@ -111,6 +122,8 @@ export function PatternExplorer({ cards, lang, hero }: { cards: PatternCard[]; l
         />
         <button type="submit">{d.searchButton}</button>
       </form>
+
+      {featured ? <div className="af-week-slot">{featured}</div> : null}
 
       <div className="af-deck-rest" id="patterns">
         <div className="af-filters">

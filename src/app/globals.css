@@ -309,6 +309,7 @@ pre code {
   grid-template-areas:
     "copy plane"
     "search plane"
+    "pin pin"
     "rest rest";
   column-gap: 32px;
   row-gap: 12px;
@@ -559,6 +560,76 @@ pre code {
 
 .af-recall button:hover {
   background: var(--amber-hot);
+}
+
+.af-week-slot {
+  grid-area: pin;
+  min-width: 0;
+}
+
+.af-week {
+  margin: 6px 0 4px;
+}
+
+.af-week h2 {
+  margin: 0 0 8px;
+  color: var(--amber-hot);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.af-week-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 14px 16px 14px 26px;
+  border: 1px solid var(--etch);
+  background: var(--slot);
+  color: inherit;
+  text-decoration: none;
+}
+
+.af-week-card:hover,
+.af-week-card:focus-visible {
+  border-color: var(--amber-deep);
+  background: var(--bay);
+}
+
+.af-week-card > .af-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.af-week-id {
+  padding-top: 3px;
+  color: var(--amber-hot);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+}
+
+.af-week-title {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.af-week-hook {
+  display: block;
+  margin-top: 4px;
+  max-width: 68ch;
+  color: var(--ink-dim);
+  font-size: 0.92rem;
+  line-height: 1.4;
 }
 
 .af-deck-rest {
@@ -1522,6 +1593,7 @@ pre code {
     grid-template-areas:
       "copy"
       "search"
+      "pin"
       "plane"
       "rest";
     width: min(var(--page), calc(100% - 28px));
