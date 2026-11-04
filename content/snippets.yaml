@@ -412,3 +412,211 @@ acceptance-spec:
     - <question>
 
     ## Approved by: <name> on <date>
+stdin-command-guard:
+  kind: hook
+  title:
+    en: 'PreToolUse hook: read the shell command from stdin and exit 2'
+    zh: PreToolUse 钩子：从 stdin 读 shell 命令，并用退出码 2 拦截
+    pt: 'Hook PreToolUse: ler o comando de shell no stdin e sair 2'
+    ko: 'PreToolUse 훅: stdin에서 셸 명령을 읽고 종료 코드 2'
+    vi: 'Hook PreToolUse: đọc lệnh shell từ stdin và thoát 2'
+    de: 'PreToolUse-Hook: Shell-Befehl von stdin lesen und mit Exit 2 blocken'
+  file: .claude/hooks/stdin_command_guard.py
+  lang: python
+  note:
+    en: >-
+      Claude Code sends the tool call as JSON on stdin. A check of $1 matches nothing and exits 0. This script reads
+      tool_input.command, treats Bash and Shell as the shell tools, and exits 2 on recursive rm, on a shell call with
+      no command, or on stdin that is not JSON. Prove it before you trust it. printf '%s'
+      '{"tool_name":"Bash","tool_input":{"command":"rm -rf /tmp/fake"}}' | python3 .claude/hooks/stdin_command_guard.py
+      must print BLOCKED on stderr and exit 2. Exit 1 still fails open unless the settings set onFailure or failClosed.
+    zh: >-
+      Claude Code 把工具调用以 JSON 写到 stdin。检查 $1 什么都匹配不到，然后退出码 0。这个脚本读 tool_input.command，把 Bash 和 Shell
+      都当成 shell 工具，在递归 rm、没有命令的 shell 调用，或 stdin 不是 JSON 时退出码 2。先证明它再信任它。printf '%s'
+      '{"tool_name":"Bash","tool_input":{"command":"rm -rf /tmp/fake"}}' | python3 .claude/hooks/stdin_command_guard.py
+      必须在 stderr 打出 BLOCKED，并且退出码是 2。退出码 1 仍然放行，除非配置里写了 onFailure 或 failClosed。
+    pt: >-
+      O Claude Code manda a tool call como JSON no stdin. Checar $1 não casa nada e sai 0. Este script lê
+      tool_input.command, trata Bash e Shell como tools de shell, e sai 2 em rm recursivo, em call de shell sem
+      comando, ou em stdin que não é JSON. Prove antes de confiar. printf '%s'
+      '{"tool_name":"Bash","tool_input":{"command":"rm -rf /tmp/fake"}}' | python3 .claude/hooks/stdin_command_guard.py
+      tem de imprimir BLOCKED no stderr e sair 2. Exit 1 ainda abre a mão, a menos que as settings tenham onFailure ou
+      failClosed.
+    ko: >-
+      Claude Code는 도구 호출을 stdin의 JSON으로 보냅니다. $1 검사는 아무것도 맞지 않고 0으로 끝납니다. 이 스크립트는 tool_input.command를 읽고 Bash와
+      Shell을 셸 도구로 보며, 재귀 rm, 명령 없는 셸 호출, JSON이 아닌 stdin에서 2로 끝납니다. 믿기 전에 증명하세요. printf '%s'
+      '{"tool_name":"Bash","tool_input":{"command":"rm -rf /tmp/fake"}}' | python3 .claude/hooks/stdin_command_guard.py
+      는 stderr에 BLOCKED를 찍고 2로 끝나야 합니다. 종료 1은 설정에 onFailure나 failClosed가 없으면 여전히 통과합니다.
+    vi: >-
+      Claude Code gửi tool call dạng JSON trên stdin. Kiểm $1 không khớp gì và thoát 0. Script này đọc
+      tool_input.command, coi Bash và Shell là tool shell, và thoát 2 khi rm đệ quy, khi call shell không có lệnh, hoặc
+      khi stdin không phải JSON. Chứng minh trước khi tin. printf '%s'
+      '{"tool_name":"Bash","tool_input":{"command":"rm -rf /tmp/fake"}}' | python3 .claude/hooks/stdin_command_guard.py
+      phải in BLOCKED ra stderr và thoát 2. Exit 1 vẫn cho qua nếu cấu hình không đặt onFailure hoặc failClosed.
+    de: >-
+      Claude Code schickt den Tool-Call als JSON auf stdin. Ein Check von $1 trifft nichts und endet mit 0. Dieses
+      Script liest tool_input.command, behandelt Bash und Shell als Shell-Tools und endet mit 2 bei rekursivem rm, bei
+      einem Shell-Call ohne Befehl oder bei stdin, das kein JSON ist. Erst beweisen, dann vertrauen. printf '%s'
+      '{"tool_name":"Bash","tool_input":{"command":"rm -rf /tmp/fake"}}' | python3 .claude/hooks/stdin_command_guard.py
+      muss BLOCKED auf stderr schreiben und mit 2 enden. Exit 1 lässt weiter durch, solange die Settings nicht
+      onFailure oder failClosed setzen.
+  code: |
+    #!/usr/bin/env python3
+    """PreToolUse: block recursive rm. The tool call is JSON on stdin. $1 is empty."""
+    import json, re, sys
+
+    RECURSIVE_RM = re.compile(
+        r"(?:^|[\s;&|`(])rm\s+(-[a-zA-Z]*r[a-zA-Z]*|--recursive)\b"
+    )
+
+    raw = sys.stdin.read()
+    try:
+        call = json.loads(raw) if raw.strip() else {}
+    except json.JSONDecodeError:
+        print("BLOCKED: hook could not parse the tool call on stdin. Refusing to fail open.", file=sys.stderr)
+        sys.exit(2)
+
+    if not isinstance(call, dict):
+        print("BLOCKED: tool call JSON was not an object.", file=sys.stderr)
+        sys.exit(2)
+
+    tool = call.get("tool_name") or ""
+    tool_input = call.get("tool_input")
+    if isinstance(tool_input, str):
+        try:
+            tool_input = json.loads(tool_input)
+        except json.JSONDecodeError:
+            tool_input = {}
+    if not isinstance(tool_input, dict):
+        tool_input = {}
+    command = tool_input.get("command") or call.get("command") or ""
+    if not isinstance(command, str):
+        command = ""
+
+    if tool and tool not in ("Bash", "Shell"):
+        sys.exit(0)
+
+    if not command.strip():
+        print(
+            "BLOCKED: no shell command in stdin JSON (tool_input.command). $1 is not the command.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+
+    if RECURSIVE_RM.search(command):
+        print(f"BLOCKED: recursive rm is not allowed: {command}", file=sys.stderr)
+        sys.exit(2)
+
+    sys.exit(0)
+stdin-command-guard-settings:
+  kind: settings
+  title:
+    en: 'Claude Code: register the stdin guard and block on hook failure'
+    zh: Claude Code：注册 stdin 守卫，钩子失败时拦截
+    pt: 'Claude Code: registrar o guard de stdin e bloquear se o hook falhar'
+    ko: 'Claude Code: stdin 가드를 등록하고 훅 실패 시 차단'
+    vi: 'Claude Code: đăng ký guard stdin và chặn khi hook lỗi'
+    de: 'Claude Code: stdin-Guard registrieren und bei Hook-Fehler blocken'
+  file: .claude/settings.json
+  lang: json
+  note:
+    en: >-
+      Put `"onFailure": "block"` on the hook object, not on the matcher group. The hooks docs date that field to Claude
+      Code v2.1.295 for command and HTTP hooks. Agent SDK callbacks got it in 2.1.317. Matcher `Bash` does not see
+      `Write`, and it does not see Cursor's `Shell`. A path guard needs matcher `Edit|Write`, case-sensitive. Without
+      onFailure, exit 1 and a crash let the call through. Only exit 2 blocks on its own.
+    zh: >-
+      把 `"onFailure": "block"` 写在钩子对象上，不要写在 matcher 那一层。钩子文档把这个字段记在 Claude Code v2.1.295 的 command 和 HTTP
+      钩子上。Agent SDK 回调在 2.1.317 才有。matcher `Bash` 看不到 `Write`，也看不到 Cursor 的 `Shell`。路径守卫的 matcher 必须是
+      `Edit|Write`，区分大小写。没有 onFailure 时，退出码 1 和崩溃都会放行。只有退出码 2 自己就能拦截。
+    pt: >-
+      Ponha `"onFailure": "block"` no objeto do hook, não no grupo do matcher. A doc de hooks data esse campo no Claude
+      Code v2.1.295 para hooks command e HTTP. Callbacks do Agent SDK receberam isso no 2.1.317. Matcher `Bash` não vê
+      `Write`, nem o `Shell` do Cursor. Um guard de path precisa do matcher `Edit|Write`, com maiúsculas. Sem
+      onFailure, exit 1 e um crash deixam a call passar. Só o exit 2 bloqueia sozinho.
+    ko: >-
+      `"onFailure": "block"`은 matcher 그룹이 아니라 훅 객체에 두세요. 훅 문서는 이 필드를 command와 HTTP 훅에 대해 Claude Code
+      v2.1.295로 적습니다. Agent SDK 콜백은 2.1.317에 받았습니다. matcher `Bash`는 `Write`를 보지 못하고 Cursor의 `Shell`도 보지
+      못합니다. 경로 가드의 matcher는 대소문자를 가리는 `Edit|Write`여야 합니다. onFailure가 없으면 종료 1과 크래시가 호출을 통과시킵니다. 종료 2만 혼자서
+      차단합니다.
+    vi: >-
+      Đặt `"onFailure": "block"` trên object hook, không trên nhóm matcher. Tài liệu hook ghi field này ở Claude Code
+      v2.1.295 cho hook command và HTTP. Callback Agent SDK có nó ở 2.1.317. Matcher `Bash` không thấy `Write`, và
+      không thấy `Shell` của Cursor. Guard path cần matcher `Edit|Write`, phân biệt hoa thường. Không có onFailure,
+      exit 1 và crash cho call qua. Chỉ exit 2 tự chặn.
+    de: >-
+      `"onFailure": "block"` auf das Hook-Objekt setzen, nicht auf die Matcher-Gruppe. Die Hook-Doku datiert das Feld
+      für Command- und HTTP-Hooks auf Claude Code v2.1.295. Agent-SDK-Callbacks bekamen es in 2.1.317. Matcher `Bash`
+      sieht weder `Write` noch Cursors `Shell`. Ein Pfad-Guard braucht den Matcher `Edit|Write`, groß- und
+      kleinschreibungsempfindlich. Ohne onFailure lassen Exit 1 und ein Crash den Call durch. Nur Exit 2 blockt von
+      selbst.
+  code: |
+    {
+      "hooks": {
+        "PreToolUse": [
+          {
+            "matcher": "Bash",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stdin_command_guard.py",
+                "onFailure": "block"
+              }
+            ]
+          }
+        ]
+      }
+    }
+cursor-fail-closed-hooks:
+  kind: settings
+  title:
+    en: 'Cursor: failClosed on the stdin shell guard'
+    zh: Cursor：给 stdin shell 守卫打开 failClosed
+    pt: 'Cursor: failClosed no guard de shell por stdin'
+    ko: 'Cursor: stdin 셸 가드에 failClosed'
+    vi: 'Cursor: failClosed cho guard shell đọc stdin'
+    de: 'Cursor: failClosed am stdin-Shell-Guard'
+  file: .cursor/hooks.json
+  lang: json
+  note:
+    en: >-
+      failClosed defaults to false. A crash, a timeout, or any exit other than 2 then lets the call through. preToolUse
+      names the shell tool Shell, so the matcher is Shell|Bash. Exit 2 blocks. Cursor 1.0.40 ignored a nested
+      permissionDecision deny under hookSpecificOutput on PreToolUse. Re-test a deny after every update. The same
+      script as the Claude hook reads tool_input.command from stdin.
+    zh: >-
+      failClosed 默认是 false。这时崩溃、超时，或除 2 以外的退出码都会放行。preToolUse 把 shell 工具叫做 Shell，所以 matcher 是
+      Shell|Bash。退出码 2 才拦截。Cursor 1.0.40 忽略了 PreToolUse 上 hookSpecificOutput 里嵌套的 permissionDecision deny。每次更新后重新测
+      deny。脚本和 Claude 那个钩子是同一个，从 stdin 读 tool_input.command。
+    pt: >-
+      failClosed vem false. Aí um crash, um timeout ou qualquer exit que não seja 2 deixa a call passar. preToolUse
+      chama a tool de shell de Shell, então o matcher é Shell|Bash. Exit 2 bloqueia. O Cursor 1.0.40 ignorou um deny
+      aninhado de permissionDecision sob hookSpecificOutput no PreToolUse. Teste o deny de novo depois de cada update.
+      O script é o mesmo hook do Claude e lê tool_input.command no stdin.
+    ko: >-
+      failClosed 기본값은 false입니다. 그러면 크래시, 타임아웃, 2가 아닌 종료가 호출을 통과시킵니다. preToolUse는 셸 도구를 Shell로 부르므로 matcher는
+      Shell|Bash입니다. 종료 코드 2가 차단합니다. Cursor 1.0.40은 PreToolUse에서 hookSpecificOutput 아래 중첩된 permissionDecision
+      deny를 무시했습니다. 업데이트마다 deny를 다시 테스트하세요. 스크립트는 Claude 훅과 같고 stdin에서 tool_input.command를 읽습니다.
+    vi: >-
+      failClosed mặc định là false. Khi đó crash, timeout, hoặc mọi exit khác 2 cho call qua. preToolUse gọi tool shell
+      là Shell, nên matcher là Shell|Bash. Exit 2 mới chặn. Cursor 1.0.40 bỏ qua deny permissionDecision lồng dưới
+      hookSpecificOutput trên PreToolUse. Test lại deny sau mỗi bản cập nhật. Script là cùng hook Claude và đọc
+      tool_input.command từ stdin.
+    de: >-
+      failClosed ist standardmäßig false. Dann lassen ein Crash, ein Timeout oder jedes Exit außer 2 den Call durch.
+      preToolUse nennt das Shell-Tool Shell, also ist der Matcher Shell|Bash. Exit 2 blockt. Cursor 1.0.40 ignorierte
+      ein verschachteltes permissionDecision deny unter hookSpecificOutput bei PreToolUse. Ein Deny nach jedem Update
+      neu testen. Dasselbe Script wie der Claude-Hook liest tool_input.command von stdin.
+  code: |
+    {
+      "version": 1,
+      "hooks": {
+        "preToolUse": [
+          {
+            "command": "python3 .claude/hooks/stdin_command_guard.py",
+            "matcher": "Shell|Bash",
+            "failClosed": true
+          }
+        ]
+      }
+    }

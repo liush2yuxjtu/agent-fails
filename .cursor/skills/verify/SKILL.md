@@ -49,7 +49,7 @@ Clicking Copy on an example block (and on a fix block) still copies the snippet.
 
 ## Homepage week pin
 
-The homepage pin is `phantom-success`, the lead item of `content/newsletter/2026-w44.md`. Each locale renders a real link (not an in-page scroll) to that pattern, with the locale label and the pattern title.
+The homepage pin is `guard-never-fired`, the lead item of `content/newsletter/2026-w45.md`. Each locale renders a real link (not an in-page scroll) to that pattern, with the locale label and the pattern title.
 
 ```bash
 set -euo pipefail
@@ -67,10 +67,10 @@ pt=$(find .next -type f -path '*/pt.html' -o -type f -path '*/pt/index.html' | h
 ko=$(find .next -type f -path '*/ko.html' -o -type f -path '*/ko/index.html' | head -n 1)
 vi=$(find .next -type f -path '*/vi.html' -o -type f -path '*/vi/index.html' | head -n 1)
 de=$(find .next -type f -path '*/de.html' -o -type f -path '*/de/index.html' | head -n 1)
-check_pin "$en" "/patterns/phantom-success" "This week&#x27;s 翻车" "All tests pass"
-check_pin "$zh" "/zh/patterns/phantom-success" "本周翻车" "测试全部通过"
-check_pin "$pt" "/pt/patterns/phantom-success" "Falha desta semana" "Todos os testes passam"
-check_pin "$ko" "/ko/patterns/phantom-success" "이번 주 실패" "테스트 전부 통과"
-check_pin "$vi" "/vi/patterns/phantom-success" "Lỗi tuần này" "All tests pass"
-check_pin "$de" "/de/patterns/phantom-success" "Fail dieser Woche" "Alle Tests grün"
+check_pin "$en" "/patterns/guard-never-fired" "This week&#x27;s 翻车" "The guard was installed"
+check_pin "$zh" "/zh/patterns/guard-never-fired" "本周翻车" "一次都没触发"
+check_pin "$pt" "/pt/patterns/guard-never-fired" "Falha desta semana" "Nunca disparou"
+check_pin "$ko" "/ko/patterns/guard-never-fired" "이번 주 실패" "한 번도 발동하지 않았다"
+check_pin "$vi" "/vi/patterns/guard-never-fired" "Lỗi tuần này" "Nó chưa từng chặn"
+check_pin "$de" "/de/patterns/guard-never-fired" "Fail dieser Woche" "Der Guard war installiert"
 ```

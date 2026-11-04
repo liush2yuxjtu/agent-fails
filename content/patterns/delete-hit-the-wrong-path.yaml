@@ -12,6 +12,9 @@ tags:
   - quoting
   - data loss
   - guard
+  - ssd
+  - partition
+  - node_modules
 title:
   en: The delete was approved. The path was wrong.
   zh: 删除是批准过的，路径却错了
@@ -38,23 +41,31 @@ symptom:
   en: >-
     Right after a "clean up the temp dir" or "fresh venv" step, the next command fails with "No such file or directory"
     or "not a git repository". Source files, `.git` and backups are gone, and the command in the log targets `""`, a
-    drive root, or a parent directory.
+    drive root, or a parent directory. A node_modules cleanup can wipe an entire SSD partition the same way. Codex
+    #57530 lost the E: partition's personal photographs, university assignments, academic documents, and years of other
+    software projects.
   zh: >-
     在“清理临时目录”或“重建 venv”之后，下一条命令立刻报 “No such file or directory” 或 “not a git repository”。源码、`.git` 和备份都没了，日志里的命令目标是
-    `""`、某个盘的根目录或上级目录。
+    `""`、某个盘的根目录或上级目录。一次 node_modules 清理也会这样扫掉整块 SSD 分区。Codex #57530 里，E: 分区上的个人照片、大学作业、学术文档和数年的其他软件项目都没了。
   pt: >-
     Logo após "clean up the temp dir" ou "fresh venv", o próximo comando falha com "No such file or directory" ou "not a
-    git repository". Fontes, `.git` e backups sumiram; o comando no log mira `""`, raiz de drive ou diretório pai.
+    git repository". Fontes, `.git` e backups sumiram; o comando no log mira `""`, raiz de drive ou diretório pai. Uma
+    limpeza de node_modules pode apagar uma partição SSD inteira do mesmo jeito. No Codex #57530, a partição E: perdeu
+    fotos pessoais, trabalhos da universidade, documentos acadêmicos e anos de outros projetos de software.
   ko: >-
     "temp 정리"나 "새 venv" 직후 다음 명령이 "No such file or directory" 또는 "not a git repository"로 실패합니다. 소스·`.git`·백업이 사라지고, 로그의
-    명령 대상이 `""`·드라이브 루트·상위 디렉터리입니다.
+    명령 대상이 `""`·드라이브 루트·상위 디렉터리입니다. node_modules 정리도 같은 방식으로 SSD 파티션 전체를 지울 수 있습니다. Codex #57530에서는 E:
+    파티션의 개인 사진, 대학 과제, 학술 문서, 수년치 다른 소프트웨어 프로젝트가 사라졌습니다.
   vi: >-
     Ngay sau "clean up the temp dir" hoặc "fresh venv", lệnh tiếp fail với "No such file or directory" hoặc "not a git
-    repository". Source, `.git` và backup biến mất; lệnh trong log nhắm `""`, root ổ đĩa hoặc thư mục cha.
+    repository". Source, `.git` và backup biến mất; lệnh trong log nhắm `""`, root ổ đĩa hoặc thư mục cha. Dọn
+    node_modules cũng có thể xóa cả phân vùng SSD theo cách đó. Trong Codex #57530, phân vùng E: mất ảnh cá nhân, bài
+    tập đại học, tài liệu học thuật và nhiều năm dự án phần mềm khác.
   de: >-
     Direkt nach „clean up the temp dir“ oder „fresh venv“ scheitert der nächste Befehl mit „No such file or directory“
     oder „not a git repository“. Quellen, `.git` und Backups sind weg; der Log-Befehl zielt auf `""`, Laufwerksroot oder
-    Parent.
+    Parent. Ein node_modules-Cleanup kann genauso eine ganze SSD-Partition löschen. In Codex #57530 waren auf E:
+    private Fotos, Uni-Aufgaben, akademische Dokumente und jahrelange andere Softwareprojekte weg.
 why:
   en: >-
     Agents build paths in strings across shells (PowerShell → wsl → bash), and nobody checks the final resolved target.
@@ -62,34 +73,50 @@ why:
     directory and cleared the workspace. A Cursor forum report (via NOPE, 3 Oct 2026): the user agreed to clear about
     18.5 GB of build temporaries, a `rmdir /s /q` path was split, and source, Git and backups went. Sebastian Spicker (5
     Oct 2026): a guard was relaxed to allow any path "outside the repository root", a test passed it the parent
-    directory, and `rm` deleted every sibling checkout.
+    directory, and `rm` deleted every sibling checkout. Codex #57530 (27 Oct 2026): while working on a React
+    Native/Expo app, a malformed cleanup recursively deleted files across an entire E: SSD partition. The user had
+    asked Codex to work on the app, not to delete anything outside the project. The loss was personal photographs,
+    university assignments, academic documents, and software projects accumulated over several years.
   zh: >-
     智能体在多层 shell 之间（PowerShell → wsl → bash）用字符串拼路径，却没人检查最终解析出来的目标。Codex #55161（2026-10-18）：本应作用于 /tmp 的 `python -m venv
     --clear` 在项目目录下以空目标 `""` 运行，清空了工作区。Cursor 论坛报告（经 NOPE 整理，2026-10-03）：用户同意清理约 18.5 GB 编译临时文件，`rmdir /s /q`
-    的路径被拆开，源码、Git 和备份全没了。Sebastian Spicker（2026-10-05）：一条防护被放宽为允许“仓库根目录之外”的任何路径，测试传入了上级目录，`rm` 删光了所有同级仓库。
+    的路径被拆开，源码、Git 和备份全没了。Sebastian Spicker（2026-10-05）：一条防护被放宽为允许“仓库根目录之外”的任何路径，测试传入了上级目录，`rm` 删光了所有同级仓库。Codex
+    #57530（2026-10-27）：在做一个 React Native/Expo 应用时，一次写坏的清理递归删除了整块 E: SSD 分区上的文件。用户让 Codex 做的是这个应用，不是删除项目以外的任何内容。丢掉的是个人照片、大学作业、学术文档，以及积累了数年的软件项目。
   pt: >-
     Agentes montam paths em strings entre shells (PowerShell → wsl → bash) sem checar o alvo resolvido final. Codex
     #55161 (18 Oct 2026): `python -m venv --clear` para /tmp rodou com alvo vazio `""` do diretório do projeto e limpou
     o workspace. Relato no fórum Cursor (via NOPE, 3 Oct 2026): usuário aceitou limpar ~18.5 GB de temporários de build;
     `rmdir /s /q` teve o path partido; fonte, Git e backups foram. Sebastian Spicker (5 Oct 2026): guard relaxado para
-    qualquer path "fora da raiz do repo"; teste passou o diretório pai; `rm` apagou todos os checkouts irmãos.
+    qualquer path "fora da raiz do repo"; teste passou o diretório pai; `rm` apagou todos os checkouts irmãos. Codex
+    #57530 (27 out 2026): durante o trabalho num app React Native/Expo, uma limpeza malformada apagou arquivos
+    recursivamente em toda a partição SSD E:. O usuário tinha pedido ao Codex para trabalhar no app, não para apagar
+    nada fora do projeto. O que se perdeu foram fotos pessoais, trabalhos da universidade, documentos acadêmicos e
+    projetos de software acumulados ao longo de vários anos.
   ko: >-
     에이전트는 PowerShell → wsl → bash 사이에서 문자열로 경로를 만들고 최종 해석 대상을 확인하지 않습니다. Codex #55161(2026-10-18): /tmp용이던 `python -m
     venv --clear`가 프로젝트 디렉터리에서 빈 대상 `""`로 돌아가 워크스페이스를 비웠습니다. Cursor 포럼(경유 NOPE, 2026-10-03): 약 18.5GB 빌드 임시 정리에 동의했는데
     `rmdir /s /q` 경로가 갈라져 소스·Git·백업이 사라졌습니다. Sebastian Spicker(2026-10-05): "저장소 루트 밖" 경로를 허용하도록 가드를 완화했고, 테스트가 상위 디렉터리를
-    넘겨 `rm`이 형제 체크아웃을 전부 지웠습니다.
+    넘겨 `rm`이 형제 체크아웃을 전부 지웠습니다. Codex #57530(2026-10-27): React Native/Expo 앱을 작업하던 중 잘못된 cleanup이 E: SSD 파티션
+    전체의 파일을 재귀 삭제했습니다. 사용자는 Codex에게 앱 작업을 부탁했지, 프로젝트 밖을 지우라고 하지 않았습니다. 개인 사진, 대학 과제, 학술 문서, 수년간 쌓인 소프트웨어 프로젝트가
+    사라졌습니다.
   vi: >-
     Agent ghép path bằng chuỗi qua nhiều shell (PowerShell → wsl → bash) mà không kiểm đích resolve cuối. Codex #55161
     (18 Oct 2026): `python -m venv --clear` cho /tmp chạy với đích rỗng `""` từ thư mục project và xóa workspace. Báo
     cáo forum Cursor (qua NOPE, 3 Oct 2026): user đồng ý dọn ~18.5 GB temp build; path `rmdir /s /q` bị tách; source,
     Git và backup mất. Sebastian Spicker (5 Oct 2026): guard nới cho mọi path "ngoài root repo"; test đưa thư mục cha;
-    `rm` xóa mọi checkout anh em.
+    `rm` xóa mọi checkout anh em. Codex #57530 (27 Oct 2026): trong lúc làm app React Native/Expo, một lệnh dọn bị lỗi
+    đã xóa đệ quy file trên toàn bộ phân vùng SSD E:. Người dùng nhờ Codex làm app, không nhờ xóa gì ngoài project. Mất
+    ảnh cá nhân, bài tập đại học, tài liệu học thuật và các dự án phần mềm tích lũy nhiều năm.
   de: >-
     Agenten bauen Pfade als Strings über Shells (PowerShell → wsl → bash), ohne das final aufgelöste Ziel zu prüfen.
     Codex #55161 (18. Okt 2026): `python -m venv --clear` für /tmp lief mit leerem Ziel `""` aus dem Projektverzeichnis
     und leerte den Workspace. Cursor-Forum (via NOPE, 3. Okt 2026): Nutzer stimmte ~18,5 GB Build-Temps zu; `rmdir /s
     /q`-Pfad wurde gesplittet; Quelle, Git und Backups weg. Sebastian Spicker (5. Okt 2026): Guard auf jeden Pfad
-    „außerhalb der Repo-Wurzel“ gelockert; Test übergab Parent; `rm` löschte alle Geschwister-Checkouts.
+    „außerhalb der Repo-Wurzel“ gelockert; Test übergab Parent; `rm` löschte alle Geschwister-Checkouts. Codex #57530
+    (27. Okt 2026): Bei der Arbeit an einer React-Native/Expo-App löschte ein fehlerhaftes Cleanup Dateien rekursiv auf
+    der gesamten E:-SSD-Partition. Die Person hatte Codex gebeten, an der App zu arbeiten, und nicht, außerhalb des
+    Projekts etwas zu löschen. Verloren gingen private Fotos, Uni-Aufgaben, akademische Dokumente und über Jahre
+    gesammelte Softwareprojekte.
 example:
   caption:
     en: The empty-target case from Codex
@@ -162,3 +189,5 @@ sources:
     url: https://nope.net/incidents/2026-cursor-agent-cleanup-delete-command-split-path-wiped-six-month-project-and-backups-windows-drive-first-person-forum
   - title: 'Sebastian Spicker: The Day Claude Decided to Delete My Whole Codebase'
     url: https://sebastianspicker.github.io/posts/the-day-claude-deleted-my-codebase/
+  - title: 'openai/codex #57530: CRITICAL: Codex accidentally deleted an entire SSD partition while cleaning node_modules'
+    url: https://github.com/openai/codex/issues/57530
