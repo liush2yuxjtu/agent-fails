@@ -1,0 +1,198 @@
+slug: guard-never-fired
+category: bug
+agents:
+  - claude-code
+  - cursor
+tags:
+  - PreToolUse
+  - hooks
+  - fail-open
+  - stdin
+  - exit codes
+  - matcher
+title:
+  en: The guard was installed. It never fired.
+  zh: 守卫装上了，一次都没触发
+  pt: O guard foi instalado. Nunca disparou.
+  ko: 가드는 설치됐다. 한 번도 발동하지 않았다.
+  vi: Guard đã được cài. Nó chưa từng chặn.
+  de: Der Guard war installiert. Er hat nie ausgelöst.
+summary:
+  en: >-
+    A PreToolUse hook is in the settings, and the tool call still runs. The script read $1 instead of stdin, the
+    matcher skipped Write or Shell, or a crash exited with a code the product treats as allow.
+  zh: >-
+    PreToolUse 钩子已经写进配置，工具调用却照样执行。脚本读的是 $1 而不是 stdin，matcher 漏掉了 Write 或 Shell，或者脚本崩溃时的退出码被产品当成放行。
+  pt: >-
+    O hook PreToolUse está na config e a tool call ainda roda. O script leu $1 em vez do stdin, o matcher pulou Write
+    ou Shell, ou um crash saiu com um código que o produto trata como allow.
+  ko: >-
+    PreToolUse 훅이 설정에 있는데도 tool call이 실행됩니다. 스크립트가 stdin 대신 $1을 읽었거나, matcher가 Write나 Shell을 빠뜨렸거나, 크래시의
+    종료 코드를 제품이 허용으로 처리했습니다.
+  vi: >-
+    Hook PreToolUse đã nằm trong cấu hình mà tool call vẫn chạy. Script đọc $1 thay vì stdin, matcher bỏ sót Write hoặc
+    Shell, hoặc một crash thoát với mã mà sản phẩm coi là cho qua.
+  de: >-
+    Ein PreToolUse-Hook steht in der Config, und der Tool-Call läuft trotzdem. Das Script las $1 statt stdin, der
+    Matcher ließ Write oder Shell aus, oder ein Crash endete mit einem Code, den das Produkt als Allow wertet.
+symptom:
+  en: >-
+    The hook is listed in `.claude/settings.json` or `.cursor/hooks.json`, and `rm -rf` or a Write to a protected path
+    still runs. The log shows exit 0, a non-blocking hook error, or no hook line at all. A path check written only for
+    Edit stays silent on Write.
+  zh: >-
+    钩子已经列在 `.claude/settings.json` 或 `.cursor/hooks.json` 里，`rm -rf` 或对受保护路径的 Write 照样执行。日志里是退出码 0、一条不阻断的 hook
+    error，或者根本没有钩子记录。只为 Edit 写的路径检查在 Write 上没有动静。
+  pt: >-
+    O hook está em `.claude/settings.json` ou `.cursor/hooks.json`, e `rm -rf` ou um Write num path protegido ainda
+    roda. O log mostra exit 0, um hook error que não bloqueia, ou nenhuma linha de hook. Um check de path só para Edit
+    fica mudo no Write.
+  ko: >-
+    훅이 `.claude/settings.json` 또는 `.cursor/hooks.json`에 있는데 `rm -rf`나 보호 경로 Write가 그대로 실행됩니다. 로그는 종료 코드 0, 차단하지
+    않는 hook error, 또는 훅 줄이 아예 없습니다. Edit만 겨냥한 경로 검사는 Write에서 조용합니다.
+  vi: >-
+    Hook nằm trong `.claude/settings.json` hoặc `.cursor/hooks.json`, và `rm -rf` hoặc Write vào path được bảo vệ vẫn
+    chạy. Log hiện exit 0, hook error không chặn, hoặc không có dòng hook. Kiểm path chỉ viết cho Edit im trên Write.
+  de: >-
+    Der Hook steht in `.claude/settings.json` oder `.cursor/hooks.json`, und `rm -rf` oder ein Write auf einen
+    geschützten Pfad läuft trotzdem. Das Log zeigt Exit 0, einen Hook-Fehler der nicht blockt, oder gar keine
+    Hook-Zeile. Ein Pfad-Check nur für Edit bleibt bei Write stumm.
+why:
+  en: >-
+    Four ways the file is present and the call still goes through. First, @paulhq on 29 Oct 2026. A PreToolUse guard
+    that checks $1 checks nothing. Claude Code sends the tool call as JSON on stdin, so $1 is empty, no pattern matches,
+    the script exits 0, and the command runs. Read the command from stdin with `jq -r '.tool_input.command'`, or
+    `json.load` in Python. Pipe a fake `rm -rf` and confirm the process exits 2. Second, @paulhq on 28 Oct 2026. Matcher
+    `Edit` never sees `Write`. Claude may rewrite the whole file, so a protected-path check never runs. The matcher has
+    to be `Edit|Write`, and the names are case-sensitive. Third, fail-open. Claude Code blocks a PreToolUse call only
+    on exit code 2. A hook that crashes or exits 1 lets the call through. For a command or HTTP hook, `"onFailure":
+    "block"` turns that failure into a block. The hooks docs date the settings field to Claude Code v2.1.295. Agent SDK
+    hook callbacks gained the same `onFailure: "block"` in Claude Code 2.1.317. Cursor's hooks reference fails open on
+    a crash, a timeout, and any exit other than 2, unless the hook sets `failClosed: true`. The reports are @noelkimx,
+    @3Pro111, @LoadoutGuide, and @FlareClipai. Fourth, @RealAlexandreAI on 3 Nov 2026. Cursor 1.0.40 ignored a nested
+    `permissionDecision` deny under `hookSpecificOutput` on PreToolUse, and the call went through. Re-test a deny after
+    every update. Exit code 2 is the block Cursor's hooks reference documents, and it does not depend on that nested
+    field.
+  zh: >-
+    文件在，调用照样通过，有四种走法。第一，@paulhq，2026-10-29。检查 $1 的 PreToolUse 守卫什么都没检查。Claude Code 把工具调用以 JSON 写到
+    stdin，所以 $1 是空的，没有模式命中，脚本退出码 0，命令执行。从 stdin 读命令，用 `jq -r '.tool_input.command'`，或在 Python 里
+    `json.load`。灌一条假的 `rm -rf`，确认进程退出码是 2。第二，@paulhq，2026-10-28。matcher `Edit` 看不到 `Write`。Claude
+    可能整文件重写，受保护路径的检查根本不会跑。matcher 必须是 `Edit|Write`，而且名字区分大小写。第三，失败即放行。Claude Code 只有退出码 2
+    才会拦住 PreToolUse 调用。钩子崩溃或退出码 1，调用照样通过。command 或 HTTP 钩子加上 `"onFailure": "block"` 后，这种失败也会变成拦截。钩子文档把这个
+    settings 字段记在 Claude Code v2.1.295。Agent SDK 的钩子回调在 Claude Code 2.1.317 才有同样的 `onFailure: "block"`。Cursor
+    的钩子文档里，崩溃、超时，以及除 2 以外的退出码，默认放行，除非钩子设置 `failClosed: true`。报告来自 @noelkimx、@3Pro111、@LoadoutGuide 和
+    @FlareClipai。第四，@RealAlexandreAI，2026-11-03。Cursor 1.0.40 忽略了 PreToolUse 上 `hookSpecificOutput` 里嵌套的
+    `permissionDecision` deny，调用通过了。每次更新后都要重新测一次 deny。退出码 2 是 Cursor 钩子文档写明的拦截信号，不依赖那个嵌套字段。
+  pt: >-
+    Quatro jeitos de o arquivo estar lá e a call passar mesmo assim. Primeiro, @paulhq em 29 out 2026. Um guard
+    PreToolUse que checa $1 não checa nada. O Claude Code manda a tool call como JSON no stdin, então $1 fica vazio,
+    nenhum padrão casa, o script sai 0 e o comando roda. Leia o comando do stdin com `jq -r '.tool_input.command'`, ou
+    `json.load` em Python. Envie um `rm -rf` falso e confirme que o processo sai 2. Segundo, @paulhq em 28 out 2026.
+    Matcher `Edit` não vê `Write`. O Claude pode reescrever o arquivo inteiro, e o check de path protegido nunca roda.
+    O matcher tem de ser `Edit|Write`, e os nomes diferenciam maiúsculas. Terceiro, fail-open. O Claude Code bloqueia
+    uma call PreToolUse só no exit code 2. Um hook que crasha ou sai 1 deixa a call passar. Num hook command ou HTTP,
+    `"onFailure": "block"` transforma essa falha em bloqueio. A doc de hooks data o campo de settings no Claude Code
+    v2.1.295. Callbacks de hook do Agent SDK ganharam o mesmo `onFailure: "block"` no Claude Code 2.1.317. A referência
+    de hooks do Cursor abre a mão em crash, timeout e qualquer exit que não seja 2, a menos que o hook defina
+    `failClosed: true`. Os relatos são @noelkimx, @3Pro111, @LoadoutGuide e @FlareClipai. Quarto, @RealAlexandreAI em 3
+    nov 2026. O Cursor 1.0.40 ignorou um deny aninhado de `permissionDecision` sob `hookSpecificOutput` no PreToolUse, e
+    a call passou. Teste o deny de novo depois de cada update. Exit code 2 é o bloqueio que a referência de hooks do
+    Cursor documenta, e não depende desse campo aninhado.
+  ko: >-
+    파일은 있는데 호출이 통과하는 길이 네 가지입니다. 첫째, @paulhq, 2026-10-29. $1을 검사하는 PreToolUse 가드는 아무것도 검사하지 않습니다. Claude Code는
+    도구 호출을 stdin의 JSON으로 보내므로 $1은 비고, 패턴이 맞지 않으며, 스크립트는 0으로 끝나고 명령이 실행됩니다. stdin에서 `jq -r
+    '.tool_input.command'`로, 또는 Python의 `json.load`로 명령을 읽으세요. 가짜 `rm -rf`를 넣고 프로세스가 2로 끝나는지 확인하세요. 둘째,
+    @paulhq, 2026-10-28. matcher `Edit`는 `Write`를 보지 않습니다. Claude가 파일 전체를 다시 쓸 수 있고, 보호 경로 검사는 실행되지 않습니다.
+    matcher는 `Edit|Write`여야 하며 이름은 대소문자를 가립니다. 셋째, 실패 시 개방. Claude Code는 종료 코드 2에서만 PreToolUse 호출을 막습니다. 훅이
+    죽거나 1로 끝나면 호출이 통과합니다. command 또는 HTTP 훅에 `"onFailure": "block"`을 두면 그 실패도 차단이 됩니다. 훅 문서는 이 settings 필드를
+    Claude Code v2.1.295에 둡니다. Agent SDK 훅 콜백은 Claude Code 2.1.317에서 같은 `onFailure: "block"`을 받았습니다. Cursor 훅
+    문서는 크래시, 타임아웃, 2가 아닌 종료에서 훅이 `failClosed: true`가 아니면 통과시킵니다. 보고는 @noelkimx, @3Pro111, @LoadoutGuide,
+    @FlareClipai입니다. 넷째, @RealAlexandreAI, 2026-11-03. Cursor 1.0.40은 PreToolUse에서 `hookSpecificOutput` 아래 중첩된
+    `permissionDecision` deny를 무시했고 호출이 통과했습니다. 업데이트마다 deny를 다시 테스트하세요. 종료 코드 2는 Cursor 훅 문서가 적는 차단이며, 그 중첩
+    필드에 의존하지 않습니다.
+  vi: >-
+    Bốn cách file đã có mà call vẫn qua. Một, @paulhq ngày 29 Oct 2026. Guard PreToolUse kiểm $1 thì không kiểm gì.
+    Claude Code gửi tool call dạng JSON trên stdin, nên $1 rỗng, không pattern nào khớp, script thoát 0, lệnh chạy. Đọc
+    lệnh từ stdin bằng `jq -r '.tool_input.command'`, hoặc `json.load` trong Python. Bơm một `rm -rf` giả và xác nhận
+    tiến trình thoát 2. Hai, @paulhq ngày 28 Oct 2026. Matcher `Edit` không thấy `Write`. Claude có thể viết lại cả
+    file, nên kiểm path được bảo vệ không chạy. Matcher phải là `Edit|Write`, và tên phân biệt hoa thường. Ba, lỗi là
+    mở. Claude Code chỉ chặn call PreToolUse khi exit code 2. Hook crash hoặc thoát 1 thì call vẫn qua. Với hook
+    command hoặc HTTP, `"onFailure": "block"` biến lỗi đó thành chặn. Tài liệu hook ghi field settings này ở Claude
+    Code v2.1.295. Callback hook của Agent SDK có cùng `onFailure: "block"` ở Claude Code 2.1.317. Tài liệu hook của
+    Cursor mở cửa khi crash, timeout, và mọi exit khác 2, trừ khi hook đặt `failClosed: true`. Các báo cáo là
+    @noelkimx, @3Pro111, @LoadoutGuide và @FlareClipai. Bốn, @RealAlexandreAI ngày 3 Nov 2026. Cursor 1.0.40 bỏ qua
+    deny `permissionDecision` lồng dưới `hookSpecificOutput` trên PreToolUse, và call đi qua. Test lại deny sau mỗi bản
+    cập nhật. Exit code 2 là tín hiệu chặn mà tài liệu hook của Cursor ghi, và nó không phụ thuộc field lồng đó.
+  de: >-
+    Vier Wege, wie die Datei da ist und der Call trotzdem durchgeht. Erstens, @paulhq am 29. Okt 2026. Ein
+    PreToolUse-Guard, der $1 prüft, prüft nichts. Claude Code schickt den Tool-Call als JSON auf stdin, also ist $1
+    leer, kein Muster trifft, das Script endet mit 0, der Befehl läuft. Den Befehl von stdin lesen, mit `jq -r
+    '.tool_input.command'` oder `json.load` in Python. Ein falsches `rm -rf` durchreichen und Exit 2 bestätigen.
+    Zweitens, @paulhq am 28. Okt 2026. Matcher `Edit` sieht `Write` nicht. Claude kann die ganze Datei neu schreiben,
+    und der Check für geschützte Pfade läuft nie. Der Matcher muss `Edit|Write` sein, und die Namen unterscheiden Groß
+    und Klein. Drittens, Fail-open. Claude Code blockt einen PreToolUse-Call nur bei Exit-Code 2. Ein Hook, der abstürzt
+    oder mit 1 endet, lässt den Call durch. Bei einem Command- oder HTTP-Hook macht `"onFailure": "block"` aus diesem
+    Fehler einen Block. Die Hook-Doku datiert das Settings-Feld auf Claude Code v2.1.295. Agent-SDK-Hook-Callbacks
+    bekamen dasselbe `onFailure: "block"` in Claude Code 2.1.317. Cursors Hook-Referenz lässt Crash, Timeout und jedes
+    Exit außer 2 durch, außer der Hook setzt `failClosed: true`. Die Berichte sind @noelkimx, @3Pro111, @LoadoutGuide
+    und @FlareClipai. Viertens, @RealAlexandreAI am 3. Nov 2026. Cursor 1.0.40 ignorierte ein verschachteltes
+    `permissionDecision` deny unter `hookSpecificOutput` bei PreToolUse, und der Call ging durch. Ein Deny nach jedem
+    Update neu testen. Exit-Code 2 ist der Block, den Cursors Hook-Referenz dokumentiert, und er hängt nicht an diesem
+    verschachtelten Feld.
+example:
+  caption:
+    en: The $1 check. Nothing matches, the script exits 0, and the command runs.
+    zh: 检查 $1 的写法。什么都匹配不到，退出码 0，命令照跑。
+    pt: O check de $1. Nada casa, o script sai 0, e o comando roda.
+    ko: $1 검사. 아무것도 맞지 않고, 스크립트는 0으로 끝나며, 명령은 실행됩니다.
+    vi: Kiểm $1. Không khớp gì, script thoát 0, lệnh vẫn chạy.
+    de: Der $1-Check. Nichts trifft, das Script endet mit 0, der Befehl läuft.
+  lang: bash
+  code: |
+    # Claude Code writes the tool call as JSON on stdin. $1 is empty.
+    # This matches nothing, exits 0, and the rm runs.
+    cmd="$1"
+    if echo "$cmd" | grep -q 'rm -rf'; then
+      echo "blocked" >&2
+      exit 2
+    fi
+    exit 0
+rule: |
+  ## Make the guard able to fire
+  - Read the tool call from stdin. Do not use $1. Bash: `jq -r '.tool_input.command'`. Python: `json.load(sys.stdin)`.
+  - Match every tool that can do the thing you are guarding. A path guard's matcher is `Edit|Write`
+    (case-sensitive), not `Edit`. A shell guard matches both `Bash` and `Shell`.
+  - Block with exit code 2 and a reason on stderr. Exit 0 allows the call. Exit 1 and a crash allow it too,
+    unless the hook is fail-closed.
+  - Claude Code command and HTTP hooks: set `"onFailure": "block"` on the hook object. The hooks docs date
+    that settings field to v2.1.295. Agent SDK hook callbacks got the same switch in 2.1.317.
+  - Cursor: set `"failClosed": true` on the hook in `.cursor/hooks.json`. The field defaults to false.
+  - After every Claude Code or Cursor update, pipe a fake `rm -rf` and confirm exit 2. Also fire a Write
+    at a protected path and confirm the path guard runs. Cursor 1.0.40 ignored a nested
+    `permissionDecision` deny under `hookSpecificOutput` on PreToolUse. Re-test the deny. Do not treat that
+    nested field as the only block.
+extras:
+  - ref: stdin-command-guard
+  - ref: stdin-command-guard-settings
+  - ref: cursor-fail-closed-hooks
+sources:
+  - title: '@paulhq on X (29 Oct 2026): a PreToolUse guard that checks $1 checks nothing, because the tool call is JSON on stdin'
+    url: https://x.com/paulhq/status/2115594649612202470
+  - title: '@paulhq on X (28 Oct 2026): matcher Edit never sees Write, so a protected-path check never runs'
+    url: https://x.com/paulhq/status/2115564586720182692
+  - title: '@noelkimx on X: hooks that crash or exit 1 fail open. Claude Code blocks on exit 2'
+    url: https://x.com/noelkimx/status/2117768618142568889
+  - title: '@3Pro111 on X: fail-open when a hook crashes or exits 1. Exit 2 is the block'
+    url: https://x.com/3Pro111/status/2117707296038068274
+  - title: '@LoadoutGuide on X: a hook crash or exit 1 lets the tool call through'
+    url: https://x.com/LoadoutGuide/status/2117665916104380911
+  - title: '@FlareClipai on X: fail-open on hook crash or exit 1. onFailure block and failClosed'
+    url: https://x.com/FlareClipai/status/2117778889795895799
+  - title: '@RealAlexandreAI on X (3 Nov 2026): Cursor 1.0.40 ignored a nested permissionDecision deny under hookSpecificOutput'
+    url: https://x.com/RealAlexandreAI/status/2117594667000689104
+  - title: 'Claude Code docs: hooks. Stdin JSON, exit code 2, and onFailure block for command hooks since v2.1.295'
+    url: https://code.claude.com/docs/en/hooks
+  - title: 'Cursor docs: hooks. failClosed, exit code 2, and fail-open on other failures'
+    url: https://cursor.com/docs/hooks
+  - title: 'Cursor docs: third-party hooks. Nested hookSpecificOutput permissionDecision, and exit code 2'
+    url: https://cursor.com/docs/reference/third-party-hooks
