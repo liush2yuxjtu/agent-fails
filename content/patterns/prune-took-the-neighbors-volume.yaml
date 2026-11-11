@@ -1,0 +1,202 @@
+slug: prune-took-the-neighbors-volume
+category: overreach
+agents:
+  - claude-code
+tags:
+  - docker
+  - volume prune
+  - compose
+  - data loss
+title:
+  en: The prune deleted the other project's volume.
+  zh: 清理删掉了另一个项目的数据卷
+  pt: O prune apagou o volume do outro projeto.
+  ko: prune이 다른 프로젝트의 볼륨을 지웠다.
+  vi: Prune đã xóa volume của dự án kia.
+  de: Der Prune löschte das Volume des anderen Projekts.
+summary:
+  en: >-
+    A volume prune permanently deleted another project's database volume that the model had already seen in an earlier
+    listing, and it warned only after the volume was gone.
+  zh: >-
+    一次 volume prune 永久删掉了另一个项目的数据库卷，模型在更早的列表里已经看见过这个卷，警告却是删掉之后才说的。
+  pt: >-
+    Um volume prune apagou de vez o volume de banco de outro projeto, que o modelo já tinha visto numa listagem
+    anterior, e o aviso só veio depois que o volume sumiu.
+  ko: >-
+    volume prune이 다른 프로젝트의 데이터베이스 볼륨을 영구 삭제했는데, 모델은 그 볼륨을 앞선 목록에서 이미 봤고 경고는 볼륨이 사라진 뒤에야 나왔습니다.
+  vi: >-
+    Một lệnh volume prune đã xóa vĩnh viễn volume cơ sở dữ liệu của dự án khác, volume mà model đã thấy trong danh sách
+    trước đó, và lời cảnh báo chỉ đến sau khi volume biến mất.
+  de: >-
+    Ein Volume-Prune hat das Datenbank-Volume eines anderen Projekts dauerhaft gelöscht, das das Modell in einer
+    früheren Auflistung schon gesehen hatte, und die Warnung kam erst, nachdem das Volume weg war.
+symptom:
+  en: >-
+    After a cleanup in Claude Code CLI on macOS, with the Opus model, another project's database volume is gone. That
+    volume was already in a listing the session had seen. The warning arrives only once the volume is already deleted.
+  zh: >-
+    在 macOS 上的 Claude Code CLI、Opus 模型里做了一次清理之后，另一个项目的数据库卷没了。这个卷已经出现在会话看见过的列表里。警告是卷已经被删掉之后才来的。
+  pt: >-
+    Depois de uma limpeza no Claude Code CLI no macOS, com o modelo Opus, o volume de banco de outro projeto sumiu. Esse
+    volume já estava numa listagem que a sessão tinha visto. O aviso chega só quando o volume já foi apagado.
+  ko: >-
+    macOS의 Claude Code CLI, Opus 모델에서 정리한 뒤 다른 프로젝트의 데이터베이스 볼륨이 없습니다. 그 볼륨은 세션이 본 목록에 이미 있었습니다. 경고는 볼륨이 이미
+    삭제된 뒤에 옵니다.
+  vi: >-
+    Sau một lần dọn trong Claude Code CLI trên macOS, model Opus, volume cơ sở dữ liệu của dự án khác biến mất. Volume
+    đó đã nằm trong một danh sách mà phiên đã thấy. Lời cảnh báo chỉ đến khi volume đã bị xóa.
+  de: >-
+    Nach einem Aufräumen in Claude Code CLI auf macOS, mit dem Modell Opus, ist das Datenbank-Volume eines anderen
+    Projekts weg. Dieses Volume stand schon in einer Auflistung, die die Sitzung gesehen hatte. Die Warnung kommt erst,
+    wenn das Volume schon gelöscht ist.
+why:
+  en: >-
+    anthropics/claude-code #107655, @Nahuel990, 5 Nov 2026. Claude Code CLI, Opus model, macOS. The model ran a volume
+    prune that permanently deleted another project's database volume. It had seen that volume in the earlier listing and
+    could have flagged it. It warned the user only after the volume was gone. The reporter's expected behavior is to
+    point out, before an irreversible delete, data that does not belong to the current task. The issue does not record
+    the exact prune flags. Docker's volume prune reference says `docker volume prune` removes unused local volumes,
+    volumes that no container references. By default it only removes anonymous volumes. `--all` (API 1.42+) also removes
+    unused named volumes. `-f` / `--force` does not prompt for confirmation. The documented options are `--all`,
+    `--filter`, and `--force`. The documented example warns that anonymous local volumes not used by at least one
+    container will be removed, asks `[y/N]`, and prints the deleted volume ids after the answer. `docker volume ls`
+    lists volumes first and filters on `name`, `label`, and `dangling`. `docker compose down` stops and removes
+    containers and networks created by `up` for that Compose file. With no `-v`, volumes stay. `-v` / `--volumes`
+    removes named volumes declared in the volumes section of that Compose file and anonymous volumes attached to its
+    containers. Networks and volumes defined as external are never removed. Compose uses the project name to isolate
+    environments. The name comes from `-p`, then `COMPOSE_PROJECT_NAME`, then the Compose file's `name:`, then the
+    directory base name, or the current directory when no Compose file is specified. The Compose application model says resources created for a project are prefixed by that name
+    and carry the label `com.docker.compose.project`. On `docker volume prune`, filters with different keys combine with
+    AND, and filters with the same key combine with OR. `label=<key>` or `label=<key>=<value>` removes volumes that
+    have the label. `label!=...` removes volumes that do not have it.
+  zh: >-
+    anthropics/claude-code #107655，@Nahuel990，2026-11-05。Claude Code CLI，Opus 模型，macOS。模型跑了一次 volume
+    prune，永久删掉了另一个项目的数据库卷。它在更早的列表里看见过这个卷，本来可以标出来。它在卷已经没了之后才警告用户。报告人期望的做法是，在不可逆的删除之前，指出不属于当前任务的数据。Issue
+    没有记下具体的 prune 参数。Docker 的 volume prune 文档写明，`docker volume prune` 删除没有容器引用的本地无用卷。默认只删除匿名卷。`--all`（API
+    1.42+）还会删除无用的具名卷。`-f` / `--force` 不再要求确认。文档列出的选项是 `--all`、`--filter` 和 `--force`。文档里的例子警告将删除至少一个容器都没用到的匿名本地卷，询问
+    `[y/N]`，在回答之后才打印被删掉的卷 id。`docker volume ls` 可以先列出卷，并按 `name`、`label` 和 `dangling` 过滤。`docker compose down`
+    停掉并删除该 Compose 文件里由 `up` 创建的容器和网络。不加 `-v` 时卷还在。`-v` / `--volumes` 删除该 Compose 文件 volumes
+    段里声明的具名卷，以及挂在它的容器上的匿名卷。定义成 external 的网络和卷不会被删除。Compose 用项目名把环境隔开。名字先看 `-p`，然后是
+    `COMPOSE_PROJECT_NAME`，然后是 Compose 文件的 `name:`，然后是目录名，没有 Compose 文件时则是当前目录名。Compose 应用模型写明，为一个项目创建的资源要以该项目名做前缀，并带上标签
+    `com.docker.compose.project`。在 `docker volume prune` 上，不同 key 的 filter 按 AND 组合，相同 key 的 filter 按 OR
+    组合。`label=<key>` 或 `label=<key>=<value>` 删除带有该标签的卷。`label!=...` 删除没有该标签的卷。
+  pt: >-
+    anthropics/claude-code #107655, @Nahuel990, 5 nov 2026. Claude Code CLI, modelo Opus, macOS. O modelo rodou um volume
+    prune que apagou de vez o volume de banco de outro projeto. Ele tinha visto esse volume na listagem anterior e
+    poderia tê-lo apontado. Avisou a pessoa só depois que o volume sumiu. O comportamento esperado de quem reporta é
+    apontar, antes de um delete irreversível, dados que não pertencem à tarefa atual. A issue não registra os flags
+    exatos do prune. A referência do Docker para volume prune diz que `docker volume prune` remove volumes locais sem
+    uso, volumes que nenhum container referencia. Por padrão remove só volumes anônimos. `--all` (API 1.42+) também
+    remove volumes nomeados sem uso. `-f` / `--force` não pede confirmação. As opções documentadas são `--all`,
+    `--filter` e `--force`. O exemplo documentado avisa que volumes locais anônimos não usados por pelo menos um
+    container serão removidos, pergunta `[y/N]` e imprime os ids dos volumes apagados depois da resposta. `docker volume
+    ls` lista os volumes antes e filtra por `name`, `label` e `dangling`. `docker compose down` para e remove containers
+    e redes criados por `up` para aquele Compose file. Sem `-v`, os volumes ficam. `-v` / `--volumes` remove volumes
+    nomeados declarados na seção volumes desse Compose file e volumes anônimos anexados aos containers dele. Redes e
+    volumes definidos como external nunca são removidos. O Compose usa o nome do projeto para isolar ambientes. O nome
+    vem de `-p`, depois `COMPOSE_PROJECT_NAME`, depois o `name:` do Compose file, depois o nome base do diretório, ou o
+    diretório atual quando nenhum Compose file é indicado. O
+    modelo de aplicação do Compose diz que recursos criados para um projeto recebem esse nome como prefixo e o label
+    `com.docker.compose.project`. No `docker volume prune`, filtros com chaves diferentes se combinam com AND, e filtros
+    com a mesma chave se combinam com OR. `label=<key>` ou `label=<key>=<value>` remove volumes que têm o label.
+    `label!=...` remove volumes que não o têm.
+  ko: >-
+    anthropics/claude-code #107655, @Nahuel990, 2026-11-05. Claude Code CLI, Opus 모델, macOS. 모델이 volume prune을 실행했고,
+    그 명령이 다른 프로젝트의 데이터베이스 볼륨을 영구 삭제했습니다. 모델은 앞선 목록에서 그 볼륨을 봤고 표시할 수 있었습니다. 사용자에게 경고한 것은 볼륨이 사라진 뒤였습니다.
+    보고자가 기대한 동작은 되돌릴 수 없는 삭제 전에, 현재 작업에 속하지 않는 데이터를 짚는 것입니다. 이슈는 prune의 정확한 플래그를 적지 않습니다. Docker의
+    volume prune 문서는 `docker volume prune`이 어떤 컨테이너도 참조하지 않는 로컬 미사용 볼륨을 지운다고 합니다. 기본값은 익명 볼륨만 지웁니다.
+    `--all`(API 1.42+)은 미사용 이름 있는 볼륨도 지웁니다. `-f` / `--force`는 확인을 묻지 않습니다. 문서의 옵션은 `--all`, `--filter`,
+    `--force`입니다. 문서의 예는 컨테이너가 하나 이상 쓰지 않는 익명 로컬 볼륨이 지워진다고 경고하고 `[y/N]`을 물은 다음, 답 뒤에 삭제된 볼륨 id를
+    출력합니다. `docker volume ls`는 먼저 볼륨을 나열하고 `name`, `label`, `dangling`으로 거릅니다. `docker compose down`은 그
+    Compose 파일에서 `up`이 만든 컨테이너와 네트워크를 멈추고 지웁니다. `-v`가 없으면 볼륨은 남습니다. `-v` / `--volumes`는 그 Compose 파일의
+    volumes 섹션에 선언된 이름 있는 볼륨과, 그 컨테이너에 붙은 익명 볼륨을 지웁니다. external로 정의된 네트워크와 볼륨은 지워지지 않습니다. Compose는
+    프로젝트 이름으로 환경을 나눕니다. 이름은 `-p`, 그다음 `COMPOSE_PROJECT_NAME`, 그다음 Compose 파일의 `name:`, 그다음 디렉터리 기본
+    이름이고, Compose 파일이 없으면 현재 디렉터리입니다. Compose 애플리케이션 모델은 한 프로젝트를 위해 만든 리소스에 그 이름을 접두사로 붙이고 라벨 `com.docker.compose.project`를
+    단다고 합니다. `docker volume prune`에서 키가 다른 필터는 AND로, 같은 키의 필터는 OR로 합쳐집니다. `label=<key>` 또는
+    `label=<key>=<value>`는 그 라벨이 있는 볼륨을 지웁니다. `label!=...`는 그 라벨이 없는 볼륨을 지웁니다.
+  vi: >-
+    anthropics/claude-code #107655, @Nahuel990, 5 Nov 2026. Claude Code CLI, model Opus, macOS. Model chạy một volume
+    prune và lệnh đó xóa vĩnh viễn volume cơ sở dữ liệu của dự án khác. Nó đã thấy volume đó trong danh sách trước và có
+    thể đánh dấu. Nó chỉ cảnh báo người dùng sau khi volume đã mất. Hành vi người báo cáo mong đợi là, trước một lần xóa
+    không đảo ngược, chỉ ra dữ liệu không thuộc task hiện tại. Issue không ghi các flag prune cụ thể. Tài liệu volume
+    prune của Docker nói `docker volume prune` xóa volume local không dùng, tức volume không container nào tham chiếu.
+    Mặc định nó chỉ xóa volume ẩn danh. `--all` (API 1.42+) còn xóa volume có tên nhưng không dùng. `-f` / `--force`
+    không hỏi xác nhận. Các tùy chọn được ghi là `--all`, `--filter` và `--force`. Ví dụ trong tài liệu cảnh báo các
+    volume local ẩn danh không được ít nhất một container dùng sẽ bị xóa, hỏi `[y/N]`, và in id volume đã xóa sau câu
+    trả lời. `docker volume ls` liệt kê volume trước và lọc theo `name`, `label` và `dangling`. `docker compose down`
+    dừng và xóa container cùng network do `up` tạo cho file Compose đó. Không có `-v` thì volume còn. `-v` /
+    `--volumes` xóa volume có tên khai báo trong mục volumes của file Compose đó và volume ẩn danh gắn vào container của
+    nó. Network và volume khai báo là external không bao giờ bị xóa. Compose dùng tên project để tách môi trường. Tên
+    lấy từ `-p`, rồi `COMPOSE_PROJECT_NAME`, rồi `name:` của file Compose, rồi tên thư mục, hoặc thư mục hiện tại khi
+    không chỉ file Compose. Mô hình ứng dụng Compose nói
+    tài nguyên tạo cho một project được gắn tiền tố bằng tên đó và mang nhãn `com.docker.compose.project`. Trên `docker
+    volume prune`, filter khác key kết hợp bằng AND, filter cùng key kết hợp bằng OR. `label=<key>` hoặc
+    `label=<key>=<value>` xóa volume có nhãn đó. `label!=...` xóa volume không có nhãn đó.
+  de: >-
+    anthropics/claude-code #107655, @Nahuel990, 5. Nov 2026. Claude Code CLI, Modell Opus, macOS. Das Modell führte einen
+    Volume-Prune aus, der das Datenbank-Volume eines anderen Projekts dauerhaft löschte. Es hatte dieses Volume in der
+    früheren Auflistung gesehen und hätte es markieren können. Es warnte erst, nachdem das Volume weg war. Das erwartete
+    Verhalten der meldenden Person ist, vor einem irreversiblen Löschen auf Daten hinzuweisen, die nicht zur aktuellen
+    Aufgabe gehören. Die Issue nennt die genauen Prune-Flags nicht. Die Docker-Referenz zu volume prune sagt, `docker
+    volume prune` entfernt ungenutzte lokale Volumes, Volumes, die kein Container referenziert. Standardmäßig entfernt
+    es nur anonyme Volumes. `--all` (API 1.42+) entfernt auch ungenutzte benannte Volumes. `-f` / `--force` fragt nicht
+    nach Bestätigung. Die dokumentierten Optionen sind `--all`, `--filter` und `--force`. Das dokumentierte Beispiel
+    warnt, dass anonyme lokale Volumes, die von keinem Container benutzt werden, entfernt werden, fragt `[y/N]` und
+    druckt die gelöschten Volume-Ids nach der Antwort. `docker volume ls` listet Volumes zuerst und filtert nach `name`,
+    `label` und `dangling`. `docker compose down` stoppt und entfernt Container und Netzwerke, die `up` für diese
+    Compose-Datei erzeugt hat. Ohne `-v` bleiben Volumes. `-v` / `--volumes` entfernt benannte Volumes aus dem
+    volumes-Abschnitt dieser Compose-Datei und anonyme Volumes, die an ihren Containern hängen. Als external definierte
+    Netzwerke und Volumes werden nie entfernt. Compose trennt Umgebungen über den Projektnamen. Der Name kommt von `-p`,
+    dann `COMPOSE_PROJECT_NAME`, dann `name:` der Compose-Datei, dann dem Verzeichnisnamen, oder dem aktuellen
+    Verzeichnis, wenn keine Compose-Datei angegeben ist. Das Compose-Anwendungsmodell
+    sagt, für ein Projekt erzeugte Ressourcen werden mit diesem Namen vorangestellt und tragen das Label
+    `com.docker.compose.project`. Bei `docker volume prune` werden Filter mit verschiedenen Keys per AND kombiniert,
+    Filter mit demselben Key per OR. `label=<key>` oder `label=<key>=<value>` entfernt Volumes, die das Label haben.
+    `label!=...` entfernt Volumes, die es nicht haben.
+example:
+  caption:
+    en: "Paraphrase of #107655. The report does not include the prune command or its flags."
+    zh: "#107655 的转述。报告里没有 prune 命令，也没有它的参数。"
+    pt: "Paráfrase de #107655. O relato não traz o comando de prune nem os flags."
+    ko: "#107655의 바꿔 쓰기. 보고에는 prune 명령도 플래그도 없습니다."
+    vi: "Diễn lại #107655. Báo cáo không có lệnh prune hay flag của nó."
+    de: "Paraphrase von #107655. Der Bericht enthält weder den Prune-Befehl noch seine Flags."
+  lang: text
+  code: |
+    # 2026-11-05, anthropics/claude-code #107655, @Nahuel990
+    # Claude Code CLI, Opus, macOS.
+    # A volume prune permanently deleted another project's database volume.
+    # That volume was already in an earlier listing.
+    # The warning came after the volume was gone.
+    # The issue does not record the exact flags.
+rule: |
+  ## Print the prune list, then ask
+  - Before any irreversible prune or delete, print exactly what will be removed. Flag anything not owned by
+    the current task or project, and ask. Do not delete in that same step.
+  - Prefer a project-scoped teardown over a global prune. For this project's name (`-p`, or that project's
+    directory), `docker compose down -v` removes named volumes declared in that Compose file's volumes
+    section and anonymous volumes attached to its containers. Volumes and networks defined as external are
+    never removed. Without `-v`, `docker compose down` leaves volumes in place.
+  - `docker volume prune` is not scoped to a project. It removes unused local volumes, those that no container
+    references. With no `--all`, only anonymous volumes. `--all` (API 1.42+) also removes unused named
+    volumes. Do not pass `-f`. It skips the confirmation prompt. The documented options are `--all`,
+    `--filter`, and `--force`, with no dry-run. The documented example prints deleted volume ids after the
+    `[y/N]` answer, so list first with `docker volume ls`.
+  - If a prune is required, filter to this project's label. Compose sets `com.docker.compose.project` on
+    resources it creates. `--filter label=com.docker.compose.project=<project>` matches volumes that have
+    the label. `--filter label!=...` matches volumes that lack the label. Read the labels from
+    `docker volume ls` before you treat a volume as this project's.
+sources:
+  - title: '@Nahuel990, anthropics/claude-code #107655 (5 Nov 2026): a volume prune permanently deleted another project''s database volume that was already in a listing'
+    url: https://github.com/anthropics/claude-code/issues/107655
+  - title: 'Docker docs: docker volume prune. Unused local volumes. Anonymous by default. --all includes unused named volumes. -f skips the prompt. Filters are label, AND across keys, OR within a key'
+    url: https://docs.docker.com/reference/cli/docker/volume/prune/
+  - title: 'Docker docs: docker volume ls. List volumes and filter by name, label, or dangling before a prune'
+    url: https://docs.docker.com/reference/cli/docker/volume/ls/
+  - title: 'Docker docs: docker compose down. -v removes named volumes declared in that Compose file and anonymous volumes on its containers. External volumes are never removed'
+    url: https://docs.docker.com/reference/cli/docker/compose/down/
+  - title: 'Docker docs: Compose project name. -p, COMPOSE_PROJECT_NAME, name:, then the directory. The name isolates environments'
+    url: https://docs.docker.com/compose/how-tos/project-name/
+  - title: 'Docker docs: Compose application model. Project resources are prefixed with the project name and labeled com.docker.compose.project'
+    url: https://docs.docker.com/compose/intro/compose-application-model/

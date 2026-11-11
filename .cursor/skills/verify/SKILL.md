@@ -49,7 +49,7 @@ Clicking Copy on an example block (and on a fix block) still copies the snippet.
 
 ## Homepage week pin
 
-The homepage pin is `guard-never-fired`, the lead item of `content/newsletter/2026-w45.md`. Each locale renders a real link (not an in-page scroll) to that pattern, with the locale label and the pattern title.
+The homepage pin is `reverted-your-fix`, the lead item of `content/newsletter/2026-w46.md`. Each locale renders a real link (not an in-page scroll) to that pattern, with the locale label and the pattern title.
 
 ```bash
 set -euo pipefail
@@ -67,10 +67,34 @@ pt=$(find .next -type f -path '*/pt.html' -o -type f -path '*/pt/index.html' | h
 ko=$(find .next -type f -path '*/ko.html' -o -type f -path '*/ko/index.html' | head -n 1)
 vi=$(find .next -type f -path '*/vi.html' -o -type f -path '*/vi/index.html' | head -n 1)
 de=$(find .next -type f -path '*/de.html' -o -type f -path '*/de/index.html' | head -n 1)
-check_pin "$en" "/patterns/guard-never-fired" "This week&#x27;s 翻车" "The guard was installed"
-check_pin "$zh" "/zh/patterns/guard-never-fired" "本周翻车" "一次都没触发"
-check_pin "$pt" "/pt/patterns/guard-never-fired" "Falha desta semana" "Nunca disparou"
-check_pin "$ko" "/ko/patterns/guard-never-fired" "이번 주 실패" "한 번도 발동하지 않았다"
-check_pin "$vi" "/vi/patterns/guard-never-fired" "Lỗi tuần này" "Nó chưa từng chặn"
-check_pin "$de" "/de/patterns/guard-never-fired" "Fail dieser Woche" "Der Guard war installiert"
+check_pin "$en" "/patterns/reverted-your-fix" "This week&#x27;s 翻车" "The fix was in"
+check_pin "$zh" "/zh/patterns/reverted-your-fix" "本周翻车" "把旧文本写回去"
+check_pin "$pt" "/pt/patterns/reverted-your-fix" "Falha desta semana" "texto antigo de volta"
+check_pin "$ko" "/ko/patterns/reverted-your-fix" "이번 주 실패" "예전 글을 다시 썼다"
+check_pin "$vi" "/vi/patterns/reverted-your-fix" "Lỗi tuần này" "Nó viết lại câu cũ"
+check_pin "$de" "/de/patterns/reverted-your-fix" "Fail dieser Woche" "Der Fix war schon drin"
+```
+
+## Week 2026-W46 pages
+
+The two new patterns and the delete-path update are in the built English HTML.
+
+```bash
+set -euo pipefail
+page() {
+  find .next -type f -path "*/patterns/$1.html" ! -path '*/zh/*' ! -path '*/pt/*' ! -path '*/ko/*' ! -path '*/vi/*' ! -path '*/de/*' | head -n 1
+}
+rev=$(page reverted-your-fix)
+prune=$(page prune-took-the-neighbors-volume)
+del=$(page delete-hit-the-wrong-path)
+test -n "$rev" || { echo "missing built HTML for /patterns/reverted-your-fix"; exit 1; }
+test -n "$prune" || { echo "missing built HTML for /patterns/prune-took-the-neighbors-volume"; exit 1; }
+test -n "$del" || { echo "missing built HTML for /patterns/delete-hit-the-wrong-path"; exit 1; }
+grep -q -F '107475' "$rev" || { echo "missing 107475 in $rev"; exit 1; }
+grep -q -F '107643' "$rev" || { echo "missing 107643 in $rev"; exit 1; }
+grep -q -F '107655' "$prune" || { echo "missing 107655 in $prune"; exit 1; }
+grep -q -F 'com.docker.compose.project' "$prune" || { echo "missing compose project label in $prune"; exit 1; }
+grep -q -F '107271' "$del" || { echo "missing 107271 in $del"; exit 1; }
+grep -q -F 'D:?' "$del" || { echo "missing quoted rm guard in $del"; exit 1; }
+echo "ok week 2026-W46 pages"
 ```
