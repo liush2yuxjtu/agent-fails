@@ -8,8 +8,8 @@ import { NewsletterForm } from "@/components/NewsletterForm";
 import { RecorderPlane } from "@/components/RecorderPlane";
 import { CAT_RAIL, frameIndex } from "@/components/Badges";
 
-/** Lead pattern of content/newsletter/2026-w45.md, the latest weekly batch in the repo. */
-const WEEK_PIN_SLUG = "guard-never-fired";
+/** Lead pattern of content/newsletter/2026-w46.md, the latest weekly batch in the repo. */
+const WEEK_PIN_SLUG = "reverted-your-fix";
 
 /**
  * Render the localized catalog, featured recorder, this-week pin, search, and newsletter signup.

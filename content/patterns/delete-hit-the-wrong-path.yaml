@@ -15,6 +15,9 @@ tags:
   - ssd
   - partition
   - node_modules
+  - word-splitting
+  - zsh
+  - bypassPermissions
 title:
   en: The delete was approved. The path was wrong.
   zh: 删除是批准过的，路径却错了
@@ -43,29 +46,49 @@ symptom:
     or "not a git repository". Source files, `.git` and backups are gone, and the command in the log targets `""`, a
     drive root, or a parent directory. A node_modules cleanup can wipe an entire SSD partition the same way. Codex
     #57530 lost the E: partition's personal photographs, university assignments, academic documents, and years of other
-    software projects.
+    software projects. Claude Code #107271 (4 Nov 2026), @mishoko, deletes a repo root, including `.git`. An
+    agent-written bash helper runs unquoted `rm -rf $D`. The loop runs in zsh, which does not word-split
+    `set -- $side`, and the helper runs in bash, which splits that path. The session is in bypassPermissions, so nothing
+    asks. The log's `ls` leaves `output`, and git says `fatal: not a git repository`.
   zh: >-
     在“清理临时目录”或“重建 venv”之后，下一条命令立刻报 “No such file or directory” 或 “not a git repository”。源码、`.git` 和备份都没了，日志里的命令目标是
-    `""`、某个盘的根目录或上级目录。一次 node_modules 清理也会这样扫掉整块 SSD 分区。Codex #57530 里，E: 分区上的个人照片、大学作业、学术文档和数年的其他软件项目都没了。
+    `""`、某个盘的根目录或上级目录。一次 node_modules 清理也会这样扫掉整块 SSD 分区。Codex #57530 里，E: 分区上的个人照片、大学作业、学术文档和数年的其他软件项目都没了。Claude
+    Code #107271（2026-11-04），@mishoko，删掉了仓库根目录，包括 `.git`。智能体写的 bash 助手跑了未加引号的 `rm -rf $D`。循环跑在
+    zsh 里，`set -- $side` 不会按词拆开，助手跑在 bash 里，这条路径被拆开。会话处于 bypassPermissions，所以没有人询问。日志里的 `ls` 只剩下
+    `output`，git 报 `fatal: not a git repository`。
   pt: >-
     Logo após "clean up the temp dir" ou "fresh venv", o próximo comando falha com "No such file or directory" ou "not a
     git repository". Fontes, `.git` e backups sumiram; o comando no log mira `""`, raiz de drive ou diretório pai. Uma
     limpeza de node_modules pode apagar uma partição SSD inteira do mesmo jeito. No Codex #57530, a partição E: perdeu
-    fotos pessoais, trabalhos da universidade, documentos acadêmicos e anos de outros projetos de software.
+    fotos pessoais, trabalhos da universidade, documentos acadêmicos e anos de outros projetos de software. Claude Code
+    #107271 (4 nov 2026), @mishoko, apaga a raiz de um repo, incluindo `.git`. Um helper bash escrito
+    pelo agente roda `rm -rf $D` sem aspas. O loop roda em zsh, que não faz word-split em `set -- $side`, e o helper
+    roda em bash, que parte esse path. A sessão está em bypassPermissions, então ninguém pergunta. O `ls` do log deixa
+    `output`, e o git diz `fatal: not a git repository`.
   ko: >-
     "temp 정리"나 "새 venv" 직후 다음 명령이 "No such file or directory" 또는 "not a git repository"로 실패합니다. 소스·`.git`·백업이 사라지고, 로그의
     명령 대상이 `""`·드라이브 루트·상위 디렉터리입니다. node_modules 정리도 같은 방식으로 SSD 파티션 전체를 지울 수 있습니다. Codex #57530에서는 E:
-    파티션의 개인 사진, 대학 과제, 학술 문서, 수년치 다른 소프트웨어 프로젝트가 사라졌습니다.
+    파티션의 개인 사진, 대학 과제, 학술 문서, 수년치 다른 소프트웨어 프로젝트가 사라졌습니다. Claude Code #107271(2026-11-04), @mishoko는 저장소
+    루트와 `.git`을 지웁니다. 에이전트가 쓴 bash 헬퍼가 따옴표 없는 `rm -rf $D`를 실행합니다. 루프는 zsh에서 돌아 `set -- $side`를 단어로
+    나누지 않고, 헬퍼는 bash에서 돌아 그 경로를 나눕니다. 세션은 bypassPermissions라 아무도 묻지 않습니다. 로그의 `ls`에는 `output`만 남고, git은
+    `fatal: not a git repository`라고 합니다.
   vi: >-
     Ngay sau "clean up the temp dir" hoặc "fresh venv", lệnh tiếp fail với "No such file or directory" hoặc "not a git
     repository". Source, `.git` và backup biến mất; lệnh trong log nhắm `""`, root ổ đĩa hoặc thư mục cha. Dọn
     node_modules cũng có thể xóa cả phân vùng SSD theo cách đó. Trong Codex #57530, phân vùng E: mất ảnh cá nhân, bài
-    tập đại học, tài liệu học thuật và nhiều năm dự án phần mềm khác.
+    tập đại học, tài liệu học thuật và nhiều năm dự án phần mềm khác. Claude Code #107271 (4 Nov 2026), @mishoko, xóa
+    root của một repo, kể cả `.git`. Một helper bash do agent viết chạy `rm -rf $D` không ngoặc. Vòng lặp
+    chạy trong zsh, không tách từ ở `set -- $side`, và helper chạy trong bash, helper này tách path đó. Phiên ở
+    bypassPermissions, nên không ai hỏi. `ls` trong log chỉ còn `output`, và git báo `fatal: not a git repository`.
   de: >-
     Direkt nach „clean up the temp dir“ oder „fresh venv“ scheitert der nächste Befehl mit „No such file or directory“
     oder „not a git repository“. Quellen, `.git` und Backups sind weg; der Log-Befehl zielt auf `""`, Laufwerksroot oder
     Parent. Ein node_modules-Cleanup kann genauso eine ganze SSD-Partition löschen. In Codex #57530 waren auf E:
-    private Fotos, Uni-Aufgaben, akademische Dokumente und jahrelange andere Softwareprojekte weg.
+    private Fotos, Uni-Aufgaben, akademische Dokumente und jahrelange andere Softwareprojekte weg. Claude Code #107271
+    (4. Nov 2026), @mishoko, löscht eine Repo-Wurzel samt `.git`. Ein vom Agent geschriebenes
+    Bash-Hilfsskript führt `rm -rf $D` ohne Anführungszeichen aus. Die Schleife läuft in zsh und splittet `set -- $side`
+    nicht, das Hilfsskript läuft in bash und splittet diesen Pfad. Die Session ist in bypassPermissions, also fragt
+    niemand. Das `ls` im Log lässt `output` übrig, und git sagt `fatal: not a git repository`.
 why:
   en: >-
     Agents build paths in strings across shells (PowerShell → wsl → bash), and nobody checks the final resolved target.
@@ -76,12 +99,35 @@ why:
     directory, and `rm` deleted every sibling checkout. Codex #57530 (27 Oct 2026): while working on a React
     Native/Expo app, a malformed cleanup recursively deleted files across an entire E: SSD partition. The user had
     asked Codex to work on the app, not to delete anything outside the project. The loss was personal photographs,
-    university assignments, academic documents, and software projects accumulated over several years.
+    university assignments, academic documents, and software projects accumulated over several years. Claude Code
+    #107271 (4 Nov 2026), @mishoko. Claude Code 2.1.318, model claude-opus-5-5, macOS, permission mode
+    bypassPermissions. While measuring a change, and with no deletion requested, the agent writes a bash helper that
+    rebuilds an output directory with an unquoted `rm -rf $D`, where `D=$(dirname $R)/$N`, and calls it from a loop in
+    the Bash tool. The reporter says that on this macOS session the Bash tool runs the login shell, zsh. The loop does
+    `set -- $side` on strings such as `main <repo-root> main`. The report redacts paths as `<repo-root>`,
+    `<other-tree>`, and `<out>`. zsh does not word-split `$side`, so `$1` is the whole string and the helper receives
+    `N` as `main <repo-root> main`. Bash then splits the unquoted `rm -rf $D` into `rm -rf <out>/main`, the repo root,
+    and `main`. That deletes the repository root, including `.git`, and every local branch and commit. The reporter
+    says the local `.git` was the only copy of the history, and the SSD has TRIM, so undelete is impossible. Nothing
+    prompts, because the session is in bypassPermissions. The reporter is not disputing that mode. The `rm` sits inside
+    a script the agent just wrote, so permission rules that only see the outer command never see it. The model
+    diagnoses the cause in the same session. The reporter names two failures. The model builds an unguarded `rm -rf`
+    on a variable path, with no `${D:?}`, no prefix check, and no `set -u`, and it uses bash word-splitting while the
+    tool shell is zsh. The harness does not stop a recursive delete whose target is a git work-tree root, `.git`,
+    `$HOME`, or an ancestor of the working directory, including a delete from a script the agent wrote.
   zh: >-
     智能体在多层 shell 之间（PowerShell → wsl → bash）用字符串拼路径，却没人检查最终解析出来的目标。Codex #55161（2026-10-18）：本应作用于 /tmp 的 `python -m venv
     --clear` 在项目目录下以空目标 `""` 运行，清空了工作区。Cursor 论坛报告（经 NOPE 整理，2026-10-03）：用户同意清理约 18.5 GB 编译临时文件，`rmdir /s /q`
     的路径被拆开，源码、Git 和备份全没了。Sebastian Spicker（2026-10-05）：一条防护被放宽为允许“仓库根目录之外”的任何路径，测试传入了上级目录，`rm` 删光了所有同级仓库。Codex
-    #57530（2026-10-27）：在做一个 React Native/Expo 应用时，一次写坏的清理递归删除了整块 E: SSD 分区上的文件。用户让 Codex 做的是这个应用，不是删除项目以外的任何内容。丢掉的是个人照片、大学作业、学术文档，以及积累了数年的软件项目。
+    #57530（2026-10-27）：在做一个 React Native/Expo 应用时，一次写坏的清理递归删除了整块 E: SSD 分区上的文件。用户让 Codex 做的是这个应用，不是删除项目以外的任何内容。丢掉的是个人照片、大学作业、学术文档，以及积累了数年的软件项目。Claude
+    Code #107271（2026-11-04），@mishoko。Claude Code 2.1.318，模型 claude-opus-5-5，macOS，权限模式 bypassPermissions。在测量一处改动、没有人要求删除的时候，智能体写了一个
+    bash 助手，用未加引号的 `rm -rf $D` 重建输出目录，其中 `D=$(dirname $R)/$N`，再从 Bash 工具里的循环调用它。报告人说，这次 macOS
+    会话里 Bash 工具跑的是登录 shell，zsh。循环对 `main <repo-root> main` 这样的字符串做 `set -- $side`。报告把路径写成 `<repo-root>`、`<other-tree>` 和
+    `<out>`。zsh 不会把 `$side` 按词拆开，所以 `$1` 是整串，助手收到的 `N` 是 `main <repo-root> main`。bash 再把未加引号的 `rm -rf $D` 拆成 `rm -rf
+    <out>/main`、仓库根目录和 `main`。这删掉了仓库根目录，包括 `.git`，以及每一个本地分支和提交。报告人说本地 `.git` 是这份历史的唯一副本，SSD 有 TRIM，所以无法恢复。没有提示，因为会话处于
+    bypassPermissions。报告人并不争执这个模式。`rm` 写在智能体刚刚写的脚本里面，只看外层命令的权限规则看不见它。模型在同一次会话里自己说明了原因。报告人点了两处失败。模型在变量拼出来的路径上跑没有防护的
+    `rm -rf`，没有 `${D:?}`，没有前缀检查，也没有 `set -u`，而且工具 shell 是 zsh 时仍按 bash 的分词来写。Harness
+    不会拦住目标落在 git 工作区根目录、`.git`、`$HOME` 或当前目录祖先上的递归删除，包括从智能体写的脚本里发出的删除。
   pt: >-
     Agentes montam paths em strings entre shells (PowerShell → wsl → bash) sem checar o alvo resolvido final. Codex
     #55161 (18 Oct 2026): `python -m venv --clear` para /tmp rodou com alvo vazio `""` do diretório do projeto e limpou
@@ -91,14 +137,39 @@ why:
     #57530 (27 out 2026): durante o trabalho num app React Native/Expo, uma limpeza malformada apagou arquivos
     recursivamente em toda a partição SSD E:. O usuário tinha pedido ao Codex para trabalhar no app, não para apagar
     nada fora do projeto. O que se perdeu foram fotos pessoais, trabalhos da universidade, documentos acadêmicos e
-    projetos de software acumulados ao longo de vários anos.
+    projetos de software acumulados ao longo de vários anos. Claude Code #107271 (4 nov 2026), @mishoko. Claude Code
+    2.1.318, modelo claude-opus-5-5, macOS, modo de permissão bypassPermissions. Enquanto media uma mudança, e sem
+    ninguém pedir um delete, o agente escreve um helper bash que reconstrói um diretório de saída com `rm -rf $D` sem
+    aspas, onde `D=$(dirname $R)/$N`, e o chama de um loop na tool Bash. Quem reporta diz que, nessa sessão no macOS, a
+    tool Bash roda o login shell, zsh. O loop faz `set -- $side` em strings como `main <repo-root> main`. O relato
+    redige os paths como `<repo-root>`, `<other-tree>` e `<out>`. O zsh não faz word-split de `$side`, então `$1` é a
+    string inteira e o helper recebe `N` como `main <repo-root> main`. O bash então parte o `rm -rf $D` sem aspas em
+    `rm -rf <out>/main`, a raiz do repo e `main`. Isso apaga a raiz do repositório, incluindo `.git`, e cada branch e
+    commit locais. Quem reporta diz que o `.git` local era a única cópia do histórico, e o SSD tem TRIM, então
+    undelete é impossível. Nada pergunta, porque a sessão está em bypassPermissions. Quem reporta não disputa esse
+    modo. O `rm` fica dentro de um script que o agente acabou de escrever, então regras de permissão que só veem o
+    comando externo nunca o veem. O modelo diagnostica a causa na mesma sessão. Quem reporta nomeia duas falhas. O
+    modelo monta um `rm -rf` sem guarda num path feito de variável, sem `${D:?}`, sem checagem de prefixo e sem `set
+    -u`, e usa word-splitting de bash quando o shell da tool é zsh. O harness não impede um delete recursivo cujo alvo
+    é a raiz de um work-tree git, `.git`, `$HOME` ou um ancestral do diretório de trabalho, inclusive um delete vindo
+    de um script que o agente escreveu.
   ko: >-
     에이전트는 PowerShell → wsl → bash 사이에서 문자열로 경로를 만들고 최종 해석 대상을 확인하지 않습니다. Codex #55161(2026-10-18): /tmp용이던 `python -m
     venv --clear`가 프로젝트 디렉터리에서 빈 대상 `""`로 돌아가 워크스페이스를 비웠습니다. Cursor 포럼(경유 NOPE, 2026-10-03): 약 18.5GB 빌드 임시 정리에 동의했는데
     `rmdir /s /q` 경로가 갈라져 소스·Git·백업이 사라졌습니다. Sebastian Spicker(2026-10-05): "저장소 루트 밖" 경로를 허용하도록 가드를 완화했고, 테스트가 상위 디렉터리를
     넘겨 `rm`이 형제 체크아웃을 전부 지웠습니다. Codex #57530(2026-10-27): React Native/Expo 앱을 작업하던 중 잘못된 cleanup이 E: SSD 파티션
     전체의 파일을 재귀 삭제했습니다. 사용자는 Codex에게 앱 작업을 부탁했지, 프로젝트 밖을 지우라고 하지 않았습니다. 개인 사진, 대학 과제, 학술 문서, 수년간 쌓인 소프트웨어 프로젝트가
-    사라졌습니다.
+    사라졌습니다. Claude Code #107271(2026-11-04), @mishoko. Claude Code 2.1.318, 모델 claude-opus-5-5, macOS, 권한 모드
+    bypassPermissions. 삭제를 요청한 사람은 없고, 변경을 재는 동안 에이전트는 따옴표 없는 `rm -rf $D`로 출력 디렉터리를 다시 만드는 bash 헬퍼를
+    씁니다. `D=$(dirname $R)/$N`이고, Bash 도구의 루프에서 그 헬퍼를 부릅니다. 보고자는 이 macOS 세션에서 Bash 도구가 로그인 셸인 zsh를 실행한다고
+    합니다. 루프는 `main <repo-root> main` 같은 문자열에 `set -- $side`를 합니다. 보고는 경로를 `<repo-root>`, `<other-tree>`, `<out>`으로
+    가립니다. zsh는 `$side`를 단어로 나누지 않으므로 `$1`은 문자열 전체이고, 헬퍼가 받는 `N`은 `main <repo-root> main`입니다. 그다음 bash가 따옴표 없는
+    `rm -rf $D`를 `rm -rf <out>/main`, 저장소 루트, `main`으로 나눕니다. 그 결과 저장소 루트와 `.git`, 그리고 모든 로컬 브랜치와 커밋이
+    삭제됩니다. 보고자는 로컬 `.git`이 그 히스토리의 유일한 사본이었고, SSD에 TRIM이 있어 복구가 불가능하다고 합니다. 세션이 bypassPermissions라 묻지
+    않습니다. 보고자는 그 모드를 문제 삼지 않습니다. `rm`은 에이전트가 방금 쓴 스크립트 안에 있어서, 바깥 명령만 보는 권한 규칙은 그것을 보지 못합니다. 모델은 같은
+    세션에서 원인을 설명합니다. 보고자는 실패를 두 가지로 적습니다. 모델은 변수로 만든 경로에 가드 없는 `rm -rf`를 두고, `${D:?}`도 없고, 접두사 검사도
+    없고, `set -u`도 없으며, 도구 셸이 zsh인데 bash 단어 나누기를 씁니다. 하네스는 대상이 git 작업 트리 루트, `.git`, `$HOME`, 또는 작업 디렉터리의
+    조상인 재귀 삭제를 막지 않으며, 에이전트가 쓴 스크립트에서 나온 삭제도 포함됩니다.
   vi: >-
     Agent ghép path bằng chuỗi qua nhiều shell (PowerShell → wsl → bash) mà không kiểm đích resolve cuối. Codex #55161
     (18 Oct 2026): `python -m venv --clear` cho /tmp chạy với đích rỗng `""` từ thư mục project và xóa workspace. Báo
@@ -106,7 +177,20 @@ why:
     Git và backup mất. Sebastian Spicker (5 Oct 2026): guard nới cho mọi path "ngoài root repo"; test đưa thư mục cha;
     `rm` xóa mọi checkout anh em. Codex #57530 (27 Oct 2026): trong lúc làm app React Native/Expo, một lệnh dọn bị lỗi
     đã xóa đệ quy file trên toàn bộ phân vùng SSD E:. Người dùng nhờ Codex làm app, không nhờ xóa gì ngoài project. Mất
-    ảnh cá nhân, bài tập đại học, tài liệu học thuật và các dự án phần mềm tích lũy nhiều năm.
+    ảnh cá nhân, bài tập đại học, tài liệu học thuật và các dự án phần mềm tích lũy nhiều năm. Claude Code #107271 (4
+    Nov 2026), @mishoko. Claude Code 2.1.318, model claude-opus-5-5, macOS, chế độ quyền bypassPermissions. Trong lúc
+    đo một thay đổi, và không ai yêu cầu xóa, agent viết một helper bash dựng lại thư mục output bằng `rm -rf $D` không
+    ngoặc, với `D=$(dirname $R)/$N`, rồi gọi nó từ một vòng lặp trong tool Bash. Người báo cáo nói trên phiên macOS này
+    tool Bash chạy login shell, zsh. Vòng lặp làm `set -- $side` trên chuỗi như `main <repo-root> main`. Báo cáo viết
+    path thành `<repo-root>`, `<other-tree>` và `<out>`. zsh không tách từ `$side`, nên `$1` là cả chuỗi và helper nhận
+    `N` là `main <repo-root> main`. Bash sau đó tách `rm -rf $D` không ngoặc thành `rm -rf <out>/main`, root của repo,
+    và `main`. Việc đó xóa root của repository, kể cả `.git`, và mọi nhánh cùng commit cục bộ. Người báo cáo nói `.git`
+    cục bộ là bản sao duy nhất của lịch sử, và SSD có TRIM, nên không khôi phục được. Không có câu hỏi, vì phiên ở
+    bypassPermissions. Người báo cáo không tranh cãi chế độ đó. `rm` nằm trong script agent vừa viết, nên rule quyền
+    chỉ thấy lệnh bên ngoài không thấy nó. Model tự chẩn đoán nguyên nhân trong cùng phiên. Người báo cáo nêu hai lỗi.
+    Model dựng `rm -rf` không có guard trên path ghép từ biến, không có `${D:?}`, không có kiểm prefix, không có `set
+    -u`, và dùng cách tách từ của bash trong khi shell của tool là zsh. Harness không chặn một lần xóa đệ quy mà đích
+    là root work-tree git, `.git`, `$HOME`, hoặc tổ tiên của thư mục làm việc, kể cả lần xóa từ script agent viết.
   de: >-
     Agenten bauen Pfade als Strings über Shells (PowerShell → wsl → bash), ohne das final aufgelöste Ziel zu prüfen.
     Codex #55161 (18. Okt 2026): `python -m venv --clear` für /tmp lief mit leerem Ziel `""` aus dem Projektverzeichnis
@@ -116,7 +200,24 @@ why:
     (27. Okt 2026): Bei der Arbeit an einer React-Native/Expo-App löschte ein fehlerhaftes Cleanup Dateien rekursiv auf
     der gesamten E:-SSD-Partition. Die Person hatte Codex gebeten, an der App zu arbeiten, und nicht, außerhalb des
     Projekts etwas zu löschen. Verloren gingen private Fotos, Uni-Aufgaben, akademische Dokumente und über Jahre
-    gesammelte Softwareprojekte.
+    gesammelte Softwareprojekte. Claude Code #107271 (4. Nov 2026), @mishoko. Claude Code 2.1.318, Modell
+    claude-opus-5-5, macOS, Berechtigungsmodus bypassPermissions. Während einer Messung einer Änderung, und ohne dass
+    jemand ein Löschen verlangt hat, schreibt der Agent ein Bash-Hilfsskript, das ein Ausgabeverzeichnis mit einem
+    `rm -rf $D` ohne Anführungszeichen neu aufbaut, wobei `D=$(dirname $R)/$N`, und ruft es aus einer Schleife im
+    Bash-Tool auf. Die meldende Person sagt, dass in dieser macOS-Sitzung das Bash-Tool die Login-Shell ausführt, zsh.
+    Die Schleife macht `set -- $side` auf Zeichenketten wie `main <repo-root> main`. Der Bericht schwärzt Pfade als
+    `<repo-root>`, `<other-tree>` und `<out>`. zsh splittet `$side` nicht nach Wörtern, also ist `$1` die ganze
+    Zeichenkette und das Hilfsskript erhält `N` als `main <repo-root> main`. Bash splittet dann das `rm -rf $D` ohne
+    Anführungszeichen in `rm -rf <out>/main`, die Repo-Wurzel und `main`. Das löscht die Repository-Wurzel samt `.git`
+    und jeden lokalen Branch und Commit. Die meldende Person sagt, das lokale `.git` sei die einzige Kopie der
+    Historie gewesen, und die SSD habe TRIM, deshalb sei ein Undelete unmöglich. Nichts fragt nach, weil die Session in
+    bypassPermissions ist. Die meldende Person bestreitet diesen Modus nicht. Das `rm` steht in einem Skript, das der
+    Agent gerade geschrieben hat, also sehen Berechtigungsregeln, die nur den äußeren Befehl sehen, es nicht. Das
+    Modell benennt die Ursache in derselben Session. Die meldende Person nennt zwei Fehler. Das Modell baut ein
+    ungeschütztes `rm -rf` auf einem aus einer Variable gebauten Pfad, ohne `${D:?}`, ohne Präfixprüfung und ohne
+    `set -u`, und es benutzt Bash-Wortsplitting, während die Tool-Shell zsh ist. Der Harness stoppt ein rekursives
+    Löschen nicht, dessen Ziel eine Git-Worktree-Wurzel, `.git`, `$HOME` oder ein Vorfahr des Arbeitsverzeichnisses
+    ist, auch nicht ein Löschen aus einem Skript, das der Agent geschrieben hat.
 example:
   caption:
     en: The empty-target case from Codex
@@ -141,6 +242,9 @@ rule: |
     Never write guards as "anything outside X is allowed".
   - Test destructive code with a temp directory or an injected delete function, never a real path.
   - If a command fails with "No such file or directory" right after a delete, stop everything and tell the user.
+  - Quote and guard a path built from a variable. Use `rm -rf -- "${D:?}"`, a prefix check, and `set -u`.
+    Do not rely on bash word-splitting when the tool shell is zsh. In #107271, `set -- $side` ran in zsh and did not
+    split, and the bash helper's unquoted `rm -rf $D` did.
 extras:
   - kind: hook
     title:
@@ -191,3 +295,5 @@ sources:
     url: https://sebastianspicker.github.io/posts/the-day-claude-deleted-my-codebase/
   - title: 'openai/codex #57530: CRITICAL: Codex accidentally deleted an entire SSD partition while cleaning node_modules'
     url: https://github.com/openai/codex/issues/57530
+  - title: '@mishoko, anthropics/claude-code #107271 (4 Nov 2026): an agent-written helper ran unquoted rm -rf $D. zsh did not split the loop, bash split the path, and the repo root including .git was deleted in bypassPermissions'
+    url: https://github.com/anthropics/claude-code/issues/107271
