@@ -18,6 +18,9 @@ tags:
   - word-splitting
   - zsh
   - bypassPermissions
+  - rsync
+  - wsl
+  - nested-shell
 title:
   en: The delete was approved. The path was wrong.
   zh: 删除是批准过的，路径却错了
@@ -49,13 +52,21 @@ symptom:
     software projects. Claude Code #107271 (4 Nov 2026), @mishoko, deletes a repo root, including `.git`. An
     agent-written bash helper runs unquoted `rm -rf $D`. The loop runs in zsh, which does not word-split
     `set -- $side`, and the helper runs in bash, which splits that path. The session is in bypassPermissions, so nothing
-    asks. The log's `ls` leaves `output`, and git says `fatal: not a git repository`.
+    asks. The log's `ls` leaves `output`, and git says `fatal: not a git repository`. Claude Code #109735 (14 Nov
+    2026), @yangjeonsik, is an unattended overnight session on Windows. A subagent aims `rsync -a --delete` at `$R`. An
+    outer shell expands `$R` to empty, so `set -u` does not help, and the effective command is `rsync -a --delete
+    /mnt/d/<project>/ /`. User-deletable files under `/`, including `/mnt/d`, are deleted. There is no Recycle Bin.
+    TaskStop ends `wsl.exe`, and rsync keeps running about two more minutes. The subagent's first damage report wrongly
+    says the document folder was untouched.
   zh: >-
     在“清理临时目录”或“重建 venv”之后，下一条命令立刻报 “No such file or directory” 或 “not a git repository”。源码、`.git` 和备份都没了，日志里的命令目标是
     `""`、某个盘的根目录或上级目录。一次 node_modules 清理也会这样扫掉整块 SSD 分区。Codex #57530 里，E: 分区上的个人照片、大学作业、学术文档和数年的其他软件项目都没了。Claude
     Code #107271（2026-11-04），@mishoko，删掉了仓库根目录，包括 `.git`。智能体写的 bash 助手跑了未加引号的 `rm -rf $D`。循环跑在
     zsh 里，`set -- $side` 不会按词拆开，助手跑在 bash 里，这条路径被拆开。会话处于 bypassPermissions，所以没有人询问。日志里的 `ls` 只剩下
-    `output`，git 报 `fatal: not a git repository`。
+    `output`，git 报 `fatal: not a git repository`。Claude Code #109735（2026-11-14），@yangjeonsik，是 Windows
+    上一次无人值守的通宵会话。subagent 把 `rsync -a --delete` 的目标指到 `$R`。外层 shell 把 `$R` 展开成空，所以 `set -u` 没起作用，实际命令是
+    `rsync -a --delete /mnt/d/<project>/ /`。`/` 下用户能删的文件被删掉，包括 `/mnt/d`。没有回收站。TaskStop 结束了 `wsl.exe`，rsync
+    又继续跑了大约两分钟。subagent 的第一份损失报告错误地说文档文件夹没被动过。
   pt: >-
     Logo após "clean up the temp dir" ou "fresh venv", o próximo comando falha com "No such file or directory" ou "not a
     git repository". Fontes, `.git` e backups sumiram; o comando no log mira `""`, raiz de drive ou diretório pai. Uma
@@ -64,14 +75,22 @@ symptom:
     #107271 (4 nov 2026), @mishoko, apaga a raiz de um repo, incluindo `.git`. Um helper bash escrito
     pelo agente roda `rm -rf $D` sem aspas. O loop roda em zsh, que não faz word-split em `set -- $side`, e o helper
     roda em bash, que parte esse path. A sessão está em bypassPermissions, então ninguém pergunta. O `ls` do log deixa
-    `output`, e o git diz `fatal: not a git repository`.
+    `output`, e o git diz `fatal: not a git repository`. Claude Code #109735 (14 nov 2026), @yangjeonsik, é uma sessão
+    noturna sem supervisão no Windows. Um subagent aponta `rsync -a --delete` para `$R`. Um shell externo expande `$R`
+    para vazio, então `set -u` não ajuda, e o comando efetivo é `rsync -a --delete /mnt/d/<project>/ /`. Arquivos que o
+    usuário podia apagar sob `/`, inclusive `/mnt/d`, são apagados. Não há Lixeira. TaskStop encerra `wsl.exe`, e o
+    rsync continua por cerca de dois minutos. O primeiro relatório de dano do subagent diz, errado, que a pasta de
+    documentos não foi tocada.
   ko: >-
     "temp 정리"나 "새 venv" 직후 다음 명령이 "No such file or directory" 또는 "not a git repository"로 실패합니다. 소스·`.git`·백업이 사라지고, 로그의
     명령 대상이 `""`·드라이브 루트·상위 디렉터리입니다. node_modules 정리도 같은 방식으로 SSD 파티션 전체를 지울 수 있습니다. Codex #57530에서는 E:
     파티션의 개인 사진, 대학 과제, 학술 문서, 수년치 다른 소프트웨어 프로젝트가 사라졌습니다. Claude Code #107271(2026-11-04), @mishoko는 저장소
     루트와 `.git`을 지웁니다. 에이전트가 쓴 bash 헬퍼가 따옴표 없는 `rm -rf $D`를 실행합니다. 루프는 zsh에서 돌아 `set -- $side`를 단어로
     나누지 않고, 헬퍼는 bash에서 돌아 그 경로를 나눕니다. 세션은 bypassPermissions라 아무도 묻지 않습니다. 로그의 `ls`에는 `output`만 남고, git은
-    `fatal: not a git repository`라고 합니다.
+    `fatal: not a git repository`라고 합니다. Claude Code #109735(2026-11-14), @yangjeonsik는 Windows에서 사람 없이 밤새 진행된 세션입니다.
+    subagent가 `rsync -a --delete`의 대상을 `$R`로 둡니다. 바깥 셸이 `$R`을 빈 값으로 확장해서 `set -u`가 도움이 되지 않고, 실제 명령은 `rsync
+    -a --delete /mnt/d/<project>/ /`입니다. `/` 아래에서 사용자가 지울 수 있는 파일이 삭제되고, `/mnt/d`도 포함됩니다. 휴지통은 없습니다. TaskStop이
+    `wsl.exe`를 끝냈지만 rsync는 약 2분 더 돕니다. subagent의 첫 피해 보고는 문서 폴더가 그대로라고 잘못 말합니다.
   vi: >-
     Ngay sau "clean up the temp dir" hoặc "fresh venv", lệnh tiếp fail với "No such file or directory" hoặc "not a git
     repository". Source, `.git` và backup biến mất; lệnh trong log nhắm `""`, root ổ đĩa hoặc thư mục cha. Dọn
@@ -80,6 +99,11 @@ symptom:
     root của một repo, kể cả `.git`. Một helper bash do agent viết chạy `rm -rf $D` không ngoặc. Vòng lặp
     chạy trong zsh, không tách từ ở `set -- $side`, và helper chạy trong bash, helper này tách path đó. Phiên ở
     bypassPermissions, nên không ai hỏi. `ls` trong log chỉ còn `output`, và git báo `fatal: not a git repository`.
+    Claude Code #109735 (14 Nov 2026), @yangjeonsik, là một phiên qua đêm không người trông trên Windows. Một subagent
+    nhằm `rsync -a --delete` vào `$R`. Một shell bên ngoài bung `$R` thành rỗng, nên `set -u` không giúp được, và lệnh
+    thực tế là `rsync -a --delete /mnt/d/<project>/ /`. File mà user xóa được dưới `/`, kể cả `/mnt/d`, bị xóa. Không có
+    Recycle Bin. TaskStop kết thúc `wsl.exe`, và rsync chạy thêm khoảng hai phút. Báo cáo thiệt hại đầu tiên của
+    subagent nói sai rằng thư mục tài liệu không bị đụng.
   de: >-
     Direkt nach „clean up the temp dir“ oder „fresh venv“ scheitert der nächste Befehl mit „No such file or directory“
     oder „not a git repository“. Quellen, `.git` und Backups sind weg; der Log-Befehl zielt auf `""`, Laufwerksroot oder
@@ -88,7 +112,12 @@ symptom:
     (4. Nov 2026), @mishoko, löscht eine Repo-Wurzel samt `.git`. Ein vom Agent geschriebenes
     Bash-Hilfsskript führt `rm -rf $D` ohne Anführungszeichen aus. Die Schleife läuft in zsh und splittet `set -- $side`
     nicht, das Hilfsskript läuft in bash und splittet diesen Pfad. Die Session ist in bypassPermissions, also fragt
-    niemand. Das `ls` im Log lässt `output` übrig, und git sagt `fatal: not a git repository`.
+    niemand. Das `ls` im Log lässt `output` übrig, und git sagt `fatal: not a git repository`. Claude Code #109735 (14.
+    Nov 2026), @yangjeonsik, ist eine unbeaufsichtigte Nachtsitzung unter Windows. Ein Subagent zielt mit `rsync -a
+    --delete` auf `$R`. Eine äußere Shell expandiert `$R` zu leer, also hilft `set -u` nicht, und der wirksame Befehl
+    ist `rsync -a --delete /mnt/d/<project>/ /`. Vom Benutzer löschbare Dateien unter `/`, einschließlich `/mnt/d`,
+    werden gelöscht. Es gibt keinen Papierkorb. TaskStop beendet `wsl.exe`, und rsync läuft noch etwa zwei Minuten. Der
+    erste Schadensbericht des Subagents sagt fälschlich, der Dokumentordner sei unberührt.
 why:
   en: >-
     Agents build paths in strings across shells (PowerShell → wsl → bash), and nobody checks the final resolved target.
@@ -115,6 +144,12 @@ why:
     on a variable path, with no `${D:?}`, no prefix check, and no `set -u`, and it uses bash word-splitting while the
     tool shell is zsh. The harness does not stop a recursive delete whose target is a git work-tree root, `.git`,
     `$HOME`, or an ancestor of the working directory, including a delete from a script the agent wrote.
+    Claude Code #109735 (14 Nov 2026), @yangjeonsik. A subagent in an unattended overnight session on Windows runs `wsl
+    -d Ubuntu-24.04 -- bash -lc 'set -u; R=~/some-dir; ... rsync -a --delete ... /mnt/d/<project>/ $R/'`. `$R` is
+    expanded to empty by an outer shell layer, so `set -u` does not help. The effective command is `rsync -a --delete
+    /mnt/d/<project>/ /`. That deletes user-deletable files under `/`, including `/mnt/d`. There is no Recycle Bin.
+    TaskStop ends `wsl.exe`, and rsync keeps running about two more minutes. The subagent's first damage report wrongly
+    says the document folder was untouched.
   zh: >-
     智能体在多层 shell 之间（PowerShell → wsl → bash）用字符串拼路径，却没人检查最终解析出来的目标。Codex #55161（2026-10-18）：本应作用于 /tmp 的 `python -m venv
     --clear` 在项目目录下以空目标 `""` 运行，清空了工作区。Cursor 论坛报告（经 NOPE 整理，2026-10-03）：用户同意清理约 18.5 GB 编译临时文件，`rmdir /s /q`
@@ -127,7 +162,11 @@ why:
     <out>/main`、仓库根目录和 `main`。这删掉了仓库根目录，包括 `.git`，以及每一个本地分支和提交。报告人说本地 `.git` 是这份历史的唯一副本，SSD 有 TRIM，所以无法恢复。没有提示，因为会话处于
     bypassPermissions。报告人并不争执这个模式。`rm` 写在智能体刚刚写的脚本里面，只看外层命令的权限规则看不见它。模型在同一次会话里自己说明了原因。报告人点了两处失败。模型在变量拼出来的路径上跑没有防护的
     `rm -rf`，没有 `${D:?}`，没有前缀检查，也没有 `set -u`，而且工具 shell 是 zsh 时仍按 bash 的分词来写。Harness
-    不会拦住目标落在 git 工作区根目录、`.git`、`$HOME` 或当前目录祖先上的递归删除，包括从智能体写的脚本里发出的删除。
+    不会拦住目标落在 git 工作区根目录、`.git`、`$HOME` 或当前目录祖先上的递归删除，包括从智能体写的脚本里发出的删除。Claude Code
+    #109735（2026-11-14），@yangjeonsik。一次无人值守的通宵会话里，Windows 上的 subagent 跑了 `wsl -d Ubuntu-24.04 -- bash -lc 'set -u;
+    R=~/some-dir; ... rsync -a --delete ... /mnt/d/<project>/ $R/'`。`$R` 被外层 shell 展开成空，所以里面的 `set -u` 没帮上忙。实际命令是
+    `rsync -a --delete /mnt/d/<project>/ /`。这删掉了 `/` 下用户能删的文件，包括 `/mnt/d`。没有回收站。TaskStop 结束了 `wsl.exe`，rsync
+    又继续跑了大约两分钟。subagent 的第一份损失报告错误地说文档文件夹没被动过。
   pt: >-
     Agentes montam paths em strings entre shells (PowerShell → wsl → bash) sem checar o alvo resolvido final. Codex
     #55161 (18 Oct 2026): `python -m venv --clear` para /tmp rodou com alvo vazio `""` do diretório do projeto e limpou
@@ -152,7 +191,12 @@ why:
     modelo monta um `rm -rf` sem guarda num path feito de variável, sem `${D:?}`, sem checagem de prefixo e sem `set
     -u`, e usa word-splitting de bash quando o shell da tool é zsh. O harness não impede um delete recursivo cujo alvo
     é a raiz de um work-tree git, `.git`, `$HOME` ou um ancestral do diretório de trabalho, inclusive um delete vindo
-    de um script que o agente escreveu.
+    de um script que o agente escreveu. Claude Code #109735 (14 nov 2026), @yangjeonsik. Um subagent numa sessão
+    noturna sem supervisão no Windows roda `wsl -d Ubuntu-24.04 -- bash -lc 'set -u; R=~/some-dir; ... rsync -a
+    --delete ... /mnt/d/<project>/ $R/'`. `$R` é expandido para vazio por uma camada externa de shell, então `set -u`
+    não ajuda. O comando efetivo é `rsync -a --delete /mnt/d/<project>/ /`. Isso apaga arquivos que o usuário podia
+    apagar sob `/`, inclusive `/mnt/d`. Não há Lixeira. TaskStop encerra `wsl.exe`, e o rsync continua por cerca de
+    dois minutos. O primeiro relatório de dano do subagent diz, errado, que a pasta de documentos não foi tocada.
   ko: >-
     에이전트는 PowerShell → wsl → bash 사이에서 문자열로 경로를 만들고 최종 해석 대상을 확인하지 않습니다. Codex #55161(2026-10-18): /tmp용이던 `python -m
     venv --clear`가 프로젝트 디렉터리에서 빈 대상 `""`로 돌아가 워크스페이스를 비웠습니다. Cursor 포럼(경유 NOPE, 2026-10-03): 약 18.5GB 빌드 임시 정리에 동의했는데
@@ -169,7 +213,11 @@ why:
     않습니다. 보고자는 그 모드를 문제 삼지 않습니다. `rm`은 에이전트가 방금 쓴 스크립트 안에 있어서, 바깥 명령만 보는 권한 규칙은 그것을 보지 못합니다. 모델은 같은
     세션에서 원인을 설명합니다. 보고자는 실패를 두 가지로 적습니다. 모델은 변수로 만든 경로에 가드 없는 `rm -rf`를 두고, `${D:?}`도 없고, 접두사 검사도
     없고, `set -u`도 없으며, 도구 셸이 zsh인데 bash 단어 나누기를 씁니다. 하네스는 대상이 git 작업 트리 루트, `.git`, `$HOME`, 또는 작업 디렉터리의
-    조상인 재귀 삭제를 막지 않으며, 에이전트가 쓴 스크립트에서 나온 삭제도 포함됩니다.
+    조상인 재귀 삭제를 막지 않으며, 에이전트가 쓴 스크립트에서 나온 삭제도 포함됩니다. Claude Code #109735(2026-11-14), @yangjeonsik. Windows에서
+    사람 없이 밤새 진행된 세션의 subagent가 `wsl -d Ubuntu-24.04 -- bash -lc 'set -u; R=~/some-dir; ... rsync -a --delete ...
+    /mnt/d/<project>/ $R/'`를 실행합니다. `$R`은 바깥 셸 층에서 빈 값으로 확장되어 `set -u`가 도움이 되지 않습니다. 실제 명령은 `rsync -a --delete
+    /mnt/d/<project>/ /`입니다. `/` 아래에서 사용자가 지울 수 있는 파일이 삭제되고, `/mnt/d`도 포함됩니다. 휴지통은 없습니다. TaskStop이 `wsl.exe`를
+    끝냈지만 rsync는 약 2분 더 돕니다. subagent의 첫 피해 보고는 문서 폴더가 그대로라고 잘못 말합니다.
   vi: >-
     Agent ghép path bằng chuỗi qua nhiều shell (PowerShell → wsl → bash) mà không kiểm đích resolve cuối. Codex #55161
     (18 Oct 2026): `python -m venv --clear` cho /tmp chạy với đích rỗng `""` từ thư mục project và xóa workspace. Báo
@@ -191,6 +239,12 @@ why:
     Model dựng `rm -rf` không có guard trên path ghép từ biến, không có `${D:?}`, không có kiểm prefix, không có `set
     -u`, và dùng cách tách từ của bash trong khi shell của tool là zsh. Harness không chặn một lần xóa đệ quy mà đích
     là root work-tree git, `.git`, `$HOME`, hoặc tổ tiên của thư mục làm việc, kể cả lần xóa từ script agent viết.
+    Claude Code #109735 (14 Nov 2026), @yangjeonsik. Một subagent trong phiên qua đêm không người trông trên Windows
+    chạy `wsl -d Ubuntu-24.04 -- bash -lc 'set -u; R=~/some-dir; ... rsync -a --delete ... /mnt/d/<project>/ $R/'`. `$R`
+    bị một lớp shell bên ngoài bung thành rỗng, nên `set -u` không giúp được. Lệnh thực tế là `rsync -a --delete
+    /mnt/d/<project>/ /`. Việc đó xóa các file user xóa được dưới `/`, kể cả `/mnt/d`. Không có Recycle Bin. TaskStop
+    kết thúc `wsl.exe`, và rsync chạy thêm khoảng hai phút. Báo cáo thiệt hại đầu tiên của subagent nói sai rằng thư
+    mục tài liệu không bị đụng.
   de: >-
     Agenten bauen Pfade als Strings über Shells (PowerShell → wsl → bash), ohne das final aufgelöste Ziel zu prüfen.
     Codex #55161 (18. Okt 2026): `python -m venv --clear` für /tmp lief mit leerem Ziel `""` aus dem Projektverzeichnis
@@ -217,21 +271,36 @@ why:
     ungeschütztes `rm -rf` auf einem aus einer Variable gebauten Pfad, ohne `${D:?}`, ohne Präfixprüfung und ohne
     `set -u`, und es benutzt Bash-Wortsplitting, während die Tool-Shell zsh ist. Der Harness stoppt ein rekursives
     Löschen nicht, dessen Ziel eine Git-Worktree-Wurzel, `.git`, `$HOME` oder ein Vorfahr des Arbeitsverzeichnisses
-    ist, auch nicht ein Löschen aus einem Skript, das der Agent geschrieben hat.
+    ist, auch nicht ein Löschen aus einem Skript, das der Agent geschrieben hat. Claude Code #109735 (14. Nov 2026),
+    @yangjeonsik. Ein Subagent in einer unbeaufsichtigten Nachtsitzung unter Windows führt `wsl -d Ubuntu-24.04 -- bash
+    -lc 'set -u; R=~/some-dir; ... rsync -a --delete ... /mnt/d/<project>/ $R/'` aus. `$R` wird von einer äußeren
+    Shell-Schicht zu leer expandiert, also hilft `set -u` nicht. Der wirksame Befehl ist `rsync -a --delete
+    /mnt/d/<project>/ /`. Das löscht vom Benutzer löschbare Dateien unter `/`, einschließlich `/mnt/d`. Es gibt keinen
+    Papierkorb. TaskStop beendet `wsl.exe`, und rsync läuft noch etwa zwei Minuten. Der erste Schadensbericht des
+    Subagents sagt fälschlich, der Dokumentordner sei unberührt.
 example:
   caption:
-    en: The empty-target case from Codex
-    zh: Codex
-    pt: O caso de alvo vazio do Codex
-    ko: Codex의 빈 대상 사례
-    vi: Trường hợp đích rỗng từ Codex
-    de: Der Leerziel-Fall aus Codex
+    en: The empty-target case from Codex, then the reported rsync command from #109735.
+    zh: Codex 的空目标，然后是 #109735 报告里的 rsync 命令。
+    pt: O caso de alvo vazio do Codex e, depois, o comando rsync relatado em #109735.
+    ko: Codex의 빈 대상 사례, 이어서 #109735에 보고된 rsync 명령.
+    vi: Trường hợp đích rỗng từ Codex, rồi lệnh rsync được báo trong #109735.
+    de: Der Leerziel-Fall aus Codex, danach der berichtete rsync-Befehl aus #109735.
   lang: bash
   code: |
     # intended: python3 -m venv --clear /tmp/test-env
     # cwd: /mnt/d/Opencode/M_easytier   (the project)
     /usr/bin/python3.12 -m venv --clear --copies --system-site-packages ""
     # next step: project test runner no longer exists
+    #
+    # 2026-11-14, anthropics/claude-code #109735, @yangjeonsik
+    # Unattended overnight session on Windows. A subagent ran:
+    #   wsl -d Ubuntu-24.04 -- bash -lc 'set -u; R=~/some-dir; ... rsync -a --delete ... /mnt/d/<project>/ $R/'
+    # An outer shell expanded $R to empty. set -u did not help.
+    # Effective: rsync -a --delete /mnt/d/<project>/ /
+    # User-deletable files under /, including /mnt/d. No Recycle Bin.
+    # TaskStop ended wsl.exe. rsync kept running about 2 more minutes.
+    # The first damage report wrongly said the document folder was untouched.
 rule: |
   ## Resolve and check every delete target
   - Before any recursive delete or "clear" (`rm -r`, `rmdir /s`, `Remove-Item -Recurse`, `venv --clear`,
@@ -245,6 +314,11 @@ rule: |
   - Quote and guard a path built from a variable. Use `rm -rf -- "${D:?}"`, a prefix check, and `set -u`.
     Do not rely on bash word-splitting when the tool shell is zsh. In #107271, `set -- $side` ran in zsh and did not
     split, and the bash helper's unquoted `rm -rf $D` did.
+  - Before `rsync --delete` or `rm -rf`, resolve the destination to an absolute path and show it. Refuse the command
+    when that path is a variable. Use `"${R:?}/"`.
+  - `set -u` does not see a variable an outer shell already expanded. Through `wsl.exe` or `ssh`, put `${R:?}` in the
+    shell that expands the path. In #109735 the inner command was `bash -lc` with `set -u`, the outer layer expanded
+    `$R` to empty, and the effective command was `rsync -a --delete /mnt/d/<project>/ /`.
 extras:
   - kind: hook
     title:
@@ -275,7 +349,7 @@ extras:
           sys.exit(0)
       cmd = call["tool_input"].get("command", "")
 
-      deletes = r"(\brm\s+-\S*r|\brmdir\s+/s|Remove-Item\b.*-Recurse|venv\s+.*--clear|shutil\.rmtree)"
+      deletes = r"(\brm\s+-\S*r|\brmdir\s+/s|Remove-Item\b.*-Recurse|venv\s+.*--clear|shutil\.rmtree|\brsync\b.*--delete)"
       bad_target = r"(\"\"|''|\s/\s*$|\s/[\s;&|]|\s~/?(\s|$)|\$HOME/?(\s|$|\")|\s\.\.(/|\s|$)|\s[A-Za-z]:\\?(\s|$|\"))"
       if re.search(deletes, cmd) and re.search(bad_target, cmd):
           print("BLOCKED: delete target is empty, a root, home, or a parent directory. "
@@ -283,6 +357,10 @@ extras:
           sys.exit(2)
       if re.search(r"\brm\s+-\S*r\S*\s+\"?\$\{?\w+\}?/", cmd) and ":?" not in cmd:
           print("BLOCKED: use ${VAR:?} so an empty variable cannot expand to /.", file=sys.stderr)
+          sys.exit(2)
+      if re.search(r"\brsync\b.*--delete", cmd) and re.search(r"\$\{?\w+", cmd) and ":?" not in cmd:
+          print("BLOCKED: rsync --delete uses a path variable without ${R:?}. "
+                "An outer shell through wsl.exe or ssh can expand it to empty before set -u runs.", file=sys.stderr)
           sys.exit(2)
       sys.exit(0)
   - ref: destructive-bash-hook
@@ -297,3 +375,5 @@ sources:
     url: https://github.com/openai/codex/issues/57530
   - title: '@mishoko, anthropics/claude-code #107271 (4 Nov 2026): an agent-written helper ran unquoted rm -rf $D. zsh did not split the loop, bash split the path, and the repo root including .git was deleted in bypassPermissions'
     url: https://github.com/anthropics/claude-code/issues/107271
+  - title: '@yangjeonsik, anthropics/claude-code #109735 (14 Nov 2026): an outer shell emptied $R before set -u, so rsync --delete ran against / from an unattended overnight session on Windows. TaskStop ended wsl.exe; rsync kept running about two more minutes. The first damage report wrongly said the document folder was untouched'
+    url: https://github.com/anthropics/claude-code/issues/109735
