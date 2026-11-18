@@ -49,7 +49,7 @@ Clicking Copy on an example block (and on a fix block) still copies the snippet.
 
 ## Homepage week pin
 
-The homepage pin is `reverted-your-fix`, the lead item of `content/newsletter/2026-w46.md`. Each locale renders a real link (not an in-page scroll) to that pattern, with the locale label and the pattern title.
+The homepage pin is `spent-your-api-key`, the lead item of `content/newsletter/2026-w47.md`. Each locale renders a real link (not an in-page scroll) to that pattern, with the locale label and the pattern title.
 
 ```bash
 set -euo pipefail
@@ -67,12 +67,12 @@ pt=$(find .next -type f -path '*/pt.html' -o -type f -path '*/pt/index.html' | h
 ko=$(find .next -type f -path '*/ko.html' -o -type f -path '*/ko/index.html' | head -n 1)
 vi=$(find .next -type f -path '*/vi.html' -o -type f -path '*/vi/index.html' | head -n 1)
 de=$(find .next -type f -path '*/de.html' -o -type f -path '*/de/index.html' | head -n 1)
-check_pin "$en" "/patterns/reverted-your-fix" "This week&#x27;s 翻车" "The fix was in"
-check_pin "$zh" "/zh/patterns/reverted-your-fix" "本周翻车" "把旧文本写回去"
-check_pin "$pt" "/pt/patterns/reverted-your-fix" "Falha desta semana" "texto antigo de volta"
-check_pin "$ko" "/ko/patterns/reverted-your-fix" "이번 주 실패" "예전 글을 다시 썼다"
-check_pin "$vi" "/vi/patterns/reverted-your-fix" "Lỗi tuần này" "Nó viết lại câu cũ"
-check_pin "$de" "/de/patterns/reverted-your-fix" "Fail dieser Woche" "Der Fix war schon drin"
+check_pin "$en" "/patterns/spent-your-api-key" "This week&#x27;s 翻车" "Then it spent the key"
+check_pin "$zh" "/zh/patterns/spent-your-api-key" "本周翻车" "花掉了项目的密钥"
+check_pin "$pt" "/pt/patterns/spent-your-api-key" "Falha desta semana" "Depois gastou a chave"
+check_pin "$ko" "/ko/patterns/spent-your-api-key" "이번 주 실패" "프로젝트 키를 썼다"
+check_pin "$vi" "/vi/patterns/spent-your-api-key" "Lỗi tuần này" "tiêu key của dự án"
+check_pin "$de" "/de/patterns/spent-your-api-key" "Fail dieser Woche" "verbrauchte es den Schlüssel"
 ```
 
 ## Week 2026-W46 pages
@@ -97,4 +97,34 @@ grep -q -F 'com.docker.compose.project' "$prune" || { echo "missing compose proj
 grep -q -F '107271' "$del" || { echo "missing 107271 in $del"; exit 1; }
 grep -q -F 'D:?' "$del" || { echo "missing quoted rm guard in $del"; exit 1; }
 echo "ok week 2026-W46 pages"
+```
+
+## Week 2026-W47 pages
+
+The two new patterns and the delete-path update are in the built English HTML.
+
+```bash
+set -euo pipefail
+page() {
+  find .next -type f -path "*/patterns/$1.html" ! -path '*/zh/*' ! -path '*/pt/*' ! -path '*/ko/*' ! -path '*/vi/*' ! -path '*/de/*' | head -n 1
+}
+spend=$(page spent-your-api-key)
+shot=$(page obeyed-the-screenshot)
+del=$(page delete-hit-the-wrong-path)
+test -n "$spend" || { echo "missing built HTML for /patterns/spent-your-api-key"; exit 1; }
+test -n "$shot" || { echo "missing built HTML for /patterns/obeyed-the-screenshot"; exit 1; }
+test -n "$del" || { echo "missing built HTML for /patterns/delete-hit-the-wrong-path"; exit 1; }
+grep -q -F '110556' "$spend" || { echo "missing 110556 in $spend"; exit 1; }
+grep -q -F '109364' "$spend" || { echo "missing 109364 in $spend"; exit 1; }
+grep -q -F '$5.94' "$spend" || { echo "missing \$5.94 in $spend"; exit 1; }
+grep -q -F 'claude-fable-5-2' "$spend" || { echo "missing claude-fable-5-2 in $spend"; exit 1; }
+grep -q -F 'ANTHROPIC_API_KEY' "$spend" || { echo "missing ANTHROPIC_API_KEY in $spend"; exit 1; }
+grep -q -F 'Read(**/.env*)' "$spend" || { echo "missing Read deny glob in $spend"; exit 1; }
+grep -q -F '109003' "$shot" || { echo "missing 109003 in $shot"; exit 1; }
+grep -q -F '@playwright/test' "$shot" || { echo "missing @playwright/test in $shot"; exit 1; }
+grep -q -F 'photographed slide' "$shot" || { echo "missing photographed slide in $shot"; exit 1; }
+grep -q -F '109735' "$del" || { echo "missing 109735 in $del"; exit 1; }
+grep -q -F 'R:?' "$del" || { echo "missing R:? guard in $del"; exit 1; }
+grep -q -F 'rsync -a --delete' "$del" || { echo "missing rsync --delete in $del"; exit 1; }
+echo "ok week 2026-W47 pages"
 ```
