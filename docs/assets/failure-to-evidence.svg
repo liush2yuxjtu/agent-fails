@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+<title id="title">AgentFails — turn a claim into a checkable report</title>
+<desc id="desc">Input: an agent says tests pass, but no check ran. Find the phantom-success pattern and copy Evidence, not claims. Merge into CLAUDE.md or AGENTS.md, or copy the full Cursor MDC rule. Run allowed project checks. Report the actual command, exit code and output, marking PASS, FAIL or BLOCKED and listing unverified scope. This is a report contract, not a recorded test result.</desc>
+<rect width="1200" height="500" rx="24" fill="#101827"/>
+<g font-family="DejaVu Sans,sans-serif">
+<text x="40" y="53" fill="#f1f5f9" font-size="28" font-weight="700">AgentFails / Evidence, not claims</text>
+<text x="40" y="86" fill="#cbd5e1" font-size="17">A sourced rule connects a failure symptom to a checkable first task.</text>
+<rect x="40" y="116" width="330" height="173" rx="14" fill="#422632"/>
+<rect x="435" y="116" width="330" height="173" rx="14" fill="#193c4b"/>
+<rect x="830" y="116" width="330" height="173" rx="14" fill="#164036"/>
+<g fill="#f8fafc" font-size="20" font-weight="700">
+<text x="60" y="151">01 / FIND THE FAILURE</text>
+<text x="455" y="151">02 / COPY THE RULE</text>
+<text x="850" y="151">03 / APPLY + CHECK</text></g>
+<g fill="#e2e8f0" font-size="17">
+<text x="60" y="188">Claim: “All tests pass.”</text><text x="60" y="219">Evidence: no check was run.</text><text x="60" y="258">Pattern: phantom-success</text>
+<text x="455" y="188">Read symptom + source.</text><text x="455" y="219">Copy “Evidence, not claims”.</text><text x="455" y="258">Do not overwrite team rules.</text>
+<text x="850" y="188">CLAUDE.md / AGENTS.md</text><text x="850" y="219">Cursor: full .mdc file block</text><text x="850" y="258">Run permitted project checks.</text></g>
+<g fill="none" stroke="#7dd3fc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M386 203h30m-9-9 9 9-9 9"/><path d="M781 203h30m-9-9 9 9-9 9"/><path d="M995 299v20m-8-8 8 8 8-8"/>
+</g>
+<rect x="40" y="333" width="1120" height="110" rx="14" fill="#1e293b"/>
+<text x="60" y="366" fill="#f8fafc" font-size="19" font-weight="700">EXPECTED REPORT / not an execution log</text>
+<text x="60" y="397" fill="#e2e8f0" font-size="17">working directory  |  actual command  |  exit code  |  real output  |  unverified scope</text>
+<text x="60" y="425" fill="#cbd5e1" font-size="17">PASS: check passed    /    FAIL: nonzero exit    /    BLOCKED: could not run</text>
+<text x="40" y="476" fill="#cbd5e1" font-size="16">Rules guide; permissions, hooks and CI enforce only what they cover. No automatic fix or guarantee.</text>
+</g></svg>
