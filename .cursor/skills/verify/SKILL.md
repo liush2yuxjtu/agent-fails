@@ -49,7 +49,7 @@ Clicking Copy on an example block (and on a fix block) still copies the snippet.
 
 ## Homepage week pin
 
-The homepage pin is `spent-your-api-key`, the lead item of `content/newsletter/2026-w47.md`. Each locale renders a real link (not an in-page scroll) to that pattern, with the locale label and the pattern title.
+The homepage pin is `cleanup-glob-ate-your-files`, the lead item of `content/newsletter/2026-w48.md`. Each locale renders a real link (not an in-page scroll) to that pattern, with the locale label and the pattern title.
 
 ```bash
 set -euo pipefail
@@ -67,12 +67,12 @@ pt=$(find .next -type f -path '*/pt.html' -o -type f -path '*/pt/index.html' | h
 ko=$(find .next -type f -path '*/ko.html' -o -type f -path '*/ko/index.html' | head -n 1)
 vi=$(find .next -type f -path '*/vi.html' -o -type f -path '*/vi/index.html' | head -n 1)
 de=$(find .next -type f -path '*/de.html' -o -type f -path '*/de/index.html' | head -n 1)
-check_pin "$en" "/patterns/spent-your-api-key" "This week&#x27;s 翻车" "Then it spent the key"
-check_pin "$zh" "/zh/patterns/spent-your-api-key" "本周翻车" "花掉了项目的密钥"
-check_pin "$pt" "/pt/patterns/spent-your-api-key" "Falha desta semana" "Depois gastou a chave"
-check_pin "$ko" "/ko/patterns/spent-your-api-key" "이번 주 실패" "프로젝트 키를 썼다"
-check_pin "$vi" "/vi/patterns/spent-your-api-key" "Lỗi tuần này" "tiêu key của dự án"
-check_pin "$de" "/de/patterns/spent-your-api-key" "Fail dieser Woche" "verbrauchte es den Schlüssel"
+check_pin "$en" "/patterns/cleanup-glob-ate-your-files" "This week&#x27;s 翻车" "ate files it did not create"
+check_pin "$zh" "/zh/patterns/cleanup-glob-ate-your-files" "本周翻车" "吃掉了它没创建的文件"
+check_pin "$pt" "/pt/patterns/cleanup-glob-ate-your-files" "Falha desta semana" "arquivos que ele não criou"
+check_pin "$ko" "/ko/patterns/cleanup-glob-ate-your-files" "이번 주 실패" "만들지 않은 파일"
+check_pin "$vi" "/vi/patterns/cleanup-glob-ate-your-files" "Lỗi tuần này" "file nó không tạo"
+check_pin "$de" "/de/patterns/cleanup-glob-ate-your-files" "Fail dieser Woche" "die es nicht angelegt hatte"
 ```
 
 ## Week 2026-W46 pages
@@ -127,4 +127,35 @@ grep -q -F '109735' "$del" || { echo "missing 109735 in $del"; exit 1; }
 grep -q -F 'R:?' "$del" || { echo "missing R:? guard in $del"; exit 1; }
 grep -q -F 'rsync -a --delete' "$del" || { echo "missing rsync --delete in $del"; exit 1; }
 echo "ok week 2026-W47 pages"
+```
+
+## Week 2026-W48 pages
+
+The three new patterns are in the built English HTML.
+
+```bash
+set -euo pipefail
+page() {
+  find .next -type f -path "*/patterns/$1.html" ! -path '*/zh/*' ! -path '*/pt/*' ! -path '*/ko/*' ! -path '*/vi/*' ! -path '*/de/*' | head -n 1
+}
+glob=$(page cleanup-glob-ate-your-files)
+tests=$(page ran-every-test-unread)
+net=$(page added-network-access-unasked)
+test -n "$glob" || { echo "missing built HTML for /patterns/cleanup-glob-ate-your-files"; exit 1; }
+test -n "$tests" || { echo "missing built HTML for /patterns/ran-every-test-unread"; exit 1; }
+test -n "$net" || { echo "missing built HTML for /patterns/added-network-access-unasked"; exit 1; }
+grep -q -F '111167' "$glob" || { echo "missing 111167 in $glob"; exit 1; }
+grep -q -F '112007' "$glob" || { echo "missing 112007 in $glob"; exit 1; }
+grep -q -F '30,000' "$glob" || { echo "missing 30,000 in $glob"; exit 1; }
+grep -q -F '23 GB' "$glob" || { echo "missing 23 GB in $glob"; exit 1; }
+grep -q -F 'mktemp -d' "$glob" || { echo "missing mktemp -d in $glob"; exit 1; }
+grep -q -F 'bypassPermissions' "$glob" || { echo "missing bypassPermissions in $glob"; exit 1; }
+grep -q -F 'Recycle Bin' "$glob" || { echo "missing Recycle Bin in $glob"; exit 1; }
+grep -q -F '111921' "$tests" || { echo "missing 111921 in $tests"; exit 1; }
+grep -q -F 'HOME=$(mktemp -d) npm test' "$tests" || { echo "missing HOME mktemp example in $tests"; exit 1; }
+grep -q -F '110686' "$net" || { echo "missing 110686 in $net"; exit 1; }
+grep -q -F 'Opus 5.5' "$net" || { echo "missing Opus 5.5 in $net"; exit 1; }
+grep -q -F 'Docker daemon' "$net" || { echo "missing Docker daemon in $net"; exit 1; }
+grep -q -F 'Authorization' "$net" || { echo "missing Authorization in $net"; exit 1; }
+echo "ok week 2026-W48 pages"
 ```

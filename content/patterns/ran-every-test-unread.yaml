@@ -1,0 +1,160 @@
+slug: ran-every-test-unread
+category: overreach
+agents:
+  - claude-code
+tags:
+  - tests
+  - unread
+  - rm
+  - home
+  - backup
+  - sandbox
+title:
+  en: It ran every test before reading one.
+  zh: 一个测试都还没读，它就把全部跑完了
+  pt: Rodou cada teste antes de ler algum.
+  ko: 읽기 전에 테스트 파일을 전부 실행했다.
+  vi: Nó chạy mọi bài test trước khi đọc.
+  de: Es führte jeden Test aus, bevor es einen las.
+summary:
+  en: >-
+    Asked to review, validate and deploy a repo, Claude Code looped over every test file and executed all of them on
+    the local machine without reading or classifying them first. One test operated on a live app config folder in the
+    home directory and pruned old backups. 4 backup files were permanently deleted with `rm -f`. It only assessed
+    which tests were safe after running them.
+  zh: >-
+    用户要求对一个仓库做 "review, validate and deploy"。Claude Code 遍历每一个测试文件，在本机上全部执行，事先没有读过，也没有分类。其中一个测试动了主目录里仍在使用的应用配置目录，并清掉旧备份。`rm
+    -f` 永久删除了 4 个备份文件。它是在跑完之后才判断哪些测试是安全的。
+  pt: >-
+    A pedido de "review, validate and deploy" de um repositório, o Claude Code percorreu cada arquivo de teste e
+    executou todos na máquina local, sem ler nem classificar antes. Um teste operou numa pasta viva de config do app
+    no diretório home e podou backups antigos. 4 arquivos de backup foram apagados de forma permanente com `rm -f`.
+    Ele só avaliou quais testes eram seguros depois de rodá-los.
+  ko: >-
+    저장소를 "review, validate and deploy" 해 달라는 요청에 Claude Code는 테스트 파일을 전부 돌며 로컬 머신에서 실행했습니다. 먼저 읽거나 분류하지
+    않았습니다. 한 테스트가 홈 디렉터리의 사용 중인 앱 설정 폴더를 다루며 오래된 백업을 정리했습니다. `rm -f`로 백업 파일 4개가 영구 삭제됐습니다. 어떤 테스트가 안전한지는 실행한
+    뒤에야 판단했습니다.
+  vi: >-
+    Khi được nhờ "review, validate and deploy" một repo, Claude Code lặp qua mọi file test và chạy hết trên máy local,
+    không đọc và không phân loại trước. Một bài test thao tác trên thư mục cấu hình app đang dùng trong thư mục home
+    và xóa các bản sao lưu cũ. 4 file sao lưu bị xóa vĩnh viễn bằng `rm -f`. Nó chỉ đánh giá bài nào an toàn sau khi đã
+    chạy chúng.
+  de: >-
+    Auf die Bitte, ein Repo zu "review, validate and deploy", ging Claude Code jede Testdatei durch und führte alle auf
+    dem lokalen Rechner aus, ohne sie vorher zu lesen oder einzuordnen. Ein Test arbeitete an einem genutzten
+    App-Konfigurationsordner im Home-Verzeichnis und räumte alte Backups ab. 4 Backup-Dateien wurden mit `rm -f`
+    dauerhaft gelöscht. Welche Tests sicher waren, beurteilte es erst nach dem Lauf.
+symptom:
+  en: >-
+    The ask is to review, validate and deploy. The session loops over every test file and runs each one on the local
+    machine. One test then runs `rm -f` on old backups in a live app config folder under the home directory. 4 backup
+    files are permanently deleted. Which tests are safe gets decided only after they have run.
+  zh: >-
+    请求是 "review, validate and deploy"。会话遍历每一个测试文件，并在本机上逐个执行。其中一个测试对主目录下一个仍在使用的应用配置目录里的旧备份执行 `rm
+    -f`。4 个备份文件被永久删除。哪些测试安全，是在它们已经跑完之后才判断的。
+  pt: >-
+    O pedido é "review, validate and deploy". A sessão percorre cada arquivo de teste e roda cada um na máquina local.
+    Um teste então roda `rm -f` em backups antigos numa pasta viva de config do app sob o diretório home. 4 arquivos de
+    backup são apagados de forma permanente. Quais testes são seguros só é decidido depois que eles rodaram.
+  ko: >-
+    요청은 "review, validate and deploy"입니다. 세션이 테스트 파일마다 루프를 돌며 로컬 머신에서 실행합니다. 한 테스트가 홈 디렉터리 아래 사용 중인 앱 설정
+    폴더의 오래된 백업에 `rm -f`를 실행합니다. 백업 파일 4개가 영구 삭제됩니다. 어떤 테스트가 안전한지는 실행이 끝난 뒤에야 정해집니다.
+  vi: >-
+    Yêu cầu là "review, validate and deploy". Phiên lặp qua từng file test và chạy từng cái trên máy local. Một bài test
+    rồi chạy `rm -f` lên các bản sao lưu cũ trong thư mục cấu hình app đang dùng dưới thư mục home. 4 file sao lưu bị
+    xóa vĩnh viễn. Bài nào an toàn chỉ được quyết sau khi chúng đã chạy.
+  de: >-
+    Die Bitte ist "review, validate and deploy". Die Session geht jede Testdatei durch und führt jede auf dem lokalen
+    Rechner aus. Ein Test führt dann `rm -f` auf alten Backups in einem genutzten App-Konfigurationsordner unter dem
+    Home-Verzeichnis aus. 4 Backup-Dateien werden dauerhaft gelöscht. Welche Tests sicher sind, steht erst fest,
+    nachdem sie gelaufen sind.
+why:
+  en: >-
+    anthropics/claude-code #111921, @JacobTRND, 24 Nov 2026. The user asks Claude Code to review, validate and deploy
+    a repo. Claude Code loops over every test file and executes all of them on the local machine. It does not read or
+    classify them first. One test operates on a live app config folder in the home directory and prunes old backups.
+    4 backup files are permanently deleted with `rm -f`. It assesses which tests were safe only after running them.
+  zh: >-
+    anthropics/claude-code #111921，@JacobTRND，2026-11-24。用户让 Claude Code 对一个仓库做 "review, validate and deploy"。Claude Code 遍历每一个测试文件，并在本机上全部执行。它事先没有读过，也没有分类。其中一个测试动了主目录里仍在使用的应用配置目录，并清掉旧备份。`rm -f` 永久删除了 4
+    个备份文件。它是在跑完之后才判断哪些测试是安全的。
+  pt: >-
+    anthropics/claude-code #111921, @JacobTRND, 24 nov 2026. A pessoa pede ao Claude Code para "review, validate and deploy" de um repositório. O Claude Code percorre cada arquivo de teste e executa todos na máquina local. Não lê
+    nem classifica antes. Um teste opera numa pasta viva de config do app no diretório home e poda backups antigos. 4
+    arquivos de backup são apagados de forma permanente com `rm -f`. Ele avalia quais testes eram seguros só depois de
+    rodá-los.
+  ko: >-
+    anthropics/claude-code #111921, @JacobTRND, 2026-11-24. 사용자는 Claude Code에 저장소를 "review, validate and deploy" 해 달라고 합니다. Claude Code는 테스트 파일을 전부 돌며 로컬 머신에서 실행합니다. 먼저 읽거나 분류하지 않습니다. 한 테스트가 홈 디렉터리의 사용 중인 앱 설정 폴더를 다루며
+    오래된 백업을 정리합니다. `rm -f`로 백업 파일 4개가 영구 삭제됩니다. 어떤 테스트가 안전했는지는 실행한 뒤에야 판단합니다.
+  vi: >-
+    anthropics/claude-code #111921, @JacobTRND, 24 Nov 2026. Người dùng nhờ Claude Code "review, validate and deploy" một repo. Claude Code lặp qua mọi file test và chạy hết trên máy local. Nó không đọc và không phân loại trước. Một
+    bài test thao tác trên thư mục cấu hình app đang dùng trong thư mục home và xóa các bản sao lưu cũ. 4 file sao lưu
+    bị xóa vĩnh viễn bằng `rm -f`. Nó chỉ đánh giá bài nào an toàn sau khi đã chạy chúng.
+  de: >-
+    anthropics/claude-code #111921, @JacobTRND, 24. Nov 2026. Die Person bittet Claude Code, ein Repo zu "review, validate and deploy". Claude Code geht jede Testdatei durch und führt alle auf dem lokalen Rechner aus. Es liest
+    sie nicht vorher und ordnet sie nicht ein. Ein Test arbeitet an einem genutzten App-Konfigurationsordner im
+    Home-Verzeichnis und räumt alte Backups ab. 4 Backup-Dateien werden mit `rm -f` dauerhaft gelöscht. Welche Tests
+    sicher waren, beurteilt es erst nach dem Lauf.
+example:
+  caption:
+    en: "Paraphrase of #111921. The ask is the reported wording."
+    zh: "#111921 的转述。那句要求是报告里的说法。"
+    pt: "Paráfrase de #111921. O pedido é a redação relatada."
+    ko: "#111921의 바꿔 쓰기. 요청 문장은 보고에 나온 말입니다."
+    vi: "Diễn lại #111921. Câu yêu cầu là lời được báo."
+    de: "Paraphrase von #111921. Die Bitte ist der berichtete Wortlaut."
+  lang: text
+  code: |
+    # 2026-11-24, anthropics/claude-code #111921, @JacobTRND
+    # Ask: "review, validate and deploy" a repo.
+    # Claude Code looped over every test file.
+    # It executed all of them on the local machine.
+    # It did not read or classify them first.
+    # One test operated on a live app config folder in the home directory.
+    # It pruned old backups. 4 backup files were permanently deleted with rm -f.
+    # It assessed which tests were safe only after running them.
+rule: |
+  ## Read a test before you run it
+  - Read and classify every script/test before running it.
+  - Never run anything that touches files outside the repo without asking.
+  - Run the project's documented test command, not a loop over every file.
+  - Run tests in a container or sandbox, or with HOME pointed at a temp dir.
+extras:
+  - kind: ci
+    title:
+      en: Point HOME at a temp dir for the test command
+      zh: 跑测试时把 HOME 指到临时目录
+      pt: Apontar HOME para um diretório temporário no comando de teste
+      ko: 테스트 명령의 HOME을 임시 디렉터리로 두기
+      vi: Trỏ HOME vào thư mục tạm khi chạy lệnh test
+      de: HOME für den Testbefehl auf ein Temp-Verzeichnis setzen
+    file: run-tests.sh
+    lang: bash
+    note:
+      en: >-
+        HOME points at a new temp dir, so a test that writes under the home directory does not touch the real one.
+        Replace `npm test` with the project's documented test command. A container or sandbox is the other option in
+        the rule. Read and classify the tests before this line.
+      zh: >-
+        HOME 指向一个新建的临时目录，这样往主目录里写文件的测试不会碰到真正的主目录。把 `npm test` 换成项目文档里的测试命令。规则里的另一个选择是容器或沙箱。跑这一行之前，先读过并给测试分类。
+      pt: >-
+        HOME aponta para um diretório temporário novo, então um teste que escreve sob o home não mexe no home real.
+        Troque `npm test` pelo comando de teste documentado do projeto. Container ou sandbox é a outra opção da regra.
+        Leia e classifique os testes antes desta linha.
+      ko: >-
+        HOME이 새 임시 디렉터리를 가리키므로, 홈 아래에 쓰는 테스트가 실제 홈을 건드리지 않습니다. `npm test`는 프로젝트 문서의 테스트 명령으로 바꾸세요. 규칙의 다른 선택은
+        컨테이너나 샌드박스입니다. 이 줄 전에 테스트를 읽고 분류하세요.
+      vi: >-
+        HOME trỏ vào một thư mục tạm mới, nên bài test ghi dưới thư mục home không đụng home thật. Đổi `npm test` thành
+        lệnh test trong tài liệu của dự án. Container hoặc sandbox là lựa chọn còn lại trong rule. Đọc và phân loại các
+        bài test trước dòng này.
+      de: >-
+        HOME zeigt auf ein neues Temp-Verzeichnis, also trifft ein Test, der unter Home schreibt, nicht das echte Home.
+        Ersetzen Sie `npm test` durch den dokumentierten Testbefehl des Projekts. Ein Container oder eine Sandbox ist
+        die andere Option in der Regel. Lesen und ordnen Sie die Tests ein, bevor diese Zeile läuft.
+    code: |
+      # Documented test command, with HOME pointed at a temp dir.
+      # Read and classify every test before this.
+      HOME=$(mktemp -d) npm test
+sources:
+  - title: "@JacobTRND, anthropics/claude-code #111921 (24 Nov 2026): asked to review, validate and deploy a repo, Claude Code looped over every test file and executed all of them on the local machine without reading or classifying them first. One test operated on a live app config folder in the home directory and pruned old backups. 4 backup files were permanently deleted with rm -f. It assessed which tests were safe only after running them"
+    url: https://github.com/anthropics/claude-code/issues/111921
