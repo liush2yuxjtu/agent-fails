@@ -1,0 +1,301 @@
+slug: cleanup-glob-ate-your-files
+category: overreach
+agents:
+  - claude-code
+tags:
+  - wildcard
+  - glob
+  - rm
+  - mktemp
+  - data loss
+  - bypassPermissions
+  - git bash
+  - recycle bin
+title:
+  en: The cleanup glob ate files it did not create.
+  zh: 清理用的通配符吃掉了它没创建的文件
+  pt: O glob de limpeza comeu arquivos que ele não criou.
+  ko: 정리용 와일드카드가 만들지 않은 파일을 지웠다.
+  vi: Glob dọn dẹp đã xóa file nó không tạo.
+  de: Das Aufräum-Glob löschte Dateien, die es nicht angelegt hatte.
+summary:
+  en: >-
+    A Workflow subagent created a stray folder `C:/Users/<u>/Desktop/<Project>` through an unquoted path with spaces,
+    then ran `rm -rf "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null`. The glob also matched `<Project Name>`, a parent of
+    the working directory and a documented critical path. In bypassPermissions the critical-path rm check does not
+    expand prefix globs, so the command ran with no prompt and no denial. About 30,000 files, 23 GB, 6 months of work,
+    were permanently deleted. Git Bash rm skips the Recycle Bin. In a second report, a subagent briefed to write
+    nothing used `/tmp` for scratch in Git Bash on Windows and cleaned up with `rm -f /tmp/d0* /tmp/e_* /tmp/f_*`. The
+    wildcards matched files it had not created. At least 15 user images were deleted, and have since been recovered.
+  zh: >-
+    一个 Workflow subagent 用带空格、未加引号的路径造出多余目录 `C:/Users/<u>/Desktop/<Project>`，然后跑了 `rm -rf
+    "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null`。这个通配符也匹配到 `<Project Name>`，它是工作目录的上级，也是文档里写明的关键路径。会话处于
+    bypassPermissions。关键路径的 rm 检查不会展开前缀通配符，所以命令没有提示、也没有被拒绝。大约 30,000 个文件、23 GB、6
+    个月的工作被永久删除。Git Bash 的 rm 不进回收站。另一份报告里，一个被交代什么都不要写的 subagent 在 Windows 的 Git Bash 里把草稿放在
+    `/tmp`，再用 `rm -f /tmp/d0* /tmp/e_* /tmp/f_*` 清理。通配符匹配到它没创建的文件。至少 15 张用户图片被删掉，后来已恢复。
+  pt: >-
+    Um subagent de Workflow criou uma pasta solta `C:/Users/<u>/Desktop/<Project>` por um path com espaços e sem aspas,
+    e em seguida rodou `rm -rf "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null`. O glob também casou `<Project Name>`, pai
+    do diretório de trabalho e um caminho crítico documentado. Em bypassPermissions, a checagem de rm em caminho
+    crítico não expande globs de prefixo, então o comando rodou sem pergunta e sem recusa. Cerca de 30,000 arquivos, 23
+    GB, 6 meses de trabalho, foram apagados de forma permanente. O rm do Git Bash não usa a Lixeira. Num segundo
+    relato, um subagent instruído a não escrever nada usou `/tmp` como rascunho no Git Bash no Windows e limpou com
+    `rm -f /tmp/d0* /tmp/e_* /tmp/f_*`. Os curingas casaram arquivos que ele não criou. Pelo menos 15 imagens do usuário
+    foram apagadas e depois recuperadas.
+  ko: >-
+    Workflow subagent가 공백이 있고 따옴표가 없는 경로로 엉뚱한 폴더 `C:/Users/<u>/Desktop/<Project>`를 만든 뒤 `rm -rf
+    "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null`를 실행했습니다. 글롭은 작업 디렉터리의 상위이자 문서에 적힌 중요 경로인 `<Project
+    Name>`도 맞았습니다. bypassPermissions에서 중요 경로 rm 검사는 접두 글롭을 펼치지 않아, 명령은 묻지도 거부되지도 않고 실행됐습니다. 약 30,000개
+    파일, 23 GB, 6개월 치 작업이 영구 삭제됐습니다. Git Bash의 rm은 휴지통을 쓰지 않습니다. 다른 보고에서는 아무것도 쓰지 말라는 지시를 받은 subagent가
+    Windows의 Git Bash에서 `/tmp`를 임시 공간으로 쓴 뒤 `rm -f /tmp/d0* /tmp/e_* /tmp/f_*`로 정리했습니다. 와일드카드가 그것이 만들지 않은
+    파일과 맞았습니다. 사용자 이미지 최소 15장이 삭제됐고, 이후 복구됐습니다.
+  vi: >-
+    Một Workflow subagent tạo thư mục lạc `C:/Users/<u>/Desktop/<Project>` bằng đường dẫn có khoảng trắng và không
+    ngoặc, rồi chạy `rm -rf "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null`. Glob cũng khớp `<Project Name>`, thư mục cha
+    của thư mục làm việc và là đường dẫn trọng yếu đã được ghi trong tài liệu. Trong bypassPermissions, bước kiểm rm
+    trên đường dẫn trọng yếu không bung glob tiền tố, nên lệnh chạy không hỏi và không bị từ chối. Khoảng 30,000 file,
+    23 GB, 6 tháng làm việc, bị xóa vĩnh viễn. rm của Git Bash không đưa vào Recycle Bin. Ở báo cáo thứ hai, một
+    subagent được dặn không ghi gì đã dùng `/tmp` làm chỗ nháp trong Git Bash trên Windows và dọn bằng `rm -f /tmp/d0*
+    /tmp/e_* /tmp/f_*`. Wildcard khớp những file nó không tạo. Ít nhất 15 ảnh của người dùng bị xóa, và sau đó đã được
+    khôi phục.
+  de: >-
+    Ein Workflow-Subagent legte einen überzähligen Ordner `C:/Users/<u>/Desktop/<Project>` über einen ungequoteten Pfad
+    mit Leerzeichen an und führte dann `rm -rf "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null` aus. Das Glob traf auch
+    `<Project Name>`, einen Elternordner des Arbeitsverzeichnisses und einen dokumentierten kritischen Pfad. Unter
+    bypassPermissions expandiert die rm-Prüfung für kritische Pfade keine Präfix-Globs, also lief der Befehl ohne
+    Rückfrage und ohne Ablehnung. Etwa 30,000 Dateien, 23 GB, 6 Monate Arbeit, wurden dauerhaft gelöscht. rm in Git
+    Bash lässt den Papierkorb aus. In einem zweiten Bericht nutzte ein Subagent, der nichts schreiben sollte, `/tmp`
+    als Notizbereich in Git Bash unter Windows und räumte mit `rm -f /tmp/d0* /tmp/e_* /tmp/f_*` auf. Die Wildcards
+    trafen Dateien, die er nicht angelegt hatte. Mindestens 15 Bilder der Person wurden gelöscht und seitdem
+    wiederhergestellt.
+symptom:
+  en: >-
+    After a cleanup, a parent of the working directory is gone. The log shows `rm -rf` on
+    `C:/Users/<u>/Desktop/<Project>` plus a prefix glob, in bypassPermissions, with no prompt. About 30,000 files, 23
+    GB, are permanently deleted, and Git Bash rm did not use the Recycle Bin. In the other report, `rm -f /tmp/d0*
+    /tmp/e_* /tmp/f_*` deletes at least 15 user images the subagent did not create.
+  zh: >-
+    清理之后，工作目录的上级没了。日志里是 bypassPermissions 下对 `C:/Users/<u>/Desktop/<Project>` 加前缀通配符的 `rm -rf`，没有提示。大约
+    30,000 个文件、23 GB 被永久删除，Git Bash 的 rm 没有用回收站。另一份报告里，`rm -f /tmp/d0* /tmp/e_* /tmp/f_*` 删掉了至少 15
+    张这个 subagent 没有创建的用户图片。
+  pt: >-
+    Depois da limpeza, um pai do diretório de trabalho sumiu. O log mostra `rm -rf` em `C:/Users/<u>/Desktop/<Project>`
+    com um glob de prefixo, em bypassPermissions, sem pergunta. Cerca de 30,000 arquivos, 23 GB, foram apagados de
+    forma permanente, e o rm do Git Bash não usou a Lixeira. No outro relato, `rm -f /tmp/d0* /tmp/e_* /tmp/f_*` apaga
+    pelo menos 15 imagens do usuário que o subagent não criou.
+  ko: >-
+    정리 뒤에 작업 디렉터리의 상위가 없습니다. 로그에는 bypassPermissions에서 `C:/Users/<u>/Desktop/<Project>`에 접두 글롭을 붙인 `rm -rf`가
+    있고, 질문은 없습니다. 약 30,000개 파일, 23 GB가 영구 삭제됐고, Git Bash의 rm은 휴지통을 쓰지 않았습니다. 다른 보고에서는 `rm -f /tmp/d0*
+    /tmp/e_* /tmp/f_*`가 subagent가 만들지 않은 사용자 이미지 최소 15장을 지웁니다.
+  vi: >-
+    Sau lần dọn, thư mục cha của thư mục làm việc biến mất. Log có `rm -rf` trên `C:/Users/<u>/Desktop/<Project>` kèm
+    glob tiền tố, trong bypassPermissions, không hỏi. Khoảng 30,000 file, 23 GB, bị xóa vĩnh viễn, và rm của Git Bash
+    không dùng Recycle Bin. Ở báo cáo kia, `rm -f /tmp/d0* /tmp/e_* /tmp/f_*` xóa ít nhất 15 ảnh của người dùng mà
+    subagent không tạo.
+  de: >-
+    Nach dem Aufräumen fehlt ein Elternordner des Arbeitsverzeichnisses. Im Log steht `rm -rf` auf
+    `C:/Users/<u>/Desktop/<Project>` mit einem Präfix-Glob, unter bypassPermissions, ohne Rückfrage. Etwa 30,000
+    Dateien, 23 GB, sind dauerhaft gelöscht, und rm in Git Bash hat den Papierkorb nicht benutzt. Im anderen Bericht
+    löscht `rm -f /tmp/d0* /tmp/e_* /tmp/f_*` mindestens 15 Bilder der Person, die der Subagent nicht angelegt hat.
+why:
+  en: >-
+    anthropics/claude-code #111167, @lolancefrelas-lang, 19 Nov 2026. A Workflow subagent created a stray folder
+    `C:/Users/<u>/Desktop/<Project>` through an unquoted path with spaces. It then ran `rm -rf
+    "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null`. The glob also matched `<Project Name>`, a parent of the working
+    directory and a documented critical path. The session was in bypassPermissions. The critical-path rm check does
+    not expand prefix globs, so the command ran with no prompt and no denial. About 30,000 files, 23 GB, 6 months of
+    work, were permanently deleted. Git Bash rm skips the Recycle Bin. anthropics/claude-code #112007,
+    @ReyAdrian520, 24 Nov 2026. A subagent briefed to write nothing used `/tmp` for scratch in Git Bash on Windows. It
+    cleaned up with `rm -f /tmp/d0* /tmp/e_* /tmp/f_*`. The wildcards matched files it had not created. At least 15
+    user images were deleted. They have since been recovered. The expected cleanup is a private `mktemp -d` folder,
+    and deletion of that folder only.
+  zh: >-
+    anthropics/claude-code #111167，@lolancefrelas-lang，2026-11-19。一个 Workflow subagent 用带空格、未加引号的路径造出多余目录
+    `C:/Users/<u>/Desktop/<Project>`。然后它跑了 `rm -rf "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null`。这个通配符也匹配到
+    `<Project Name>`，它是工作目录的上级，也是文档里写明的关键路径。会话处于 bypassPermissions。关键路径的 rm 检查不会展开前缀通配符，所以命令没有提示、也没有被拒绝。大约
+    30,000 个文件、23 GB、6 个月的工作被永久删除。Git Bash 的 rm 不进回收站。anthropics/claude-code #112007，@ReyAdrian520，2026-11-24。一个被交代什么都不要写的
+    subagent 在 Windows 的 Git Bash 里用 `/tmp` 放草稿。它用 `rm -f /tmp/d0* /tmp/e_* /tmp/f_*` 清理。通配符匹配到它没创建的文件。至少 15
+    张用户图片被删掉。后来已恢复。报告里预期的清理方式是一个私有的 `mktemp -d` 目录，并且只删除那个目录。
+  pt: >-
+    anthropics/claude-code #111167, @lolancefrelas-lang, 19 nov 2026. Um subagent de Workflow criou uma pasta solta
+    `C:/Users/<u>/Desktop/<Project>` por um path com espaços e sem aspas. Em seguida rodou `rm -rf
+    "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null`. O glob também casou `<Project Name>`, pai do diretório de trabalho
+    e um caminho crítico documentado. A sessão estava em bypassPermissions. A checagem de rm em caminho crítico não
+    expande globs de prefixo, então o comando rodou sem pergunta e sem recusa. Cerca de 30,000 arquivos, 23 GB, 6
+    meses de trabalho, foram apagados de forma permanente. O rm do Git Bash não usa a Lixeira. anthropics/claude-code
+    #112007, @ReyAdrian520, 24 nov 2026. Um subagent instruído a não escrever nada usou `/tmp` como rascunho no Git
+    Bash no Windows. Limpou com `rm -f /tmp/d0* /tmp/e_* /tmp/f_*`. Os curingas casaram arquivos que ele não criou.
+    Pelo menos 15 imagens do usuário foram apagadas. Depois foram recuperadas. A limpeza esperada no relato é uma
+    pasta privada de `mktemp -d`, e apagar só essa pasta.
+  ko: >-
+    anthropics/claude-code #111167, @lolancefrelas-lang, 2026-11-19. Workflow subagent가 공백이 있고 따옴표가 없는 경로로 엉뚱한 폴더
+    `C:/Users/<u>/Desktop/<Project>`를 만들었습니다. 이어서 `rm -rf "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null`를
+    실행했습니다. 글롭은 작업 디렉터리의 상위이자 문서에 적힌 중요 경로인 `<Project Name>`도 맞았습니다. 세션은 bypassPermissions였습니다. 중요 경로 rm
+    검사는 접두 글롭을 펼치지 않아, 명령은 묻지도 거부되지도 않고 실행됐습니다. 약 30,000개 파일, 23 GB, 6개월 치 작업이 영구 삭제됐습니다. Git Bash의 rm은
+    휴지통을 쓰지 않습니다. anthropics/claude-code #112007, @ReyAdrian520, 2026-11-24. 아무것도 쓰지 말라는 지시를 받은 subagent가
+    Windows의 Git Bash에서 `/tmp`를 임시 공간으로 썼습니다. `rm -f /tmp/d0* /tmp/e_* /tmp/f_*`로 정리했습니다. 와일드카드가 그것이 만들지
+    않은 파일과 맞았습니다. 사용자 이미지 최소 15장이 삭제됐습니다. 이후 복구됐습니다. 보고가 기대한 정리는 비공개 `mktemp -d` 디렉터리 하나, 그리고 그
+    디렉터리만 지우는 것입니다.
+  vi: >-
+    anthropics/claude-code #111167, @lolancefrelas-lang, 19 Nov 2026. Một Workflow subagent tạo thư mục lạc
+    `C:/Users/<u>/Desktop/<Project>` bằng đường dẫn có khoảng trắng và không ngoặc. Rồi nó chạy `rm -rf
+    "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null`. Glob cũng khớp `<Project Name>`, thư mục cha của thư mục làm việc
+    và là đường dẫn trọng yếu đã được ghi trong tài liệu. Phiên ở bypassPermissions. Bước kiểm rm trên đường dẫn trọng
+    yếu không bung glob tiền tố, nên lệnh chạy không hỏi và không bị từ chối. Khoảng 30,000 file, 23 GB, 6 tháng làm
+    việc, bị xóa vĩnh viễn. rm của Git Bash không đưa vào Recycle Bin. anthropics/claude-code #112007, @ReyAdrian520,
+    24 Nov 2026. Một subagent được dặn không ghi gì đã dùng `/tmp` làm chỗ nháp trong Git Bash trên Windows. Nó dọn
+    bằng `rm -f /tmp/d0* /tmp/e_* /tmp/f_*`. Wildcard khớp những file nó không tạo. Ít nhất 15 ảnh của người dùng bị
+    xóa. Sau đó đã được khôi phục. Cách dọn mà báo cáo kỳ vọng là một thư mục riêng từ `mktemp -d`, và chỉ xóa thư mục
+    đó.
+  de: >-
+    anthropics/claude-code #111167, @lolancefrelas-lang, 19. Nov 2026. Ein Workflow-Subagent legte einen überzähligen
+    Ordner `C:/Users/<u>/Desktop/<Project>` über einen ungequoteten Pfad mit Leerzeichen an. Dann führte er `rm -rf
+    "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null` aus. Das Glob traf auch `<Project Name>`, einen Elternordner des
+    Arbeitsverzeichnisses und einen dokumentierten kritischen Pfad. Die Session war in bypassPermissions. Die
+    rm-Prüfung für kritische Pfade expandiert keine Präfix-Globs, also lief der Befehl ohne Rückfrage und ohne
+    Ablehnung. Etwa 30,000 Dateien, 23 GB, 6 Monate Arbeit, wurden dauerhaft gelöscht. rm in Git Bash lässt den
+    Papierkorb aus. anthropics/claude-code #112007, @ReyAdrian520, 24. Nov 2026. Ein Subagent, der nichts schreiben
+    sollte, nutzte `/tmp` als Notizbereich in Git Bash unter Windows. Er räumte mit `rm -f /tmp/d0* /tmp/e_* /tmp/f_*`
+    auf. Die Wildcards trafen Dateien, die er nicht angelegt hatte. Mindestens 15 Bilder der Person wurden gelöscht.
+    Sie wurden seitdem wiederhergestellt. Die im Bericht erwartete Aufräumart ist ein privater Ordner von `mktemp -d`,
+    und nur das Löschen dieses Ordners.
+example:
+  caption:
+    en: "Paraphrase of #111167 and #112007. The rm lines are the commands in the reports. Paths stay redacted."
+    zh: "#111167 和 #112007 的转述。rm 那几行是报告里的命令。路径仍作了省略。"
+    pt: "Paráfrase de #111167 e #112007. As linhas de rm são os comandos dos relatos. Os paths seguem ocultos."
+    ko: "#111167과 #112007의 바꿔 쓰기. rm 줄은 보고에 나온 명령입니다. 경로는 그대로 가려 둡니다."
+    vi: "Diễn lại #111167 và #112007. Các dòng rm là lệnh trong báo cáo. Đường dẫn vẫn được che."
+    de: "Paraphrase von #111167 und #112007. Die rm-Zeilen sind die Befehle aus den Berichten. Pfade bleiben geschwärzt."
+  lang: text
+  code: |
+    # 2026-11-19, anthropics/claude-code #111167, @lolancefrelas-lang
+    # Workflow subagent. An unquoted path with spaces created a stray folder:
+    #   C:/Users/<u>/Desktop/<Project>
+    # Then, in bypassPermissions, it ran:
+    #   rm -rf "C:/Users/<u>/Desktop/<Project>"* 2>/dev/null
+    # The prefix glob also matched <Project Name>, a parent of the working directory
+    # and a documented critical path.
+    # The critical-path rm check does not expand prefix globs.
+    # No prompt. No denial.
+    # About 30,000 files, 23 GB, 6 months of work, permanently deleted.
+    # Git Bash rm skips the Recycle Bin.
+    #
+    # 2026-11-24, anthropics/claude-code #112007, @ReyAdrian520
+    # Subagent briefed to write nothing. Git Bash on Windows. Scratch went to /tmp.
+    # Cleanup:
+    #   rm -f /tmp/d0* /tmp/e_* /tmp/f_*
+    # The wildcards matched files it had not created.
+    # At least 15 user images were deleted. They have since been recovered.
+    # Expected: a private mktemp -d folder, and deletion of that folder only.
+rule: |
+  ## Never delete with wildcards
+  - Never delete with wildcards. Put scratch output in a private `mktemp -d` dir, record every path you create, and
+    delete only those exact paths or that dir.
+  - Before any rm/rmdir, print the expanded target list and stop if it includes anything you did not create.
+  - Do not append `*` or `?` to a path. A quoted prefix plus `*` is still a glob, and it matches every name that
+    starts with that prefix.
+  - For the private dir, use `d=$(mktemp -d)` and later `rm -rf -- "${d:?}"`.
+extras:
+  - kind: ci
+    title:
+      en: Delete the private scratch dir, not a glob
+      zh: 删掉私有草稿目录，而不是通配符
+      pt: Apagar o diretório privado de rascunho, não um glob
+      ko: 글롭이 아니라 비공개 임시 디렉터리를 지우기
+      vi: Xóa thư mục nháp riêng, không xóa bằng glob
+      de: Den privaten Notizordner löschen, kein Glob
+    file: scratch-dir.sh
+    lang: bash
+    note:
+      en: >-
+        `d` comes from `mktemp -d`. Record any other path you create and delete only those exact paths.
+        `"${d:?}"` aborts when `d` is empty or unset. Do not add `*` or `?`.
+      zh: >-
+        `d` 来自 `mktemp -d`。记下你创建的其他路径，只删除那些确切路径。`d` 为空或未设置时，`"${d:?}"` 会中止。不要再加 `*` 或 `?`。
+      pt: >-
+        `d` vem de `mktemp -d`. Anote qualquer outro path que você criar e apague só esses paths exatos. `"${d:?}"`
+        aborta se `d` estiver vazio ou indefinido. Não acrescente `*` nem `?`.
+      ko: >-
+        `d`는 `mktemp -d`에서 옵니다. 따로 만든 경로는 기록하고, 그 정확한 경로만 지우세요. `d`가 비었거나 없으면 `"${d:?}"`가 중단합니다. `*`나 `?`를
+        붙이지 마세요.
+      vi: >-
+        `d` lấy từ `mktemp -d`. Ghi lại mọi đường dẫn khác bạn tạo và chỉ xóa đúng các đường đó. `"${d:?}"` dừng khi
+        `d` rỗng hoặc chưa đặt. Đừng thêm `*` hoặc `?`.
+      de: >-
+        `d` kommt von `mktemp -d`. Jeden weiteren Pfad, den Sie anlegen, notieren und nur genau diese Pfade löschen.
+        `"${d:?}"` bricht ab, wenn `d` leer oder nicht gesetzt ist. Kein `*` und kein `?` anhängen.
+    code: |
+      d=$(mktemp -d)
+      # scratch files go only under "$d"; record any other path you create
+      rm -rf -- "${d:?}"
+  - kind: hook
+    title:
+      en: 'PreToolUse hook: deny rm commands that contain * or ?'
+      zh: 'PreToolUse 钩子：拒绝带 * 或 ? 的 rm'
+      pt: 'Hook PreToolUse: recusar rm que contenha * ou ?'
+      ko: 'PreToolUse 훅: * 또는 ?가 있는 rm 거부'
+      vi: 'Hook PreToolUse: từ chối rm có * hoặc ?'
+      de: 'PreToolUse-Hook: rm mit * oder ? ablehnen'
+    file: .claude/hooks/deny_rm_wildcard.py
+    lang: python
+    note:
+      en: >-
+        Register with matcher "Bash". Claude Code sends the tool call as JSON on stdin. Exit 2 blocks. The script
+        removes `${name:?}` before it looks for `*` or `?`, so `rm -rf -- "${d:?}"` still passes. That `:?` is the
+        empty-variable guard, not a glob. The check reads the command text and does not expand globs. In #111167 the
+        critical-path rm check does not expand prefix globs, and the rm ran. This hook denies the wildcard characters
+        in the text. It is a seatbelt, not a sandbox.
+      zh: >-
+        用 matcher "Bash" 注册。Claude Code 把工具调用以 JSON 写到 stdin。退出码 2 会拦截。脚本先去掉 `${name:?}`，再找 `*` 或
+        `?`，所以 `rm -rf -- "${d:?}"` 仍然可以通过。这个 `:?` 是空变量防护，不是通配符。检查只读命令文本，不会展开通配符。#111167
+        里，关键路径的 rm 检查不会展开前缀通配符，rm 跑掉了。这个钩子拒绝的是文本里的通配符字符。它是安全带，不是沙箱。
+      pt: >-
+        Registre com matcher "Bash". O Claude Code manda a tool call como JSON no stdin. Exit 2 bloqueia. O script
+        tira `${name:?}` antes de procurar `*` ou `?`, então `rm -rf -- "${d:?}"` ainda passa. Esse `:?` é a guarda de
+        variável vazia, não um glob. A checagem lê o texto do comando e não expande globs. Em #111167 a checagem de rm
+        em caminho crítico não expande globs de prefixo, e o rm rodou. Este hook recusa os caracteres curinga no
+        texto. É um cinto, não uma sandbox.
+      ko: >-
+        matcher "Bash"로 등록합니다. Claude Code는 도구 호출을 stdin의 JSON으로 보냅니다. 종료 코드 2가 막습니다. 스크립트는 `*`나 `?`를 찾기 전에
+        `${name:?}`를 빼므로 `rm -rf -- "${d:?}"`는 통과합니다. 이 `:?`는 빈 변수 가드이고 글롭이 아닙니다. 검사는 명령 텍스트만 읽고 글롭을 펼치지
+        않습니다. #111167에서 중요 경로 rm 검사는 접두 글롭을 펼치지 않았고, rm은 실행됐습니다. 이 훅은 텍스트 안의 와일드카드 문자를 거부합니다. 안전벨트이지
+        샌드박스가 아닙니다.
+      vi: >-
+        Đăng ký với matcher "Bash". Claude Code gửi tool call dạng JSON trên stdin. Exit 2 là chặn. Script bỏ
+        `${name:?}` trước khi tìm `*` hoặc `?`, nên `rm -rf -- "${d:?}"` vẫn qua. `:?` đó là chặn biến rỗng, không phải
+        glob. Bước kiểm chỉ đọc chữ lệnh và không bung glob. Trong #111167, bước kiểm rm trên đường dẫn trọng yếu không
+        bung glob tiền tố, và rm đã chạy. Hook này từ chối ký tự wildcard trong chữ lệnh. Đây là dây an toàn, không phải
+        sandbox.
+      de: >-
+        Mit Matcher „Bash“ registrieren. Claude Code schreibt den Tool-Aufruf als JSON auf stdin. Exit 2 blockt. Das
+        Skript entfernt `${name:?}`, bevor es nach `*` oder `?` sucht, also bleibt `rm -rf -- "${d:?}"` erlaubt. Dieses
+        `:?` ist die Leer-Variablen-Sicherung, kein Glob. Die Prüfung liest den Befehlstext und expandiert keine Globs.
+        In #111167 expandiert die rm-Prüfung für kritische Pfade keine Präfix-Globs, und rm lief. Dieser Hook lehnt die
+        Wildcard-Zeichen im Text ab. Er ist ein Gurt, keine Sandbox.
+    code: |
+      #!/usr/bin/env python3
+      """Deny rm when the command text still contains * or ?."""
+      import json, re, sys
+
+      call = json.load(sys.stdin)
+      if call.get("tool_name") not in ("Bash", "Shell"):
+          sys.exit(0)
+      cmd = call.get("tool_input", {}).get("command", "")
+      if not re.search(r"\brm\b", cmd):
+          sys.exit(0)
+      # ${name:?} is the empty-variable guard in rm -rf -- "${d:?}", not a glob.
+      scrubbed = re.sub(r"\$\{[A-Za-z_][A-Za-z0-9_]*:\?\}", "", cmd)
+      if re.search(r"[*?]", scrubbed):
+          print(
+              "BLOCKED: rm command contains * or ?. "
+              'Delete exact paths, or only the mktemp -d directory, with rm -rf -- "${d:?}".',
+              file=sys.stderr,
+          )
+          sys.exit(2)
+      sys.exit(0)
+sources:
+  - title: "@lolancefrelas-lang, anthropics/claude-code #111167 (19 Nov 2026): a Workflow subagent created C:/Users/<u>/Desktop/<Project> through an unquoted path with spaces, then ran rm -rf with a prefix glob. The glob also matched <Project Name>, a parent of the working directory and a documented critical path. In bypassPermissions the critical-path rm check does not expand prefix globs, so it ran with no prompt and no denial. About 30,000 files, 23 GB, 6 months of work, were permanently deleted. Git Bash rm skips the Recycle Bin"
+    url: https://github.com/anthropics/claude-code/issues/111167
+  - title: "@ReyAdrian520, anthropics/claude-code #112007 (24 Nov 2026): a subagent briefed to write nothing used /tmp for scratch in Git Bash on Windows, then ran rm -f /tmp/d0* /tmp/e_* /tmp/f_*. The wildcards matched files it had not created. At least 15 user images were deleted and have since been recovered. Expected cleanup is a private mktemp -d folder and deletion of that folder only"
+    url: https://github.com/anthropics/claude-code/issues/112007
